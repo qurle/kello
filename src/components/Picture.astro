@@ -1,0 +1,31 @@
+---
+import { imageFormats, imageSrc, imageSrcset } from '../lib/media';
+
+interface Props {
+	file: string;
+	width?: number;
+	height?: number;
+	sizes: string;
+	eager?: boolean;
+}
+
+const { file, width, height, sizes, eager = false } = Astro.props;
+const [fallback] = imageFormats.slice(-1);
+---
+
+<picture>
+	{imageFormats.filter((format) => format !== fallback).map((format) => (
+		<source type={`image/${format}`} srcset={imageSrcset(file, format)} sizes={sizes} />
+	))}
+	<img
+		src={imageSrc(file)}
+		srcset={imageSrcset(file, fallback)}
+		sizes={sizes}
+		width={width}
+		height={height}
+		alt=""
+		loading={eager ? 'eager' : 'lazy'}
+		fetchpriority={eager ? 'high' : 'auto'}
+		decoding="async"
+	/>
+</picture>

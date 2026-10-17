@@ -1,0 +1,37 @@
+---
+import type { Post } from '../lib/feed';
+import { strings, type Lang } from '../lib/i18n';
+import { domain, telegramUrl } from '../lib/media';
+import { sortTags, tagLabel } from '../lib/tags';
+import MediaRow from './MediaRow.astro';
+
+interface Props {
+	post: Post;
+	lang: Lang;
+	eager?: boolean;
+}
+
+const { post, lang, eager = false } = Astro.props;
+const t = strings[lang];
+const tags = sortTags(post.tags);
+---
+
+<article class="post" id={`post-${post.telegramId}`} data-post data-tags={tags.join(' ')}>
+	{post.media.length > 0 && <MediaRow media={post.media} telegramId={post.telegramId} lang={lang} eager={eager} />}
+	<div class="post__meta" data-post-meta>
+		{tags.length > 0 && (
+			<ul class="post__tags">
+				{tags.map((tag) => (
+					<li><button class="tag" type="button" data-tag={tag} aria-pressed="false">{tagLabel(tag, lang)}</button></li>
+				))}
+			</ul>
+		)}
+		<div class="post__body">
+			{post.text && <div class="post__text" set:html={post.text[lang]} />}
+			<p class="post__links">
+				{post.link && <a class="post__source" href={post.link}>{domain(post.link)} <span aria-hidden="true">↗</span></a>}
+				<a class="post__telegram" href={telegramUrl(post.telegramId)}>{t.telegram}</a>
+			</p>
+		</div>
+	</div>
+</article>

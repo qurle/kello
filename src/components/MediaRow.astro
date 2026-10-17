@@ -1,0 +1,66 @@
+---
+import type { Post } from '../lib/feed';
+import { strings, type Lang } from '../lib/i18n';
+import { isResized, mediaUrl, posterUrl, telegramUrl } from '../lib/media';
+import Picture from './Picture.astro';
+
+interface Props {
+	media: Post['media'];
+	telegramId: number;
+	lang: Lang;
+	eager?: boolean;
+}
+
+const { media, telegramId, lang, eager = false } = Astro.props;
+const t = strings[lang];
+const single = media.length === 1;
+
+// Slot widths: the container is at most 72rem, reached at about 77rem of viewport.
+// One item fills it; with more, each slot takes 80% (--media-lead).
+const sizes = single ? '(min-width: 77rem) 72rem, 92vw' : '(min-width: 77rem) 58rem, 74vw';
+---
+
+<div class="media" data-media-row data-single={single || undefined}>
+	<ul class="media__track" data-media-track>
+		{media.map((item, index) => (
+			<li class="media__slot">
+				{item.type === 'unavailable' ? (
+					<a class="media__item media__item--unavailable" href={telegramUrl(telegramId)}>
+						{item.poster && (isResized(item.poster)
+							? <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />
+							: <img src={mediaUrl(item.poster)} width={item.width} height={item.height} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />)}
+						<span class="media__label">{t.unavailable} <span aria-hidden="true">↗</span></span>
+					</a>
+				) : (
+					<button class="media__item" type="button" data-open aria-label={`${t.open} ${index + 1}/${media.length}`}>
+						{item.type === 'image' ? (
+							<Picture file={item.file} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />
+						) : (
+							<video
+								src={mediaUrl(item.file)}
+								poster={item.poster && posterUrl(item.poster)}
+								width={item.width}
+								height={item.height}
+								muted
+								loop
+								playsinline
+								preload={item.poster ? 'none' : 'metadata'}
+								data-autoplay
+							/>
+						)}
+					</button>
+				)}
+			</li>
+		))}
+	</ul>
+	{!single && (
+		<>
+			<button class="media__nav media__nav--prev" type="button" tabindex="-1" aria-label={t.previous} data-media-prev data-off>
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+			</button>
+			<button class="media__nav media__nav--next" type="button" tabindex="-1" aria-label={t.next} data-media-next>
+				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+			</button>
+		</>
+	)}
+</div>
