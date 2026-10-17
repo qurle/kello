@@ -1,0 +1,50 @@
+{
+	"telegramId": 333,
+	"date": "2026-10-06T21:59:48.000Z",
+	"tags": [
+		"inspiration",
+		"ui"
+	],
+	"text": {
+		"ru": "Tooooools — редактор эффектов (и немного анимации для фотографии). Чертовски красивый и удобный. Всё работает локально.",
+		"en": "Tooooools — редактор эффектов (и немного анимации для фотографии). Чертовски красивый и удобный. Всё работает локально."
+	},
+	"link": "https://www.tooooools.app/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 333,
+			"file": "333/1",
+			"width": 800,
+			"height": 454
+		},
+		{
+			"type": "image",
+			"messageId": 334,
+			"file": "333/2",
+			"width": 800,
+			"height": 453
+		},
+		{
+			"type": "image",
+			"messageId": 335,
+			"file": "333/3",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 336,
+			"file": "333/4",
+			"width": 800,
+			"height": 449
+		},
+		{
+			"type": "image",
+			"messageId": 337,
+			"file": "333/5",
+			"width": 800,
+			"height": 452
+		}
+	]
+}

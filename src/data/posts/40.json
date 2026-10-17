@@ -1,0 +1,23 @@
+{
+	"telegramId": 40,
+	"date": "2024-05-13T12:33:59.000Z",
+	"tags": [
+		"learning",
+		"ux",
+		"writing"
+	],
+	"text": {
+		"ru": "Люди ненавидят читать. Очень важная статья о тексте в интерфейсах.<br><br><a href=\"https://medium.com/@jsaito/how-to-design-words-63d6965051e9\">https://medium.com/@jsaito/how-to-design-words-63d6965051e9</a> (<a href=\"https://madcats.ru/content-marketing/people-hates-reading/\">перевод</a>)",
+		"en": "Люди ненавидят читать. Очень важная статья о тексте в интерфейсах.<br><br><a href=\"https://medium.com/@jsaito/how-to-design-words-63d6965051e9\">https://medium.com/@jsaito/how-to-design-words-63d6965051e9</a> (<a href=\"https://madcats.ru/content-marketing/people-hates-reading/\">перевод</a>)"
+	},
+	"link": "https://madcats.ru/content-marketing/people-hates-reading/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 40,
+			"file": "40/1",
+			"width": 800,
+			"height": 353
+		}
+	]
+}

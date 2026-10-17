@@ -1,0 +1,22 @@
+{
+	"telegramId": 53,
+	"date": "2024-05-14T22:29:56.000Z",
+	"tags": [
+		"tools",
+		"writing"
+	],
+	"text": {
+		"ru": "Редакторы, проверяющие английский текст на ошибки. Покажут, где добавить the и где лучше использовать past perfect continuous.<br><br> <a href=\"https://languagetool.org/\">LanguageTool</a> / <a href=\"https://www.deepl.com/write\">DeepL Write</a> / <a href=\"https://hemingwayapp.com/\">Hemingway</a> / <a href=\"https://www.grammarly.com/\">Grammarly</a>",
+		"en": "Редакторы, проверяющие английский текст на ошибки. Покажут, где добавить the и где лучше использовать past perfect continuous.<br><br> <a href=\"https://languagetool.org/\">LanguageTool</a> / <a href=\"https://www.deepl.com/write\">DeepL Write</a> / <a href=\"https://hemingwayapp.com/\">Hemingway</a> / <a href=\"https://www.grammarly.com/\">Grammarly</a>"
+	},
+	"link": "https://www.grammarly.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 53,
+			"file": "53/1",
+			"width": 800,
+			"height": 407
+		}
+	]
+}

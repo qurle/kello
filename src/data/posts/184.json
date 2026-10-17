@@ -1,0 +1,64 @@
+{
+	"telegramId": 184,
+	"date": "2025-06-02T14:19:10.000Z",
+	"tags": [
+		"inspiration",
+		"industrial"
+	],
+	"text": {
+		"ru": "Микрокомомпьютеры от Clockwork. Самостоятельная сборка, мегабайты оперативки, пальчиковые батарейки и красивейшие корпуса.",
+		"en": "Микрокомомпьютеры от Clockwork. Самостоятельная сборка, мегабайты оперативки, пальчиковые батарейки и красивейшие корпуса."
+	},
+	"link": "https://www.clockworkpi.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 184,
+			"file": "184/1",
+			"width": 697,
+			"height": 697
+		},
+		{
+			"type": "image",
+			"messageId": 185,
+			"file": "184/2",
+			"width": 697,
+			"height": 697
+		},
+		{
+			"type": "image",
+			"messageId": 186,
+			"file": "184/3",
+			"width": 697,
+			"height": 697
+		},
+		{
+			"type": "image",
+			"messageId": 187,
+			"file": "184/4",
+			"width": 697,
+			"height": 697
+		},
+		{
+			"type": "image",
+			"messageId": 188,
+			"file": "184/5",
+			"width": 697,
+			"height": 697
+		},
+		{
+			"type": "image",
+			"messageId": 189,
+			"file": "184/6",
+			"width": 697,
+			"height": 697
+		},
+		{
+			"type": "image",
+			"messageId": 190,
+			"file": "184/7",
+			"width": 697,
+			"height": 697
+		}
+	]
+}

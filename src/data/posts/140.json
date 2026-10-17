@@ -1,0 +1,23 @@
+{
+	"telegramId": 140,
+	"date": "2024-06-11T10:41:15.000Z",
+	"tags": [
+		"learning",
+		"portfolio",
+		"ui"
+	],
+	"text": {
+		"ru": "Рассказы о дизайне в виде лонгридов от лида Stripe Мэтью Стрёма.",
+		"en": "Рассказы о дизайне в виде лонгридов от лида Stripe Мэтью Стрёма."
+	},
+	"link": "https://matthewstrom.com/writing",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 140,
+			"file": "140/1",
+			"width": 800,
+			"height": 392
+		}
+	]
+}

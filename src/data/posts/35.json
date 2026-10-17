@@ -1,0 +1,22 @@
+{
+	"telegramId": 35,
+	"date": "2024-05-13T11:48:46.000Z",
+	"tags": [
+		"inspiration",
+		"graphics"
+	],
+	"text": {
+		"ru": "Гравюры + цвет = 🖤",
+		"en": "Гравюры + цвет = 🖤"
+	},
+	"link": "https://www.behance.net/gallery/47805349/ZADA-food-supplements-medicine-packaging",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 35,
+			"file": "35/1",
+			"width": 800,
+			"height": 534
+		}
+	]
+}

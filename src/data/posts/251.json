@@ -1,0 +1,79 @@
+{
+	"telegramId": 251,
+	"date": "2025-12-09T16:26:06.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"people"
+	],
+	"text": {
+		"ru": "Сайт и работы Пола Макгрегора<br><br><a href=\"http://p.cv/\">p.cv</a> / <a href=\"http://works.pm/\">works.pm</a>",
+		"en": "Сайт и работы Пола Макгрегора<br><br><a href=\"http://p.cv/\">p.cv</a> / <a href=\"http://works.pm/\">works.pm</a>"
+	},
+	"link": "http://works.pm/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 251,
+			"file": "251/1",
+			"width": 800,
+			"height": 447
+		},
+		{
+			"type": "image",
+			"messageId": 252,
+			"file": "251/2",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 253,
+			"file": "251/3",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 254,
+			"file": "251/4",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 255,
+			"file": "251/5",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 256,
+			"file": "251/6",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 257,
+			"file": "251/7",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 258,
+			"file": "251/8",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 259,
+			"file": "251/9",
+			"width": 800,
+			"height": 450
+		}
+	]
+}

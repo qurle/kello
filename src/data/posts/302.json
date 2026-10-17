@@ -1,0 +1,24 @@
+{
+	"telegramId": 302,
+	"date": "2026-07-11T19:48:48.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"design-engineering",
+		"portfolio"
+	],
+	"text": {
+		"ru": "Тоже инспирейшн, но уже со стильными и креативными сайтами",
+		"en": "Тоже инспирейшн, но уже со стильными и креативными сайтами"
+	},
+	"link": "https://www.seesaw.website/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 302,
+			"file": "302/1",
+			"width": 800,
+			"height": 452
+		}
+	]
+}

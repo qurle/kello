@@ -1,0 +1,22 @@
+{
+	"telegramId": 113,
+	"date": "2024-05-15T02:41:30.000Z",
+	"tags": [
+		"learning",
+		"beyond-design"
+	],
+	"text": {
+		"ru": "Письма о силе воли от человека со слабой волей.",
+		"en": "Письма о силе воли от человека со слабой волей."
+	},
+	"link": "https://ldwg.ru/nedivan/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 113,
+			"file": "113/1",
+			"width": 800,
+			"height": 491
+		}
+	]
+}

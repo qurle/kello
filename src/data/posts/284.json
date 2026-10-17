@@ -1,0 +1,23 @@
+{
+	"telegramId": 284,
+	"date": "2026-03-24T19:27:54.000Z",
+	"tags": [
+		"inspiration",
+		"ui"
+	],
+	"text": {
+		"ru": "А ещё прикольный футер с титрами",
+		"en": "А ещё прикольный футер с титрами"
+	},
+	"link": "https://linear.app/mobile",
+	"media": [
+		{
+			"type": "video",
+			"messageId": 284,
+			"file": "284/1.mp4",
+			"poster": "284/1-poster",
+			"width": 3018,
+			"height": 1464
+		}
+	]
+}

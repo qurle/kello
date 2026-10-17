@@ -1,0 +1,22 @@
+{
+	"telegramId": 59,
+	"date": "2024-05-14T23:02:54.000Z",
+	"tags": [
+		"learning",
+		"ui"
+	],
+	"text": {
+		"ru": "Всё об индикаторах загрузки с кучей примеров и объяснениями принципов работы.",
+		"en": "Всё об индикаторах загрузки с кучей примеров и объяснениями принципов работы."
+	},
+	"link": "https://medium.com/@lisadziuba/everything-you-need-to-know-about-loading-animations-10db7f9b61e",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 59,
+			"file": "59/1",
+			"width": 800,
+			"height": 402
+		}
+	]
+}

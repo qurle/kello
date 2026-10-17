@@ -1,0 +1,22 @@
+{
+	"telegramId": 126,
+	"date": "2024-05-15T03:49:19.000Z",
+	"tags": [
+		"resources",
+		"icons"
+	],
+	"text": {
+		"ru": "Анимированные метеоиконки. Залитые и обводочные",
+		"en": "Анимированные метеоиконки. Залитые и обводочные"
+	},
+	"link": "https://bas.dev/work/meteocons",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 126,
+			"file": "126/1",
+			"width": 800,
+			"height": 377
+		}
+	]
+}

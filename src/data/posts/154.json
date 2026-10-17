@@ -1,0 +1,23 @@
+{
+	"telegramId": 154,
+	"date": "2024-10-04T22:23:13.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"portfolio"
+	],
+	"text": {
+		"ru": "Очень маленький и очень элегантный текстовый сайт Джона Грубера — создателя языка Markdown.",
+		"en": "Очень маленький и очень элегантный текстовый сайт Джона Грубера — создателя языка Markdown."
+	},
+	"link": "https://daringfireball.net/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 154,
+			"file": "154/1",
+			"width": 800,
+			"height": 445
+		}
+	]
+}

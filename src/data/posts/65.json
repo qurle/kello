@@ -1,0 +1,23 @@
+{
+	"telegramId": 65,
+	"date": "2024-05-14T23:50:38.000Z",
+	"tags": [
+		"learning",
+		"tools",
+		"code"
+	],
+	"text": {
+		"ru": "Ежегодные ресерчи с актуальным состоянием главных веб-технологий. Можно открыть для себя отличные инструменты, набирающие популярность и подчернуть фичи на будущее.<br><br><a href=\"https://stateofjs.com/\">State of JS</a> / <a href=\"https://stateofcss.com/\">State of CSS</a> / <a href=\"https://stateofhtml.com/\">State of HTML</a>",
+		"en": "Ежегодные ресерчи с актуальным состоянием главных веб-технологий. Можно открыть для себя отличные инструменты, набирающие популярность и подчернуть фичи на будущее.<br><br><a href=\"https://stateofjs.com/\">State of JS</a> / <a href=\"https://stateofcss.com/\">State of CSS</a> / <a href=\"https://stateofhtml.com/\">State of HTML</a>"
+	},
+	"link": "https://stateofhtml.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 65,
+			"file": "65/1",
+			"width": 800,
+			"height": 401
+		}
+	]
+}

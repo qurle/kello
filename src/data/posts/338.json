@@ -1,0 +1,38 @@
+{
+	"telegramId": 338,
+	"date": "2026-10-12T08:49:17.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"tools",
+		"code"
+	],
+	"text": {
+		"ru": "Очень классная ASCII-галерея. Наконец-то и арты красивые, и как компоненты можно вставить, и сам сайт сочнейший. Показал <a href=\"https://t.me/hopedev\">@hopedev</a>",
+		"en": "Очень классная ASCII-галерея. Наконец-то и арты красивые, и как компоненты можно вставить, и сам сайт сочнейший. Показал <a href=\"https://t.me/hopedev\">@hopedev</a>"
+	},
+	"link": "https://ascii.rest/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 338,
+			"file": "338/1",
+			"width": 800,
+			"height": 457
+		},
+		{
+			"type": "image",
+			"messageId": 339,
+			"file": "338/2",
+			"width": 800,
+			"height": 469
+		},
+		{
+			"type": "image",
+			"messageId": 340,
+			"file": "338/3",
+			"width": 800,
+			"height": 449
+		}
+	]
+}

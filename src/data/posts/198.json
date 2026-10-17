@@ -1,0 +1,44 @@
+{
+	"telegramId": 198,
+	"date": "2025-07-11T15:03:45.000Z",
+	"tags": [
+		"inspiration",
+		"typography",
+		"ui"
+	],
+	"text": {
+		"ru": "Сайт будущего мануала Making Software. Кстати, внутри шрифт Departure Mono.",
+		"en": "Сайт будущего мануала Making Software. Кстати, внутри шрифт Departure Mono."
+	},
+	"link": "https://www.makingsoftware.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 198,
+			"file": "198/1",
+			"width": 800,
+			"height": 443
+		},
+		{
+			"type": "image",
+			"messageId": 199,
+			"file": "198/2",
+			"width": 800,
+			"height": 452
+		},
+		{
+			"type": "image",
+			"messageId": 200,
+			"file": "198/3",
+			"width": 800,
+			"height": 446
+		},
+		{
+			"type": "image",
+			"messageId": 201,
+			"file": "198/4",
+			"width": 800,
+			"height": 443
+		}
+	]
+}

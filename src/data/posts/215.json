@@ -1,0 +1,23 @@
+{
+	"telegramId": 215,
+	"date": "2025-09-22T08:31:13.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"portfolio"
+	],
+	"text": {
+		"ru": "Гленн Хитчкок — дизайн-руководитель, который работал в Sketch и Vercel, а теперь занимается стартапом poolside.",
+		"en": "Гленн Хитчкок — дизайн-руководитель, который работал в Sketch и Vercel, а теперь занимается стартапом poolside."
+	},
+	"link": "https://glenn.me/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 215,
+			"file": "215/1",
+			"width": 800,
+			"height": 451
+		}
+	]
+}

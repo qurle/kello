@@ -1,0 +1,63 @@
+{
+	"telegramId": 277,
+	"date": "2026-03-23T20:01:34.000Z",
+	"tags": [
+		"inspiration",
+		"motion"
+	],
+	"text": {
+		"ru": "Мегастилёвые музыкальные мини-туториалы от drumboii<br><br><a href=\"https://www.tiktok.com/@drumboii_real\">https://www.tiktok.com/@drumboii_real</a>",
+		"en": "Мегастилёвые музыкальные мини-туториалы от drumboii<br><br><a href=\"https://www.tiktok.com/@drumboii_real\">https://www.tiktok.com/@drumboii_real</a>"
+	},
+	"link": "https://drumboii.com/",
+	"media": [
+		{
+			"type": "video",
+			"messageId": 277,
+			"file": "277/1.mp4",
+			"poster": "277/1-poster",
+			"width": 576,
+			"height": 1024
+		},
+		{
+			"type": "video",
+			"messageId": 278,
+			"file": "277/2.mp4",
+			"poster": "277/2-poster",
+			"width": 1080,
+			"height": 1920
+		},
+		{
+			"type": "video",
+			"messageId": 279,
+			"file": "277/3.mp4",
+			"poster": "277/3-poster",
+			"width": 1080,
+			"height": 1920
+		},
+		{
+			"type": "video",
+			"messageId": 280,
+			"file": "277/4.mp4",
+			"poster": "277/4-poster",
+			"width": 1080,
+			"height": 1920
+		},
+		{
+			"type": "video",
+			"messageId": 281,
+			"file": "277/5.mp4",
+			"poster": "277/5-poster",
+			"width": 1080,
+			"height": 1920
+		},
+		{
+			"type": "video",
+			"messageId": 282,
+			"file": "277/6.mp4",
+			"poster": "277/6-poster",
+			"width": 576,
+			"height": 1024
+		}
+	]
+}

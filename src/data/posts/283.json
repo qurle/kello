@@ -1,0 +1,22 @@
+{
+	"telegramId": 283,
+	"date": "2026-03-24T19:24:23.000Z",
+	"tags": [
+		"inspiration",
+		"ui"
+	],
+	"text": {
+		"ru": "Красивое превью фичи у Linear",
+		"en": "Красивое превью фичи у Linear"
+	},
+	"link": "https://linear.app/diffs",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 283,
+			"file": "283/1",
+			"width": 800,
+			"height": 433
+		}
+	]
+}

@@ -1,0 +1,22 @@
+{
+	"telegramId": 38,
+	"date": "2024-05-13T11:56:47.000Z",
+	"tags": [
+		"resources",
+		"textures"
+	],
+	"text": {
+		"ru": "Растровые пыльно-шумные текстуры.",
+		"en": "Растровые пыльно-шумные текстуры."
+	},
+	"link": "https://unblast.com/free-dust-and-noise-overlay-textures/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 38,
+			"file": "38/1",
+			"width": 800,
+			"height": 399
+		}
+	]
+}

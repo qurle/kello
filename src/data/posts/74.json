@@ -1,0 +1,24 @@
+{
+	"telegramId": 74,
+	"date": "2024-05-15T00:27:16.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"people",
+		"portfolio"
+	],
+	"text": {
+		"ru": "Immersive Garden неустанно клепают сайты под Awwwards. Получается у них хорошо, да и собственный сайт вышел отличным.",
+		"en": "Immersive Garden неустанно клепают сайты под Awwwards. Получается у них хорошо, да и собственный сайт вышел отличным."
+	},
+	"link": "https://immersive-g.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 74,
+			"file": "74/1",
+			"width": 800,
+			"height": 399
+		}
+	]
+}

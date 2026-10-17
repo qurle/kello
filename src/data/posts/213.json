@@ -1,0 +1,23 @@
+{
+	"telegramId": 213,
+	"date": "2025-08-18T22:49:56.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"motion"
+	],
+	"text": {
+		"ru": "Красивое видео на сайте программы для работы с дизайн-токенами.",
+		"en": "Красивое видео на сайте программы для работы с дизайн-токенами."
+	},
+	"link": "https://specifyapp.com/",
+	"media": [
+		{
+			"type": "unavailable",
+			"messageId": 213,
+			"poster": "213/1-poster",
+			"width": 3022,
+			"height": 1640
+		}
+	]
+}

@@ -1,0 +1,23 @@
+{
+	"telegramId": 67,
+	"date": "2024-05-14T23:57:54.000Z",
+	"tags": [
+		"learning",
+		"ui",
+		"writing"
+	],
+	"text": {
+		"ru": "База по UX-райтингу: как текст влияет на восприятие интерфейса.<br><br><a href=\"https://uxdesign.cc/how-to-build-a-better-product-with-ux-writing-926d78209ce8\">https://uxdesign.cc/how-to-build-a-better-product-with-ux-writing-926d78209ce8</a> (<a href=\"https://vk.com/@webshatilo-kak-ux-writing-pomogaet-delat-produkty-luchshe\">перевод</a>)",
+		"en": "База по UX-райтингу: как текст влияет на восприятие интерфейса.<br><br><a href=\"https://uxdesign.cc/how-to-build-a-better-product-with-ux-writing-926d78209ce8\">https://uxdesign.cc/how-to-build-a-better-product-with-ux-writing-926d78209ce8</a> (<a href=\"https://vk.com/@webshatilo-kak-ux-writing-pomogaet-delat-produkty-luchshe\">перевод</a>)"
+	},
+	"link": "https://vk.com/@webshatilo-kak-ux-writing-pomogaet-delat-produkty-luchshe",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 67,
+			"file": "67/1",
+			"width": 800,
+			"height": 391
+		}
+	]
+}

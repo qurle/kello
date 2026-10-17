@@ -1,0 +1,28 @@
+{
+	"telegramId": 164,
+	"date": "2024-12-18T14:06:27.000Z",
+	"tags": [
+		"inspiration"
+	],
+	"text": {
+		"ru": "<a href=\"https://www.amazon.com/dp/B0C9S88QV6/\">Hypermedia Systems</a> — книга про веб с очень красивой обложкой. Техническая эстетика прям.",
+		"en": "<a href=\"https://www.amazon.com/dp/B0C9S88QV6/\">Hypermedia Systems</a> — книга про веб с очень красивой обложкой. Техническая эстетика прям."
+	},
+	"link": "https://www.amazon.com/dp/B0C9S88QV6/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 164,
+			"file": "164/1",
+			"width": 602,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 165,
+			"file": "164/2",
+			"width": 600,
+			"height": 798
+		}
+	]
+}

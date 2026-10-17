@@ -1,0 +1,23 @@
+{
+	"telegramId": 275,
+	"date": "2026-02-20T13:49:05.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"collections"
+	],
+	"text": {
+		"ru": "Сайт с красивыми консольными приложениями (TUI — Text-based User Interface)",
+		"en": "Сайт с красивыми консольными приложениями (TUI — Text-based User Interface)"
+	},
+	"link": "https://terminal-apps.dev/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 275,
+			"file": "275/1",
+			"width": 800,
+			"height": 448
+		}
+	]
+}

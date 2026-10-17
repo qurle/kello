@@ -1,0 +1,22 @@
+{
+	"telegramId": 124,
+	"date": "2024-05-15T03:32:35.000Z",
+	"tags": [
+		"resources",
+		"mockups"
+	],
+	"text": {
+		"ru": "Сайты с мокапами.<br><br><a href=\"https://mrmockup.com/free-mockups/\">Mr.Mockup</a> / <a href=\"https://www.mockupworld.co/\">Mockup World</a> / <a href=\"https://www.ls.graphics/free-mockups\">Lovely and Spotless Graphics</a>",
+		"en": "Сайты с мокапами.<br><br><a href=\"https://mrmockup.com/free-mockups/\">Mr.Mockup</a> / <a href=\"https://www.mockupworld.co/\">Mockup World</a> / <a href=\"https://www.ls.graphics/free-mockups\">Lovely and Spotless Graphics</a>"
+	},
+	"link": "https://www.ls.graphics/free-mockups",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 124,
+			"file": "124/1",
+			"width": 800,
+			"height": 409
+		}
+	]
+}

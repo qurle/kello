@@ -1,0 +1,23 @@
+{
+	"telegramId": 134,
+	"date": "2024-06-03T14:00:07.000Z",
+	"tags": [
+		"inspiration",
+		"portfolio",
+		"collections"
+	],
+	"text": {
+		"ru": "Страницы классных авторов, которые собрал дизайнер SJ Zhang в своём веб-мире.",
+		"en": "Страницы классных авторов, которые собрал дизайнер SJ Zhang в своём веб-мире."
+	},
+	"link": "https://www.sj.land/talent",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 134,
+			"file": "134/1",
+			"width": 800,
+			"height": 411
+		}
+	]
+}

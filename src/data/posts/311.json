@@ -1,0 +1,78 @@
+{
+	"telegramId": 311,
+	"date": "2026-09-08T22:53:14.000Z",
+	"tags": [
+		"inspiration",
+		"beyond-design"
+	],
+	"text": {
+		"ru": "Проект «Орнитография» Хави Боу: если бы птицы оставляли следы в небе",
+		"en": "Проект «Орнитография» Хави Боу: если бы птицы оставляли следы в небе"
+	},
+	"link": "https://xavibou.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 311,
+			"file": "311/1",
+			"width": 800,
+			"height": 534
+		},
+		{
+			"type": "image",
+			"messageId": 312,
+			"file": "311/2",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 313,
+			"file": "311/3",
+			"width": 800,
+			"height": 534
+		},
+		{
+			"type": "image",
+			"messageId": 314,
+			"file": "311/4",
+			"width": 800,
+			"height": 534
+		},
+		{
+			"type": "image",
+			"messageId": 315,
+			"file": "311/5",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 316,
+			"file": "311/6",
+			"width": 800,
+			"height": 422
+		},
+		{
+			"type": "image",
+			"messageId": 317,
+			"file": "311/7",
+			"width": 800,
+			"height": 534
+		},
+		{
+			"type": "image",
+			"messageId": 318,
+			"file": "311/8",
+			"width": 800,
+			"height": 422
+		},
+		{
+			"type": "image",
+			"messageId": 319,
+			"file": "311/9",
+			"width": 800,
+			"height": 360
+		}
+	]
+}

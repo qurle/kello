@@ -1,0 +1,23 @@
+{
+	"telegramId": 72,
+	"date": "2024-05-15T00:16:11.000Z",
+	"tags": [
+		"inspiration",
+		"beyond-design",
+		"people"
+	],
+	"text": {
+		"ru": "Уникально реалистичный космос, которого «никогда не было». Шикарные работы Мацея Ребиша из CD Project Red.<br><br><a href=\"https://www.artstation.com/mac/\">ArtStation</a> / <a href=\"https://spacethatneverwas.tumblr.com/\">Space That Never Was</a>",
+		"en": "Уникально реалистичный космос, которого «никогда не было». Шикарные работы Мацея Ребиша из CD Project Red.<br><br><a href=\"https://www.artstation.com/mac/\">ArtStation</a> / <a href=\"https://spacethatneverwas.tumblr.com/\">Space That Never Was</a>"
+	},
+	"link": "https://spacethatneverwas.tumblr.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 72,
+			"file": "72/1",
+			"width": 800,
+			"height": 394
+		}
+	]
+}

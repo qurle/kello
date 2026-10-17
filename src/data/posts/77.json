@@ -1,0 +1,22 @@
+{
+	"telegramId": 77,
+	"date": "2024-05-15T00:43:59.000Z",
+	"tags": [
+		"resources",
+		"textures"
+	],
+	"text": {
+		"ru": "~<br><br>Яркие шейпы-крокозябры для красочных проектов. Авторы пака красиво используют их <a href=\"https://www.designjoy.co/\">на собственном сайте</a>.",
+		"en": "~<br><br>Яркие шейпы-крокозябры для красочных проектов. Авторы пака красиво используют их <a href=\"https://www.designjoy.co/\">на собственном сайте</a>."
+	},
+	"link": "https://www.scribbbles.design/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 77,
+			"file": "77/1",
+			"width": 800,
+			"height": 402
+		}
+	]
+}

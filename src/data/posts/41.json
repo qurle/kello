@@ -1,0 +1,22 @@
+{
+	"telegramId": 41,
+	"date": "2024-05-13T15:45:05.000Z",
+	"tags": [
+		"resources",
+		"photo"
+	],
+	"text": {
+		"ru": "Популярные бесплатные фотостоки<br><br><a href=\"https://unsplash.com/\">Unsplash</a> / <a href=\"https://pixabay.com/\">Pixabay</a> / <a href=\"https://www.pexels.com/\">Pexels</a> / <a href=\"https://www.freepik.com/popular-photos\">Freepik</a> / <a href=\"https://www.lifeofpix.com/\">Life of Pix</a> / <a href=\"https://loon.site/\">Loon</a>",
+		"en": "Популярные бесплатные фотостоки<br><br><a href=\"https://unsplash.com/\">Unsplash</a> / <a href=\"https://pixabay.com/\">Pixabay</a> / <a href=\"https://www.pexels.com/\">Pexels</a> / <a href=\"https://www.freepik.com/popular-photos\">Freepik</a> / <a href=\"https://www.lifeofpix.com/\">Life of Pix</a> / <a href=\"https://loon.site/\">Loon</a>"
+	},
+	"link": "https://loon.site/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 41,
+			"file": "41/1",
+			"width": 800,
+			"height": 403
+		}
+	]
+}

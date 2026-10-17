@@ -1,0 +1,23 @@
+{
+	"telegramId": 306,
+	"date": "2026-09-03T12:06:24.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"typography"
+	],
+	"text": {
+		"ru": "Супер геометрично и супер чисто, угнал у <a href=\"https://t.me/mesteropinion\">@mesteropinion</a>",
+		"en": "Супер геометрично и супер чисто, угнал у <a href=\"https://t.me/mesteropinion\">@mesteropinion</a>"
+	},
+	"link": "https://paradigm.xyz/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 306,
+			"file": "306/1",
+			"width": 800,
+			"height": 456
+		}
+	]
+}

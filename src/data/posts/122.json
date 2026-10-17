@@ -1,0 +1,22 @@
+{
+	"telegramId": 122,
+	"date": "2024-05-15T03:27:08.000Z",
+	"tags": [
+		"resources",
+		"fonts"
+	],
+	"text": {
+		"ru": "<b>Разные шрифты</b><br><a href=\"https://fonts.google.com/\">Google Fonts</a> /  <a href=\"https://www.fontshare.com/\">Fontshare</a> / <a href=\"https://open-foundry.com/fonts\">Open Foundry</a> / <a href=\"https://www.fontsquirrel.com/\">Font Squirrel</a> / <a href=\"https://fontesk.com/license/free-for-commercial-use,free-for-personal-use/\">Fontesk</a><br><b>Кириллические шрифты</b><br><a href=\"https://www.fonts.uprock.ru/\">Uprock</a> / <a href=\"https://fonts.google.com/?subset=cyrillic\">Google Fonts</a> / <a href=\"https://www.fontsquirrel.com/fonts/list/language/russian\">Font Squirrel</a> / <a href=\"https://fontesk.com/tag/cyrillic/?license=free-for-commercial-use,free-for-personal-use\">Fontesk</a>",
+		"en": "<b>Разные шрифты</b><br><a href=\"https://fonts.google.com/\">Google Fonts</a> /  <a href=\"https://www.fontshare.com/\">Fontshare</a> / <a href=\"https://open-foundry.com/fonts\">Open Foundry</a> / <a href=\"https://www.fontsquirrel.com/\">Font Squirrel</a> / <a href=\"https://fontesk.com/license/free-for-commercial-use,free-for-personal-use/\">Fontesk</a><br><b>Кириллические шрифты</b><br><a href=\"https://www.fonts.uprock.ru/\">Uprock</a> / <a href=\"https://fonts.google.com/?subset=cyrillic\">Google Fonts</a> / <a href=\"https://www.fontsquirrel.com/fonts/list/language/russian\">Font Squirrel</a> / <a href=\"https://fontesk.com/tag/cyrillic/?license=free-for-commercial-use,free-for-personal-use\">Fontesk</a>"
+	},
+	"link": "https://fontesk.com/tag/cyrillic/?license=free-for-commercial-use,free-for-personal-use",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 122,
+			"file": "122/1",
+			"width": 800,
+			"height": 402
+		}
+	]
+}
