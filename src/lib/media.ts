@@ -1,28 +1,33 @@
-import config from '../../kello.config';
+// File naming for synced images, shared by scripts/sync and the site.
+//
+// An image (or video poster) `base` with original width `width` is stored as `<base>-<w>.<format>` for
+// each configured width `w` below the original, plus the first configured width at or above it, which
+// holds the original size. Nothing is upscaled and no two files are the same picture.
+// The web preview serves photos at 800px at most, so most images have a single `-960` file today.
 
-const base = `/${config.media.dir}/`;
-const widths = [...config.media.widths].sort((a, b) => a - b);
+/** Configured widths that exist on disk for an image of this original width, ascending. */
+export function storedWidths(width: number, widths: readonly number[]): number[] {
+	const sorted = [...widths].sort((a, b) => a - b);
+	const cap = sorted.findIndex((w) => w >= width);
+	return cap === -1 ? sorted : sorted.slice(0, cap + 1);
+}
 
-/** URL of a file that already has its extension, such as a video. */
-export const mediaUrl = (file: string) => base + file;
+export interface ImageSource {
+	/** Path under `public/<media.dir>`, e.g. `338/1-960.avif`. */
+	file: string;
+	/** Real pixel width of that file, for `srcset` descriptors. */
+	width: number;
+	format: string;
+	w: number;
+}
 
-/** `srcset` for one format of a resized image (`338/1` → `338/1-960.avif 960w, …`). */
-export const imageSrcset = (file: string, format: string) =>
-	widths.map((width) => `${base}${file}-${width}.${format} ${width}w`).join(', ');
-
-/** Fallback `src` for a resized image: the smallest width in the last configured format. */
-export const imageSrc = (file: string) => `${base}${file}-${widths[0]}.${config.media.formats.at(-1)}`;
-
-export const imageFormats = config.media.formats;
-
-/** A poster is either a resized image (no extension) or a single file (`338/2.jpg`). */
-export const isResized = (file: string) => !/\.[a-z0-9]+$/i.test(file);
-
-/** URL of a poster, resized or not. */
-export const posterUrl = (poster: string) => (isResized(poster) ? imageSrc(poster) : mediaUrl(poster));
-
-/** Telegram post URL. */
-export const telegramUrl = (id: number) => `https://t.me/${config.channel.username}/${id}`;
-
-/** `https://www.psiquantum.com/news` → `psiquantum.com` */
-export const domain = (url: string) => new URL(url).hostname.replace(/^www\./, '');
+/** Every stored file of an image, smallest first, for each format. */
+export function imageSources(
+	base: string,
+	width: number,
+	media: { widths: readonly number[]; formats: readonly string[] },
+): ImageSource[] {
+	return storedWidths(width, media.widths).flatMap((w) =>
+		media.formats.map((format) => ({ file: `${base}-${w}.${format}`, width: Math.min(w, width), format, w })),
+	);
+}

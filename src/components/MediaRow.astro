@@ -1,7 +1,7 @@
 ---
 import type { Post } from '../lib/feed';
 import { strings, type Lang } from '../lib/i18n';
-import { isResized, mediaUrl, posterUrl, telegramUrl } from '../lib/media';
+import { imageSet, mediaUrl, telegramUrl } from '../lib/urls';
 import Picture from './Picture.astro';
 
 interface Props {
@@ -25,10 +25,8 @@ const sizes = single ? '(min-width: 77rem) 72rem, 92vw' : '(min-width: 77rem) 58
 		{media.map((item, index) => (
 			<li class="media__slot">
 				{item.type === 'unavailable' ? (
-					<a class="media__item media__item--unavailable" href={telegramUrl(telegramId)}>
-						{item.poster && (isResized(item.poster)
-							? <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />
-							: <img src={mediaUrl(item.poster)} width={item.width} height={item.height} alt="" loading={eager ? 'eager' : 'lazy'} decoding="async" />)}
+					<a class="media__item media__item--unavailable" href={item.messageId ? telegramUrl(item.messageId, true) : telegramUrl(telegramId)}>
+						{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />}
 						<span class="media__label">{t.unavailable} <span aria-hidden="true">↗</span></span>
 					</a>
 				) : (
@@ -38,7 +36,7 @@ const sizes = single ? '(min-width: 77rem) 72rem, 92vw' : '(min-width: 77rem) 58
 						) : (
 							<video
 								src={mediaUrl(item.file)}
-								poster={item.poster && posterUrl(item.poster)}
+								poster={item.poster && imageSet(item.poster, item.width).src}
 								width={item.width}
 								height={item.height}
 								muted

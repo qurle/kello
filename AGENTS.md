@@ -43,7 +43,8 @@ t.me/s/the_kello ──► scripts/sync (GitHub Actions, every 12h + manual)
 | `src/styles/*.sass` | Base, page, post, media row and viewer styles, all reading the tokens. |
 | `src/components/Home.astro` | The page, shared by `/` and `/ru` through a `lang` prop. |
 | `src/lib/i18n.ts` | The UI string dictionary. |
-| `src/lib/feed.ts` | Posts for the page, newest first. Adds the fixture posts in dev only. |
+| `src/lib/feed.ts` | `getPosts()` plus the fixture posts in dev only. |
+| `src/lib/urls.ts` | Media, `srcset` and Telegram URLs, and the source link domain. |
 | `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer. |
 | `src/data/posts/_fixture-*.json` | Fixture posts for `npm run dev`, with media in `public/media/_fixtures/`. The content glob skips them. |
 | `public/media/` | Generated images (AVIF and WebP at each configured width) and videos. |
@@ -65,7 +66,7 @@ The page has three parts: the heading "Kello", a line of tag filters, then posts
 
 Tokens added with the UI, beyond the ones above: `--font-mono`, `--text-code`, `--leading-snug` (post text, filter line), `--display-indent` (optical correction for the heading), `--underline-width`, `--underline-offset`, `--index-columns`, `--media-nav-size` (chevron square), `--viewer-media-height`, `--focus-width`, `--focus-offset`. The 48rem breakpoint and the `sizes` attributes in `MediaRow.astro` are written out, since media queries and HTML can't read custom properties.
 
-A video or unavailable `poster` can be either a resized image path without extension (like an image `file`) or a single file with its extension (`338/2.jpg`); `src/lib/media.ts` handles both.
+Image and poster URLs go through `imageSet()` in `src/lib/urls.ts`, which builds `srcset` from `imageSources()` so only files that exist are referenced.
 
 ## Conventions
 

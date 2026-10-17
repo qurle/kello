@@ -1,8 +1,10 @@
 ---
-import { imageFormats, imageSrc, imageSrcset } from '../lib/media';
+import { imageSet } from '../lib/urls';
 
 interface Props {
+	/** Image or poster path without width and extension. */
 	file: string;
+	/** Original width, which decides the files that exist. */
 	width?: number;
 	height?: number;
 	sizes: string;
@@ -10,16 +12,16 @@ interface Props {
 }
 
 const { file, width, height, sizes, eager = false } = Astro.props;
-const [fallback] = imageFormats.slice(-1);
+const { formats, fallbackFormat, src } = imageSet(file, width);
 ---
 
 <picture>
-	{imageFormats.filter((format) => format !== fallback).map((format) => (
-		<source type={`image/${format}`} srcset={imageSrcset(file, format)} sizes={sizes} />
+	{formats.filter(({ format }) => format !== fallbackFormat).map(({ format, srcset }) => (
+		<source type={`image/${format}`} srcset={srcset} sizes={sizes} />
 	))}
 	<img
-		src={imageSrc(file)}
-		srcset={imageSrcset(file, fallback)}
+		src={src}
+		srcset={formats.find(({ format }) => format === fallbackFormat)!.srcset}
 		sizes={sizes}
 		width={width}
 		height={height}
