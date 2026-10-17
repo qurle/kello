@@ -1,23 +1,55 @@
 import { defineCollection } from 'astro:content';
-import { glob, file } from 'astro/loaders';
+import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-const media = z.object({
-	type: z.union([z.literal("image"), z.literal("video")]),
-	url: z.string().url()
-})
+// Media paths are relative to `public/<media.dir>` and have no width or extension:
+// `338/1` resolves to `338/1-960.avif`, `338/1-1920.webp` and so on.
+const image = z.object({
+	type: z.literal('image'),
+	file: z.string(),
+	width: z.number(),
+	height: z.number(),
+});
 
+const video = z.object({
+	type: z.literal('video'),
+	/** Full file name, e.g. `338/2.mp4`. */
+	file: z.string(),
+	poster: z.string().optional(),
+	width: z.number(),
+	height: z.number(),
+});
+
+// Too large for the web preview or above `media.maxVideoMB`: shown as a poster linking to Telegram.
+const unavailable = z.object({
+	type: z.literal('unavailable'),
+	poster: z.string().optional(),
+	width: z.number().optional(),
+	height: z.number().optional(),
+});
+
+const text = z.object({
+	/** Telegram HTML subset (b, i, u, s, a, code, br), hashtags and source link removed. */
+	ru: z.string(),
+	en: z.string(),
+});
+
+// Written by `npm run sync`, one file per post: src/data/posts/<telegramId>.json
 const posts = defineCollection({
-	loader: glob({ pattern: '**/[^_]*.{json,md,mdx}', base: "/src/data/posts" }),
+	loader: glob({ pattern: '**/[^_]*.json', base: './src/data/posts' }),
 	schema: z.object({
+		/** First message id; albums take one id per item. */
 		telegramId: z.number(),
-		date: z.date(),
-		tags: z.array(z.string()).optional(),
-		text: z.string().optional(),
+		date: z.coerce.date(),
+		/** English slugs from kello.config.ts. */
+		tags: z.array(z.string()),
+		text: text.optional(),
+		/** Hash of `text.ru` at translation time; a mismatch triggers re-translation. */
+		sourceHash: z.string().optional(),
+		/** Main external link of the post. */
 		link: z.string().url().optional(),
-		media: z.array(media).optional(),
-		fullText: z.string().optional(),
-	})
-})
+		media: z.array(z.discriminatedUnion('type', [image, video, unavailable])).default([]),
+	}),
+});
 
 export const collections = { posts };

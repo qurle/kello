@@ -1,0 +1,50 @@
+import { z } from 'astro/zod';
+
+const tag = z.object({
+	/** Hashtag as written in Telegram, without `#`. */
+	ru: z.string(),
+	/** URL-safe English slug, used in `?tags=` and as the stable key on the site. */
+	en: z.string().regex(/^[a-z0-9-]+$/),
+	/** Label shown on the English site. Defaults to `en`. */
+	label: z.string().optional(),
+	/** Other spellings (typos, singular forms) that map to this tag. */
+	aliases: z.array(z.string()).default([]),
+	/** Keep the tag on posts but leave it out of the filter line. */
+	hidden: z.boolean().default(false),
+});
+
+export const configSchema = z.object({
+	site: z.object({
+		title: z.string(),
+		url: z.string().url(),
+	}),
+	channel: z.object({
+		/** Public channel username, as in `t.me/s/<username>`. */
+		username: z.string(),
+		/** Pages (~20 posts each) re-checked on a regular sync to catch edits and deletions. */
+		recentPages: z.number().int().positive(),
+	}),
+	translation: z.object({
+		provider: z.literal('gemini'),
+		model: z.string(),
+		/** Environment variable that holds the API key. */
+		apiKeyEnv: z.string(),
+		/** Extra instructions appended to the built-in prompt. */
+		instructions: z.string().optional(),
+	}),
+	media: z.object({
+		/** Output folder under `public/`. */
+		dir: z.string(),
+		/** Image widths generated at sync time, in px. */
+		widths: z.array(z.number().int().positive()),
+		formats: z.array(z.enum(['avif', 'webp'])),
+		/** Videos above this size are not downloaded; the post links to Telegram instead. */
+		maxVideoMB: z.number().positive(),
+	}),
+	/** Tag taxonomy, in filter-line order. Tags missing here are flagged by sync. */
+	tags: z.array(tag),
+});
+
+export type KelloConfig = z.input<typeof configSchema>;
+
+export const defineConfig = (config: KelloConfig) => configSchema.parse(config);

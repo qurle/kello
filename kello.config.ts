@@ -1,0 +1,64 @@
+import { defineConfig } from './src/lib/config';
+
+export default defineConfig({
+	site: {
+		title: 'Kello',
+		// Replace with the production domain once it exists.
+		url: 'https://kello.vercel.app',
+	},
+
+	channel: {
+		username: 'the_kello',
+		// 3 pages ≈ the last 60 posts. A full re-scan runs with `npm run sync -- --full`.
+		recentPages: 3,
+	},
+
+	translation: {
+		provider: 'gemini',
+		// Any model available on the free tier. Check https://ai.google.dev/gemini-api/docs/models
+		model: 'gemini-2.5-flash',
+		apiKeyEnv: 'GEMINI_API_KEY',
+		instructions:
+			'Posts are short notes about design, UI, typography and tools. Keep product names, @mentions and URLs as they are.',
+	},
+
+	media: {
+		dir: 'media',
+		widths: [960, 1920],
+		formats: ['avif', 'webp'],
+		maxVideoMB: 15,
+	},
+
+	// Filter-line order. Post counts as of Oct 2026 are in comments.
+	tags: [
+		{ ru: 'ui', en: 'ui', label: 'UI' }, // 103
+		{ ru: 'вдохновение', en: 'inspiration', aliases: ['вдохнование'] }, // 89
+		{ ru: 'знания', en: 'learning' }, // 62
+		{ ru: 'портфолио', en: 'portfolio' }, // 25
+		{ ru: 'инструменты', en: 'tools', aliases: ['инструементы'] }, // 23
+		{ ru: 'ресурсы', en: 'resources' }, // 22
+		{ ru: 'код', en: 'code' }, // 21
+		{ ru: 'графика', en: 'graphics' }, // 19
+		{ ru: 'недизайн', en: 'beyond-design', label: 'beyond design' }, // 12
+		{ ru: 'типографика', en: 'typography' }, // 12
+		{ ru: 'карьера', en: 'career' }, // 11
+		{ ru: 'моушен', en: 'motion' }, // 10
+		{ ru: 'сборники', en: 'collections' }, // 9
+		{ ru: 'ux', en: 'ux', label: 'UX' }, // 9
+		{ ru: 'авторы', en: 'people' }, // 9
+		{ ru: 'текстуры', en: 'textures' }, // 7
+		{ ru: 'дизинж', en: 'design-engineering', label: 'design engineering' }, // 6
+		{ ru: 'дизайнсистемы', en: 'design-systems', label: 'design systems' }, // 6
+		{ ru: 'мокапы', en: 'mockups' }, // 5
+		{ ru: 'текст', en: 'writing' }, // 5
+		{ ru: 'цвета', en: 'color' }, // 5
+		{ ru: 'шрифты', en: 'fonts', aliases: ['шрифт'] }, // 5
+		{ ru: 'фото', en: 'photo' }, // 4
+		{ ru: 'пром', en: 'industrial', label: 'industrial design' }, // 3
+		{ ru: 'звуки', en: 'sound' }, // 3
+		{ ru: 'процессы', en: 'process' }, // 2
+		{ ru: 'иллюстрации', en: 'illustration' }, // 2
+		{ ru: 'иконки', en: 'icons' }, // 2
+		{ ru: 'плагины', en: 'plugins' }, // 1
+	],
+});
