@@ -1,0 +1,73 @@
+---
+import '@fontsource-variable/inter';
+import '../styles/variables.sass';
+import '../styles/base.sass';
+import '../styles/page.sass';
+import '../styles/post.sass';
+import '../styles/media.sass';
+import '../styles/viewer.sass';
+import config from '../../kello.config';
+import { getFeed } from '../lib/feed';
+import { strings, type Lang } from '../lib/i18n';
+import { filterTags, tagLabel } from '../lib/tags';
+import Post from './Post.astro';
+
+interface Props {
+	lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = strings[lang];
+const other = strings[t.switchTo];
+const posts = await getFeed();
+const tags = filterTags(new Set(posts.flatMap((post) => post.tags)));
+const url = (path: string) => new URL(path, config.site.url).href;
+---
+
+<!doctype html>
+<html lang={lang}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{config.site.title}</title>
+		<meta name="description" content={t.description} />
+		<link rel="canonical" href={url(t.path)} />
+		<link rel="alternate" hreflang="en" href={url(strings.en.path)} />
+		<link rel="alternate" hreflang="ru" href={url(strings.ru.path)} />
+		<link rel="alternate" hreflang="x-default" href={url(strings.en.path)} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+	</head>
+	<body>
+		<div class="page">
+			<header class="masthead">
+				<h1 class="masthead__title"><a href={t.path}>{config.site.title}</a></h1>
+				<a class="masthead__lang" href={other.path} hreflang={t.switchTo} lang={t.switchTo} aria-label={t.switchLabel} data-lang-link>{t.switchTo}</a>
+			</header>
+			<nav class="filter" aria-label={t.filter} data-filter>
+				<ul class="filter__list">
+					{tags.map((tag) => (
+						<li><button class="tag" type="button" data-tag={tag} aria-pressed="false">{tagLabel(tag, lang)}</button></li>
+					))}
+				</ul>
+			</nav>
+			<main class="feed">
+				{posts.map((post, index) => <Post post={post} lang={lang} eager={index === 0} />)}
+			</main>
+		</div>
+		<dialog class="viewer" aria-label={t.viewer} aria-keyshortcuts="ArrowLeft ArrowRight Escape" data-viewer>
+			<div class="viewer__inner">
+				<div class="viewer__bar">
+					<button class="viewer__close" type="button" data-viewer-close>{t.close}</button>
+				</div>
+				<div class="viewer__stage" data-viewer-stage></div>
+				<div class="viewer__meta" data-viewer-meta></div>
+			</div>
+		</dialog>
+		<script>
+			import '../scripts/filter';
+			import '../scripts/media';
+			import '../scripts/viewer';
+		</script>
+	</body>
+</html>

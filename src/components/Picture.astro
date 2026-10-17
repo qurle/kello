@@ -1,0 +1,33 @@
+---
+import { imageSet } from '../lib/urls';
+
+interface Props {
+	/** Image or poster path without width and extension. */
+	file: string;
+	/** Original width, which decides the files that exist. */
+	width?: number;
+	height?: number;
+	sizes: string;
+	eager?: boolean;
+}
+
+const { file, width, height, sizes, eager = false } = Astro.props;
+const { formats, fallbackFormat, src } = imageSet(file, width);
+---
+
+<picture>
+	{formats.filter(({ format }) => format !== fallbackFormat).map(({ format, srcset }) => (
+		<source type={`image/${format}`} srcset={srcset} sizes={sizes} />
+	))}
+	<img
+		src={src}
+		srcset={formats.find(({ format }) => format === fallbackFormat)!.srcset}
+		sizes={sizes}
+		width={width}
+		height={height}
+		alt=""
+		loading={eager ? 'eager' : 'lazy'}
+		fetchpriority={eager ? 'high' : 'auto'}
+		decoding="async"
+	/>
+</picture>

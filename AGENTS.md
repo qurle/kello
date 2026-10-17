@@ -66,6 +66,13 @@ The workflow `.github/workflows/sync.yml` runs `npm run sync` every 12 hours and
 | `scripts/sync/` | `npm run sync`: `scrape.ts` and `html.ts` parse the web preview, `media.ts` and `mp4.ts` download and resize, `tags.ts` maps hashtags, `translate.ts` is the Gemini provider, `store.ts` reads and writes post JSON, `index.ts` runs it all. |
 | `.github/workflows/sync.yml` | Scheduled sync: every 12 hours and on demand. |
 | `src/styles/variables.sass` | Design tokens as CSS custom properties. |
+| `src/styles/*.sass` | Base, page, post, media row and viewer styles, all reading the tokens. |
+| `src/components/Home.astro` | The page, shared by `/` and `/ru` through a `lang` prop. |
+| `src/lib/i18n.ts` | The UI string dictionary. |
+| `src/lib/feed.ts` | `getPosts()` plus the fixture posts in dev only. |
+| `src/lib/urls.ts` | Media, `srcset` and Telegram URLs, and the source link domain. |
+| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer. |
+| `src/data/posts/_fixture-*.json` | Fixture posts for `npm run dev`, with media in `public/media/_fixtures/`. The content glob skips them. |
 | `public/media/` | Generated images (AVIF and WebP at each configured width) and videos. |
 
 ## Design
@@ -80,6 +87,12 @@ The page has three parts: the heading "Kello", a line of tag filters, then posts
 - Videos play muted and looped while they are in view and pause when they leave it. With `prefers-reduced-motion`, they show the poster instead.
 - Post meta: the source link is shown as its domain (`psiquantum.com ↗`) and is the primary link. The Telegram link is quieter. Both are styled as text links, not buttons.
 - No uppercase labels, eyebrows, counters, decorative dividers or rounded cards.
+- Grid: 12 columns from 48rem up. Post tags take the first `--index-columns`; the filter line and post text start after them. Below 48rem everything stacks.
+- Tags no post uses are left out of the filter line.
+
+Tokens added with the UI, beyond the ones above: `--font-mono`, `--text-code`, `--leading-snug` (post text, filter line), `--display-indent` (optical correction for the heading), `--underline-width`, `--underline-offset`, `--index-columns`, `--media-nav-size` (chevron square), `--viewer-media-height`, `--focus-width`, `--focus-offset`. The 48rem breakpoint and the `sizes` attributes in `MediaRow.astro` are written out, since media queries and HTML can't read custom properties.
+
+Image and poster URLs go through `imageSet()` in `src/lib/urls.ts`, which builds `srcset` from `imageSources()` so only files that exist are referenced.
 
 ## Conventions
 

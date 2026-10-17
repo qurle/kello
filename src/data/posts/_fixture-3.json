@@ -1,0 +1,11 @@
+{
+	"telegramId": 9010,
+	"date": "2026-09-21T17:05:00Z",
+	"tags": ["inspiration", "motion", "graphics"],
+	"text": {
+		"ru": "Сборник плакатов и коротких анимаций одной студии. Особенно хороши ритм и работа с паузой.",
+		"en": "A collection of posters and short animations from one studio. The rhythm and the use of pauses are especially good."
+	},
+	"link": "https://studio.example.org/work",
+	"media": [{"type":"image","file":"_fixtures/e","width":1920,"height":1280}, {"type":"video","file":"_fixtures/v1.mp4","poster":"_fixtures/v1-poster","width":960,"height":640}, {"type":"image","file":"_fixtures/b","width":1920,"height":1280}, {"type":"image","file":"_fixtures/f","width":1920,"height":1920}, {"type":"video","file":"_fixtures/v2.mp4","poster":"_fixtures/v2-poster","width":960,"height":640}, {"type":"image","file":"_fixtures/h","width":1920,"height":1280}, {"type":"image","file":"_fixtures/i","width":1920,"height":1440}, {"type":"unavailable","poster":"_fixtures/u1","width":1920,"height":1280}, {"type":"image","file":"_fixtures/j","width":1920,"height":1280}, {"type":"video","file":"_fixtures/v3.mp4","poster":"_fixtures/v3-poster","width":960,"height":640}]
+}
