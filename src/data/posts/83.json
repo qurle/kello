@@ -1,0 +1,22 @@
+{
+	"telegramId": 83,
+	"date": "2024-05-15T01:33:23.000Z",
+	"tags": [
+		"inspiration",
+		"code"
+	],
+	"text": {
+		"ru": "Плавные перетаскиваемые картинки в красивой демке.",
+		"en": "Плавные перетаскиваемые картинки в красивой демке."
+	},
+	"link": "https://tympanus.net/Development/ImageDraggingEffects/index.html",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 83,
+			"file": "83/1",
+			"width": 800,
+			"height": 402
+		}
+	]
+}

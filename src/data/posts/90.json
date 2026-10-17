@@ -1,0 +1,22 @@
+{
+	"telegramId": 90,
+	"date": "2024-05-15T02:00:13.000Z",
+	"tags": [
+		"learning",
+		"beyond-design"
+	],
+	"text": {
+		"ru": "Сканы советского журнала про дизайн «Техническая эстетика».<br><br><a href=\"https://archive.org/details/tyekhnichyeskaya-estyetika/te-1964-01.pdf-1pFhJ5gKG2eqsA/\">Archive</a> / <a href=\"https://issuu.com/0083398\">issuu</a>",
+		"en": "Сканы советского журнала про дизайн «Техническая эстетика».<br><br><a href=\"https://archive.org/details/tyekhnichyeskaya-estyetika/te-1964-01.pdf-1pFhJ5gKG2eqsA/\">Archive</a> / <a href=\"https://issuu.com/0083398\">issuu</a>"
+	},
+	"link": "https://issuu.com/0083398",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 90,
+			"file": "90/1",
+			"width": 800,
+			"height": 400
+		}
+	]
+}

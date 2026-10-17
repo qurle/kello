@@ -1,0 +1,24 @@
+{
+	"telegramId": 157,
+	"date": "2024-10-17T09:51:48.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"graphics",
+		"portfolio"
+	],
+	"text": {
+		"ru": "Как приятно смотреть на кейсы в 60 FPS! Обновление твича с 3D, эмоциями и очень залипательными карточками от студии Porto Rocha.",
+		"en": "Как приятно смотреть на кейсы в 60 FPS! Обновление твича с 3D, эмоциями и очень залипательными карточками от студии Porto Rocha."
+	},
+	"link": "https://portorocha.com/Twitch",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 157,
+			"file": "157/1",
+			"width": 800,
+			"height": 453
+		}
+	]
+}

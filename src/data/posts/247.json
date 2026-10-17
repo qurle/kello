@@ -1,0 +1,24 @@
+{
+	"telegramId": 247,
+	"date": "2025-11-26T12:55:02.000Z",
+	"tags": [
+		"inspiration",
+		"learning",
+		"ui",
+		"design-engineering"
+	],
+	"text": {
+		"ru": "Красивые заметки Флоры Гуо, а внутри ещё и хорошие ссылки на инфу про дизайн-инженеров.",
+		"en": "Красивые заметки Флоры Гуо, а внутри ещё и хорошие ссылки на инфу про дизайн-инженеров."
+	},
+	"link": "https://www.floguo.com/notes/design-engineering",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 247,
+			"file": "247/1",
+			"width": 800,
+			"height": 454
+		}
+	]
+}

@@ -1,0 +1,23 @@
+{
+	"telegramId": 227,
+	"date": "2025-11-06T13:04:17.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"code"
+	],
+	"text": {
+		"ru": "Желейный слайдер громкости. Пишется на Typescript, рендерится на видеокарте и оч вкусно выглядит.",
+		"en": "Желейный слайдер громкости. Пишется на Typescript, рендерится на видеокарте и оч вкусно выглядит."
+	},
+	"link": "https://docs.swmansion.com/TypeGPU/examples/#example=rendering--jelly-slider",
+	"media": [
+		{
+			"type": "unavailable",
+			"messageId": 227,
+			"poster": "227/1-poster",
+			"width": 2684,
+			"height": 1712
+		}
+	]
+}

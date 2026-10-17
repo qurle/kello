@@ -1,0 +1,23 @@
+{
+	"telegramId": 62,
+	"date": "2024-05-14T23:33:45.000Z",
+	"tags": [
+		"tools",
+		"resources",
+		"collections"
+	],
+	"text": {
+		"ru": "Undesign — кладезь полезных ссылок с ресурсами и инструментами. Как Kello, только сайтом.",
+		"en": "Undesign — кладезь полезных ссылок с ресурсами и инструментами. Как Kello, только сайтом."
+	},
+	"link": "https://undesign.learn.uno/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 62,
+			"file": "62/1",
+			"width": 800,
+			"height": 402
+		}
+	]
+}

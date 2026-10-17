@@ -1,0 +1,44 @@
+{
+	"telegramId": 307,
+	"date": "2026-09-05T23:29:41.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"graphics"
+	],
+	"text": {
+		"ru": "Приложение pocket operator, эксклюзив teenage engineering для Google Pixel",
+		"en": "Приложение pocket operator, эксклюзив teenage engineering для Google Pixel"
+	},
+	"link": "https://play.google.com/store/apps/details?id=com.teenageengineering.pocketoperatorforpixel&hl=en",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 307,
+			"file": "307/1",
+			"width": 800,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 308,
+			"file": "307/2",
+			"width": 369,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 309,
+			"file": "307/3",
+			"width": 369,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 310,
+			"file": "307/4",
+			"width": 369,
+			"height": 800
+		}
+	]
+}

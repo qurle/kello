@@ -1,0 +1,56 @@
+name: Sync from Telegram
+
+on:
+  schedule:
+    # Every 12 hours, off the hour to dodge the busiest scheduler slots.
+    - cron: '17 */12 * * *'
+  workflow_dispatch:
+    inputs:
+      full:
+        description: Walk the whole channel (--full) instead of the recent pages
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+# One sync at a time; a queued run waits instead of racing the push.
+concurrency:
+  group: sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      # ffmpeg grabs the first frame of each video as its poster.
+      - name: Install ffmpeg
+        run: command -v ffmpeg || (sudo apt-get update -q && sudo apt-get install -y -q ffmpeg)
+
+      - run: npm ci
+
+      - name: Sync
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: npm run sync -- --message "$RUNNER_TEMP/commit-message.txt" ${{ inputs.full && '--full' || '' }}
+
+      - name: Commit and push
+        run: |
+          git add -A src/data public/media
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+            exit 0
+          fi
+          cat "$RUNNER_TEMP/commit-message.txt" >> "$GITHUB_STEP_SUMMARY"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -F "$RUNNER_TEMP/commit-message.txt"
+          git push

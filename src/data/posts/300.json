@@ -1,0 +1,31 @@
+{
+	"telegramId": 300,
+	"date": "2026-07-11T19:47:07.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"graphics",
+		"typography"
+	],
+	"text": {
+		"ru": "Довольно мощная коллекция технической эстетики в красивой обёртке",
+		"en": "Довольно мощная коллекция технической эстетики в красивой обёртке"
+	},
+	"link": "https://searchsystem.co/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 300,
+			"file": "300/1",
+			"width": 800,
+			"height": 435
+		},
+		{
+			"type": "image",
+			"messageId": 301,
+			"file": "300/2",
+			"width": 800,
+			"height": 448
+		}
+	]
+}

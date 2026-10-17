@@ -1,0 +1,22 @@
+{
+	"telegramId": 85,
+	"date": "2024-05-15T01:44:32.000Z",
+	"tags": [
+		"learning",
+		"career"
+	],
+	"text": {
+		"ru": "Red Collar в журнале Deadsign (RIP) перевели много полезных статей. В том числе этот рассказ о важном навыке дизайнера: коммуникации и подаче.",
+		"en": "Red Collar в журнале Deadsign (RIP) перевели много полезных статей. В том числе этот рассказ о важном навыке дизайнера: коммуникации и подаче."
+	},
+	"link": "https://deadsign.ru/workflow/the-one-critical-skill-most-designers-overlook/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 85,
+			"file": "85/1",
+			"width": 800,
+			"height": 402
+		}
+	]
+}

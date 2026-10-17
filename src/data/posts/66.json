@@ -1,0 +1,23 @@
+{
+	"telegramId": 66,
+	"date": "2024-05-14T23:53:04.000Z",
+	"tags": [
+		"learning",
+		"typography",
+		"ui"
+	],
+	"text": {
+		"ru": "Типографика в интерфейсах: история, читаемость и параметры шрифтов.",
+		"en": "Типографика в интерфейсах: история, читаемость и параметры шрифтов."
+	},
+	"link": "https://ux.pub/editorial/tipoghrafika-dlia-intierfieisov-niebolshoie-rukovodstvo-o7d",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 66,
+			"file": "66/1",
+			"width": 800,
+			"height": 392
+		}
+	]
+}

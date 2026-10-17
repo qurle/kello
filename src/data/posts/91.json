@@ -1,0 +1,22 @@
+{
+	"telegramId": 91,
+	"date": "2024-05-15T02:05:59.000Z",
+	"tags": [
+		"learning",
+		"typography"
+	],
+	"text": {
+		"ru": "Униширинные шрифты. Ширина символов разная но она остаётся единой в разных начертаниях.",
+		"en": "Униширинные шрифты. Ширина символов разная но она остаётся единой в разных начертаниях."
+	},
+	"link": "https://uxdesign.cc/uniwidth-typefaces-for-interface-design-b6e8078dc0f7",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 91,
+			"file": "91/1",
+			"width": 800,
+			"height": 384
+		}
+	]
+}

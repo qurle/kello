@@ -1,0 +1,22 @@
+{
+	"telegramId": 162,
+	"date": "2024-11-18T21:26:59.000Z",
+	"tags": [
+		"inspiration",
+		"ui"
+	],
+	"text": {
+		"ru": "Teenage Engineering Orthoplay",
+		"en": "Teenage Engineering Orthoplay"
+	},
+	"link": "https://teenage.engineering/products/orthoplay",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 162,
+			"file": "162/1",
+			"width": 800,
+			"height": 587
+		}
+	]
+}

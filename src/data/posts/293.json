@@ -1,0 +1,65 @@
+{
+	"telegramId": 293,
+	"date": "2026-07-08T14:28:43.000Z",
+	"tags": [
+		"inspiration",
+		"graphics",
+		"ui"
+	],
+	"text": {
+		"ru": "Дамп из Cosmos",
+		"en": "Дамп из Cosmos"
+	},
+	"link": "https://www.cosmos.so/qurle/the-code",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 293,
+			"file": "293/1",
+			"width": 800,
+			"height": 569
+		},
+		{
+			"type": "image",
+			"messageId": 294,
+			"file": "293/2",
+			"width": 800,
+			"height": 527
+		},
+		{
+			"type": "image",
+			"messageId": 295,
+			"file": "293/3",
+			"width": 680,
+			"height": 680
+		},
+		{
+			"type": "image",
+			"messageId": 296,
+			"file": "293/4",
+			"width": 800,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 297,
+			"file": "293/5",
+			"width": 643,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 298,
+			"file": "293/6",
+			"width": 800,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 299,
+			"file": "293/7",
+			"width": 800,
+			"height": 600
+		}
+	]
+}

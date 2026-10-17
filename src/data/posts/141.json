@@ -1,0 +1,23 @@
+{
+	"telegramId": 141,
+	"date": "2024-06-12T17:35:03.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"portfolio"
+	],
+	"text": {
+		"ru": "Сайт главы дизайна <a href=\"https://opalcamera.com/\">Opal</a> с красочными проектами. Много сочетаний веба + 3D.",
+		"en": "Сайт главы дизайна <a href=\"https://opalcamera.com/\">Opal</a> с красочными проектами. Много сочетаний веба + 3D."
+	},
+	"link": "https://guglieri.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 141,
+			"file": "141/1",
+			"width": 800,
+			"height": 449
+		}
+	]
+}

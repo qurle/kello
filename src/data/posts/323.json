@@ -1,0 +1,86 @@
+{
+	"telegramId": 323,
+	"date": "2026-10-06T18:18:24.000Z",
+	"tags": [
+		"inspiration",
+		"graphics",
+		"typography"
+	],
+	"text": {
+		"ru": "Synthopsis — лингвистический эксперимент в виде новой письменности Педро Столфа. Нелинейные тексты и предложения в суперпозиции.",
+		"en": "Synthopsis — лингвистический эксперимент в виде новой письменности Педро Столфа. Нелинейные тексты и предложения в суперпозиции."
+	},
+	"link": "https://x.com/p_stolf/status/1860034533493735623",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 323,
+			"file": "323/1",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 324,
+			"file": "323/2",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 325,
+			"file": "323/3",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 326,
+			"file": "323/4",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 327,
+			"file": "323/5",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 328,
+			"file": "323/6",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 329,
+			"file": "323/7",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 330,
+			"file": "323/8",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 331,
+			"file": "323/9",
+			"width": 800,
+			"height": 450
+		},
+		{
+			"type": "image",
+			"messageId": 332,
+			"file": "323/10",
+			"width": 800,
+			"height": 696
+		}
+	]
+}

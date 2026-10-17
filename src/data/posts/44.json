@@ -1,0 +1,22 @@
+{
+	"telegramId": 44,
+	"date": "2024-05-14T20:03:59.000Z",
+	"tags": [
+		"tools",
+		"typography"
+	],
+	"text": {
+		"ru": "Генератор типографической шкалы",
+		"en": "Генератор типографической шкалы"
+	},
+	"link": "https://typescale.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 44,
+			"file": "44/1",
+			"width": 800,
+			"height": 401
+		}
+	]
+}

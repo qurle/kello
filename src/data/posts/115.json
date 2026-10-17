@@ -1,0 +1,22 @@
+{
+	"telegramId": 115,
+	"date": "2024-05-15T02:45:06.000Z",
+	"tags": [
+		"learning",
+		"career"
+	],
+	"text": {
+		"ru": "Как продолжать дизайнить и оттянуть своё схождение с ума.",
+		"en": "Как продолжать дизайнить и оттянуть своё схождение с ума."
+	},
+	"link": "https://collab.ldwg.ru/stressless-design",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 115,
+			"file": "115/1",
+			"width": 800,
+			"height": 361
+		}
+	]
+}

@@ -1,0 +1,22 @@
+{
+	"telegramId": 76,
+	"date": "2024-05-15T00:34:21.000Z",
+	"tags": [
+		"tools",
+		"ui"
+	],
+	"text": {
+		"ru": "Генератор мягких теней из комбинации нескольких drop shadow. <br><br><a href=\"https://shadows.brumm.af/\">https://shadows.brumm.af/</a> (<a href=\"https://www.figma.com/community/plugin/788830704169694737/\">плагин для фигмы</a>)",
+		"en": "Генератор мягких теней из комбинации нескольких drop shadow. <br><br><a href=\"https://shadows.brumm.af/\">https://shadows.brumm.af/</a> (<a href=\"https://www.figma.com/community/plugin/788830704169694737/\">плагин для фигмы</a>)"
+	},
+	"link": "https://www.figma.com/community/plugin/788830704169694737/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 76,
+			"file": "76/1",
+			"width": 800,
+			"height": 402
+		}
+	]
+}

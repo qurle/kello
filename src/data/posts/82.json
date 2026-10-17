@@ -1,0 +1,22 @@
+{
+	"telegramId": 82,
+	"date": "2024-05-15T01:29:30.000Z",
+	"tags": [
+		"inspiration",
+		"code"
+	],
+	"text": {
+		"ru": "Очень красивый WebGL-кубик. Знаете, очень люблю стекло, отражения, рефракцию и вот это всё.",
+		"en": "Очень красивый WebGL-кубик. Знаете, очень люблю стекло, отражения, рефракцию и вот это всё."
+	},
+	"link": "https://tympanus.net/Tutorials/apple-fifth-avenue/?debug=true",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 82,
+			"file": "82/1",
+			"width": 800,
+			"height": 392
+		}
+	]
+}

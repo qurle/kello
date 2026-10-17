@@ -1,0 +1,29 @@
+{
+	"telegramId": 303,
+	"date": "2026-07-11T20:24:25.000Z",
+	"tags": [
+		"resources",
+		"tools",
+		"collections",
+		"inspiration",
+		"ui",
+		"graphics",
+		"design-engineering",
+		"code",
+		"fonts"
+	],
+	"text": {
+		"ru": "А тут вообще есть всё, что мне нравится",
+		"en": "А тут вообще есть всё, что мне нравится"
+	},
+	"link": "https://designengineer.tools/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 303,
+			"file": "303/1",
+			"width": 800,
+			"height": 447
+		}
+	]
+}

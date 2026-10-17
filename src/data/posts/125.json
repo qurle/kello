@@ -1,0 +1,22 @@
+{
+	"telegramId": 125,
+	"date": "2024-05-15T03:47:46.000Z",
+	"tags": [
+		"resources",
+		"icons"
+	],
+	"text": {
+		"ru": "Сайты с иконками<br><br><a href=\"https://icones.js.org/\">Icônes</a> / <a href=\"https://iconify.design/\">Iconify</a> / <a href=\"https://remixicon.com/\">Remix</a> / <a href=\"https://feathericons.com/\">Feather</a> / <a href=\"https://icons8.com/icons/\">Icon8</a>",
+		"en": "Сайты с иконками<br><br><a href=\"https://icones.js.org/\">Icônes</a> / <a href=\"https://iconify.design/\">Iconify</a> / <a href=\"https://remixicon.com/\">Remix</a> / <a href=\"https://feathericons.com/\">Feather</a> / <a href=\"https://icons8.com/icons/\">Icon8</a>"
+	},
+	"link": "https://icons8.com/icons/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 125,
+			"file": "125/1",
+			"width": 800,
+			"height": 404
+		}
+	]
+}

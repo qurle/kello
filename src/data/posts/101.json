@@ -1,0 +1,84 @@
+{
+	"telegramId": 101,
+	"date": "2024-05-15T02:36:40.000Z",
+	"tags": [
+		"inspiration",
+		"portfolio"
+	],
+	"text": {
+		"ru": "Примеры оформления палитр в кейсах.",
+		"en": "Примеры оформления палитр в кейсах."
+	},
+	"media": [
+		{
+			"type": "image",
+			"messageId": 101,
+			"file": "101/1",
+			"width": 800,
+			"height": 286
+		},
+		{
+			"type": "image",
+			"messageId": 102,
+			"file": "101/2",
+			"width": 800,
+			"height": 396
+		},
+		{
+			"type": "image",
+			"messageId": 103,
+			"file": "101/3",
+			"width": 800,
+			"height": 368
+		},
+		{
+			"type": "image",
+			"messageId": 104,
+			"file": "101/4",
+			"width": 800,
+			"height": 603
+		},
+		{
+			"type": "image",
+			"messageId": 105,
+			"file": "101/5",
+			"width": 800,
+			"height": 323
+		},
+		{
+			"type": "image",
+			"messageId": 106,
+			"file": "101/6",
+			"width": 800,
+			"height": 773
+		},
+		{
+			"type": "image",
+			"messageId": 107,
+			"file": "101/7",
+			"width": 800,
+			"height": 498
+		},
+		{
+			"type": "image",
+			"messageId": 108,
+			"file": "101/8",
+			"width": 800,
+			"height": 510
+		},
+		{
+			"type": "image",
+			"messageId": 109,
+			"file": "101/9",
+			"width": 800,
+			"height": 702
+		},
+		{
+			"type": "image",
+			"messageId": 110,
+			"file": "101/10",
+			"width": 717,
+			"height": 800
+		}
+	]
+}

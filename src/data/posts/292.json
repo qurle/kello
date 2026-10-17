@@ -1,0 +1,22 @@
+{
+	"telegramId": 292,
+	"date": "2026-07-08T13:59:08.000Z",
+	"tags": [
+		"learning",
+		"ui"
+	],
+	"text": {
+		"ru": "Приципы дизайн-инженеров Vercel",
+		"en": "Приципы дизайн-инженеров Vercel"
+	},
+	"link": "https://vercel.com/design/engineer",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 292,
+			"file": "292/1",
+			"width": 800,
+			"height": 451
+		}
+	]
+}

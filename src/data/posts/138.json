@@ -1,0 +1,23 @@
+{
+	"telegramId": 138,
+	"date": "2024-06-06T11:31:57.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"portfolio"
+	],
+	"text": {
+		"ru": "«Пустой» дизайн портфолио от дизайнера Linear. Внутри очень классная страница <a href=\"https://nelson.co/interaction-design\">Interaction Design</a>.",
+		"en": "«Пустой» дизайн портфолио от дизайнера Linear. Внутри очень классная страница <a href=\"https://nelson.co/interaction-design\">Interaction Design</a>."
+	},
+	"link": "https://nelson.co/interaction-design",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 138,
+			"file": "138/1",
+			"width": 800,
+			"height": 402
+		}
+	]
+}

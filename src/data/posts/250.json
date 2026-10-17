@@ -1,0 +1,22 @@
+{
+	"telegramId": 250,
+	"date": "2025-12-06T23:53:24.000Z",
+	"tags": [
+		"inspiration",
+		"ui"
+	],
+	"text": {
+		"ru": "Сайт",
+		"en": "Сайт"
+	},
+	"link": "https://lochieaxon.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 250,
+			"file": "250/1",
+			"width": 800,
+			"height": 447
+		}
+	]
+}

@@ -1,0 +1,73 @@
+{
+	"telegramId": 231,
+	"date": "2025-11-14T19:38:58.000Z",
+	"tags": [
+		"inspiration",
+		"industrial",
+		"graphics",
+		"ui"
+	],
+	"text": {
+		"ru": "Студия gladden выпускает игры и приложения буквально на блокнотах.",
+		"en": "Студия gladden выпускает игры и приложения буквально на блокнотах."
+	},
+	"link": "https://gladdendesign.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 231,
+			"file": "231/1",
+			"width": 800,
+			"height": 544
+		},
+		{
+			"type": "image",
+			"messageId": 232,
+			"file": "231/2",
+			"width": 800,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 233,
+			"file": "231/3",
+			"width": 800,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 234,
+			"file": "231/4",
+			"width": 800,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 235,
+			"file": "231/5",
+			"width": 800,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 236,
+			"file": "231/6",
+			"width": 800,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 237,
+			"file": "231/7",
+			"width": 800,
+			"height": 800
+		},
+		{
+			"type": "image",
+			"messageId": 238,
+			"file": "231/8",
+			"width": 800,
+			"height": 800
+		}
+	]
+}

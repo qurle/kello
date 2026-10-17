@@ -1,0 +1,22 @@
+{
+	"telegramId": 135,
+	"date": "2024-06-03T15:45:06.000Z",
+	"tags": [
+		"design-systems",
+		"collections"
+	],
+	"text": {
+		"ru": "Сборник популярных дизайн-систем в красивой обёртке.",
+		"en": "Сборник популярных дизайн-систем в красивой обёртке."
+	},
+	"link": "https://designsystems.surf/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 135,
+			"file": "135/1",
+			"width": 800,
+			"height": 396
+		}
+	]
+}

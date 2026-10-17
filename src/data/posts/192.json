@@ -1,0 +1,61 @@
+{
+	"telegramId": 192,
+	"date": "2025-06-30T13:22:51.000Z",
+	"tags": [
+		"inspiration",
+		"graphics",
+		"ui"
+	],
+	"text": {
+		"ru": "(?)<br><br>Красивое из твиттера <a href=\"https://x.com/cerpow\">Voicu Apostol</a>",
+		"en": "(?)<br><br>Красивое из твиттера <a href=\"https://x.com/cerpow\">Voicu Apostol</a>"
+	},
+	"link": "https://x.com/cerpow",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 192,
+			"file": "192/1",
+			"width": 800,
+			"height": 600
+		},
+		{
+			"type": "image",
+			"messageId": 193,
+			"file": "192/2",
+			"width": 800,
+			"height": 631
+		},
+		{
+			"type": "image",
+			"messageId": 194,
+			"file": "192/3",
+			"width": 800,
+			"height": 600
+		},
+		{
+			"type": "video",
+			"messageId": 195,
+			"file": "192/4.mp4",
+			"poster": "192/4-poster",
+			"width": 1600,
+			"height": 1200
+		},
+		{
+			"type": "video",
+			"messageId": 196,
+			"file": "192/5.mp4",
+			"poster": "192/5-poster",
+			"width": 1440,
+			"height": 1080
+		},
+		{
+			"type": "video",
+			"messageId": 197,
+			"file": "192/6.mp4",
+			"poster": "192/6-poster",
+			"width": 1440,
+			"height": 1080
+		}
+	]
+}

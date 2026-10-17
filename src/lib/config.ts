@@ -21,7 +21,7 @@ export const configSchema = z.object({
 	channel: z.object({
 		/** Public channel username, as in `t.me/s/<username>`. */
 		username: z.string(),
-		/** Pages (~20 posts each) re-checked on a regular sync to catch edits and deletions. */
+		/** Pages (~20 messages each) re-checked on a regular sync to catch edits and deletions. */
 		recentPages: z.number().int().positive(),
 	}),
 	translation: z.object({

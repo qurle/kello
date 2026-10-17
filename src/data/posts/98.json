@@ -1,0 +1,22 @@
+{
+	"telegramId": 98,
+	"date": "2024-05-15T02:29:38.000Z",
+	"tags": [
+		"resources",
+		"graphics"
+	],
+	"text": {
+		"ru": "Самые разные брендбуки больших компаний: от NASA 1976 до тиктока и бургер кинга.",
+		"en": "Самые разные брендбуки больших компаний: от NASA 1976 до тиктока и бургер кинга."
+	},
+	"link": "https://brandingstyleguides.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 98,
+			"file": "98/1",
+			"width": 800,
+			"height": 402
+		}
+	]
+}

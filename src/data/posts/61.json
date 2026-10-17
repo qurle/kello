@@ -1,0 +1,23 @@
+{
+	"telegramId": 61,
+	"date": "2024-05-14T23:23:56.000Z",
+	"tags": [
+		"inspiration",
+		"ui",
+		"portfolio"
+	],
+	"text": {
+		"ru": "Интеллигентный дизайн агентства Paper Tiger.",
+		"en": "Интеллигентный дизайн агентства Paper Tiger."
+	},
+	"link": "https://www.papertiger.com/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 61,
+			"file": "61/1",
+			"width": 800,
+			"height": 399
+		}
+	]
+}

@@ -9,7 +9,8 @@ export default defineConfig({
 
 	channel: {
 		username: 'the_kello',
-		// 3 pages ≈ the last 60 posts. A full re-scan runs with `npm run sync -- --full`.
+		// A page is ~20 messages; albums take one message per item, so 3 pages are 20–60 posts.
+		// A full re-scan runs with `npm run sync -- --full`.
 		recentPages: 3,
 	},
 

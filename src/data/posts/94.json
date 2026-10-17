@@ -1,0 +1,22 @@
+{
+	"telegramId": 94,
+	"date": "2024-05-15T02:19:46.000Z",
+	"tags": [
+		"resources",
+		"textures"
+	],
+	"text": {
+		"ru": "Бесплатные текстуры, HDRI-карты и модели для ваших 3D и 2D. На первое — особое внимание. Текстуры помогали мне не только в CGI, но и в графике и даже <a href=\"https://www.figma.com/community/file/959780973349645945\">в интерфейсах</a>.<br><br><a href=\"https://vk.com/club147044158\">3DCloud</a> / <a href=\"https://www.poliigon.com/search/free\">Poliigon</a> / <a href=\"https://ambientcg.com/list\">ambientCG</a> / <a href=\"https://polyhaven.com/all\">Poly Haven</a> / <a href=\"https://www.sharetextures.com/\">sharetextures</a> / <a href=\"https://www.3dxo.com/\">3DXO</a> / <a href=\"https://textures.com/free\">textures.com</a> / <a href=\"https://3dtextures.me/\">3D Textures</a> / <a href=\"http://texturer.com/\">Texturer</a> / <a href=\"https://texture.ninja/\">Texture Ninja</a>",
+		"en": "Бесплатные текстуры, HDRI-карты и модели для ваших 3D и 2D. На первое — особое внимание. Текстуры помогали мне не только в CGI, но и в графике и даже <a href=\"https://www.figma.com/community/file/959780973349645945\">в интерфейсах</a>.<br><br><a href=\"https://vk.com/club147044158\">3DCloud</a> / <a href=\"https://www.poliigon.com/search/free\">Poliigon</a> / <a href=\"https://ambientcg.com/list\">ambientCG</a> / <a href=\"https://polyhaven.com/all\">Poly Haven</a> / <a href=\"https://www.sharetextures.com/\">sharetextures</a> / <a href=\"https://www.3dxo.com/\">3DXO</a> / <a href=\"https://textures.com/free\">textures.com</a> / <a href=\"https://3dtextures.me/\">3D Textures</a> / <a href=\"http://texturer.com/\">Texturer</a> / <a href=\"https://texture.ninja/\">Texture Ninja</a>"
+	},
+	"link": "https://texture.ninja/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 94,
+			"file": "94/1",
+			"width": 800,
+			"height": 396
+		}
+	]
+}
