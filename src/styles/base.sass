@@ -62,14 +62,16 @@ button
     outline: var(--focus-width) solid var(--accent)
     outline-offset: var(--focus-offset)
 
-// Accent selection in the light theme, set by the switch or the system; dark keeps the browser's
-:root[data-theme="light"] ::selection
+// Selection: accent in both themes. In light, by the switch or the system, the text turns background-coloured;
+// in dark it keeps its own colour
+::selection
     background: var(--accent)
+
+:root[data-theme="light"] ::selection
     color: var(--background)
 
 @media (prefers-color-scheme: light)
     :root:not([data-theme="dark"]) ::selection
-        background: var(--accent)
         color: var(--background)
 
 code
