@@ -11,7 +11,6 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
 
 let slides: HTMLElement[] = []
 let current = 0
-let postId = ''
 
 /** A copy of a feed item's video or picture */
 function slideFor(item: HTMLElement) {
@@ -93,7 +92,7 @@ function setCurrent(index: number) {
 		if (n === index) video.play().catch(() => {})
 		else video.pause()
 	})
-	setParams({ post: postId, media: index > 0 ? String(index + 1) : null })
+	setParams({ media: index > 0 ? String(index + 1) : null })
 }
 
 function go(index: number) {
@@ -122,7 +121,7 @@ function open(post: HTMLElement, index: number, from: HTMLElement | null) {
 	reveal(post)
 	const items = [...post.querySelectorAll<HTMLElement>('[data-open]')]
 	if (!items.length) return
-	postId = post.dataset.post!
+	setParams({ post: post.dataset.post! })
 	slides = items.map(slideFor)
 	track.replaceChildren(...slides)
 	meta.replaceChildren(post.querySelector('[data-post-meta]')!.cloneNode(true))

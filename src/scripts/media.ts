@@ -95,22 +95,17 @@ const observer = new IntersectionObserver(
 	{ threshold: 0.5 },
 )
 
-const videos: HTMLVideoElement[] = []
-
 function setUp(scope: ParentNode) {
 	scope.querySelectorAll<HTMLElement>('[data-media-row]').forEach(setUpRow)
 	for (const slot of scope.querySelectorAll('[data-slot]'))
 		if (slot.querySelector('noscript[data-later]')) nearing.observe(slot)
-	for (const video of scope.querySelectorAll<HTMLVideoElement>('video[data-autoplay]')) {
-		videos.push(video)
-		observer.observe(video)
-	}
+	scope.querySelectorAll('video[data-autoplay]').forEach((video) => observer.observe(video))
 }
 
 // Observing again reports every video's state, which plays or pauses it under the new setting
 reducedMotion.addEventListener('change', () => {
 	observer.disconnect()
-	videos.forEach((video) => observer.observe(video))
+	document.querySelectorAll('video[data-autoplay]').forEach((video) => observer.observe(video))
 })
 document.addEventListener('kello:posts', (event) => {
 	for (const post of (event as CustomEvent<HTMLElement[]>).detail) setUp(post)
