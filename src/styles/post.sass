@@ -94,3 +94,20 @@
 
   .post__links
     margin-top: var(--space-xs)
+
+// Settle: posts below the fold wait at a slight tilt and straighten when scrolling brings them in
+// (src/scripts/settle.ts sets data-settle and data-settling). Only `rotate`, so it never touches the
+// layout feed.js owns. Without JS nothing tilts.
+.post[data-settle]
+  rotate: var(--settle-angle)
+
+.post[data-settle="ccw"]
+  rotate: calc(var(--settle-angle) * -1)
+
+.post[data-settling]
+  transition: rotate var(--settle-duration) var(--settle-ease)
+
+@media (prefers-reduced-motion: reduce)
+  .post[data-settle],
+  .post[data-settle="ccw"]
+    rotate: none

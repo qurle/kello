@@ -64,7 +64,7 @@
   --index-columns: 3
 
   // Media row
-  --media-ratio: 3 / 2
+  --media-ratio: 16 / 9
   --media-lead: 80%
   --media-gap: 0.5rem
   --radius: 0
@@ -87,6 +87,11 @@
   --ease: cubic-bezier(0.2, 0, 0, 1)
   --duration-fast: 120ms
   --duration-base: 220ms
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1)
+  // A post that scrolling brings in from below settles from this tilt to straight (src/scripts/settle.ts).
+  --settle-angle: 1.5deg
+  --settle-duration: 360ms
+  --settle-ease: var(--ease-out)
 
   // Layers
   --z-sticky: 10
