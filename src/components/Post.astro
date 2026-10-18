@@ -17,11 +17,9 @@ interface Props {
 const { post, lang, page, eager = false } = Astro.props;
 const t = strings[lang];
 const tags = sortTags(post.tags);
-// Which way the post tilts as it comes in (the settle animation below).
-const settle = `--settle-direction: ${hash(post.telegramId) & 1 ? 1 : -1}`;
 ---
 
-<article class="post" data-post={post.telegramId} data-page={page} data-hash={hash(post.telegramId)} data-tags={tags.join(' ')} style={settle}>
+<article class="post" data-post={post.telegramId} data-page={page} data-hash={hash(post.telegramId)} data-tags={tags.join(' ')}>
 	{post.media.length > 0 && <MediaRow media={post.media} telegramId={post.telegramId} lang={lang} eager={eager} />}
 	<div class="meta" data-post-meta>
 		{tags.length > 0 && (
@@ -135,18 +133,19 @@ const settle = `--settle-direction: ${hash(post.telegramId) & 1 ? 1 : -1}`;
     .links
         margin-top: var(--space-xs)
 
-// Settle: a post comes in at the bottom of the window tilted by --settle-angle (clockwise or
-// counter-clockwise, --settle-direction above) and straightens over the first --settle-distance of
-// scrolling, tied to the scroll position. Only `rotate`, so feed.js's layout is untouched. Browsers
-// without scroll-driven animations, and reduced motion, show posts straight.
+// Settle: a post comes in at the bottom of the window rolled back by --settle-angle around its
+// bottom edge, seen through --settle-perspective, and stands up over the first --settle-distance of
+// scrolling, tied to the scroll position. Only `transform`, so feed.js's layout is untouched. Browsers
+// without scroll-driven animations, and reduced motion, show posts flat.
 @supports (animation-timeline: view())
     @media (prefers-reduced-motion: no-preference)
         .post
+            transform-origin: 50% 100%
             animation: settle var(--settle-ease) both
             animation-timeline: view()
             animation-range: cover 0% cover var(--settle-distance)
 
 @keyframes settle
     from
-        rotate: calc(var(--settle-angle) * var(--settle-direction, 1))
+        transform: perspective(var(--settle-perspective)) rotateX(var(--settle-angle))
 </style>

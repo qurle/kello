@@ -99,7 +99,7 @@ Setup, once:
 | `src/pages/` | `index.astro` and `ru/index.astro` are the first page; `page/[page].astro` and `ru/page/[page].astro` the rest. |
 | `src/lib/pages.ts` | Feed pages: which posts are on a page, and page paths. |
 | `src/lib/i18n.ts` | The UI string dictionary. |
-| `src/lib/hash.ts` | `hash()`: a stable integer from a post id. Post.astro writes it to `data-hash` for the feed scatter, and uses it to pick the settle direction. |
+| `src/lib/hash.ts` | `hash()`: a stable integer from a post id. Post.astro writes it to `data-hash` for the feed scatter. |
 | `src/lib/preview.ts` | Build-time 16px previews for the loading dither. |
 | `src/lib/tags.ts` | Tag labels, order and the filter line's tags. |
 | `src/lib/urls.ts` | Media, `srcset` and Telegram URLs, and the source link domain. |
@@ -145,16 +145,16 @@ The page has three parts: the heading "kello" with its subtitle (`site.subtitle`
   - While it's open, the URL carries `?post=<id>` and, from the second item on, `&media=<n>`. Loading such a link opens the viewer there. `src/scripts/url.ts` owns the query string for both the filter and the viewer.
 - Videos play muted and looped while they are in view and pause when they leave it. With `prefers-reduced-motion`, they show the poster instead. In the feed the poster is a lazy `<picture>` under the video, not its `poster` attribute, which would load every poster at once and at one size; the viewer copies it into `poster`.
 - Image `sizes` follow the layout: a third of the window less the page padding from 64rem, 40rem in the single column.
-- Posts settle as they come in (`Post.astro`): a post enters at the bottom of the window tilted by `--settle-angle` (2.5deg), clockwise or counter-clockwise by a hash of its id (`--settle-direction`, set in `Post.astro`), and straightens over the first `--settle-distance` (40vh) of scrolling with `--settle-ease`.
+- Posts settle as they come in (`Post.astro`): a post enters at the bottom of the window rolled back by `--settle-angle` (15deg) around its bottom edge, seen through `--settle-perspective` (60rem), and stands up over the first `--settle-distance` (40vh) of scrolling with `--settle-ease`.
   - It is a scroll-driven animation (`animation-timeline: view()`), so the angle follows the scroll position, both ways, with no script. Browsers without scroll-driven animations (Firefox for now) show posts straight.
-  - Only the `rotate` property changes, so it composites and never touches the `inset` and `width` that `feed.js` sets. It works the same in the scattered feed and the single column.
+  - Only `transform` changes, so it composites and never touches the `inset` and `width` that `feed.js` sets. It works the same in the scattered feed and the single column.
   - With `prefers-reduced-motion`, nothing tilts.
 - Post meta: the source link is shown as its domain (`psiquantum.com ↗`) and is the primary link. The Telegram link is quieter. Both are styled as text links, not buttons.
 - No uppercase labels, eyebrows, counters, decorative dividers or rounded cards.
 - Grid: 12 columns from 48rem up. Post tags take the first `--index-columns`; the filter line and post text start after them. Below 48rem everything stacks.
 - Tags no post uses are left out of the filter line.
 
-Tokens added with the UI, beyond the ones above: `--font-mono`, `--text-code`, `--display-indent` (optical correction for the heading), `--underline-width`, `--underline-offset`, `--index-columns`, `--media-nav-size` (chevron square), `--media-tint`, `--media-tint-blend`, `--viewer-media-height`, `--viewer-media-max`, `--focus-width`, `--focus-offset`, `--ease-out`, `--settle-angle`, `--settle-distance`, `--settle-ease`. The 48rem breakpoint and the `sizes` attributes in `MediaRow.astro` are written out, since media queries and HTML can't read custom properties.
+Tokens added with the UI, beyond the ones above: `--font-mono`, `--text-code`, `--display-indent` (optical correction for the heading), `--underline-width`, `--underline-offset`, `--index-columns`, `--media-nav-size` (chevron square), `--media-tint`, `--media-tint-blend`, `--viewer-media-height`, `--viewer-media-max`, `--focus-width`, `--focus-offset`, `--ease-out`, `--settle-angle`, `--settle-perspective`, `--settle-distance`, `--settle-ease`. The 48rem breakpoint and the `sizes` attributes in `MediaRow.astro` are written out, since media queries and HTML can't read custom properties.
 
 Image and poster URLs go through `imageSet()` in `src/lib/urls.ts`, which builds `srcset` from `imageSources()` so only files that exist are referenced.
 
