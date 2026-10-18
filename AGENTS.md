@@ -89,8 +89,8 @@ Setup, once:
 | `src/lib/posts.ts` | `getPosts()`: the posts collection with overrides applied, hidden posts dropped, newest first. Use it instead of `getCollection('posts')`. |
 | `src/lib/media.ts` | `imageSources()`: which image files exist for a media entry, with real widths for `srcset`. |
 | `scripts/sync/` | `npm run sync`: `scrape.ts` and `html.ts` parse the web preview, `media.ts` and `mp4.ts` download and resize, `tags.ts` maps hashtags, `translate.ts` has the `Translator` interface and the markup check, `google.ts` the Google Translate provider, `bot.ts` fetches full-size media, `store.ts` reads and writes post JSON, `types.ts` has the shared shapes, `env.ts` loads `.env`, `index.ts` runs it all. |
-| `scripts/check-bot.ts` | `npm run check-bot` |
-| `scripts/format.ts` | Part of `npm run format`: Prettier on the frontmatter of `.astro` files |
+| `scripts/check-bot.ts` | `npm run check-bot`. |
+| `scripts/format.ts` | Part of `npm run format`: Prettier on the frontmatter of `.astro` files. |
 | `.github/workflows/sync.yml` | Scheduled sync: every 12 hours and on demand. |
 | `src/styles/variables.sass` | Design tokens as CSS custom properties. |
 | `src/styles/fonts.sass` | `@font-face` rule for the heading font. |
