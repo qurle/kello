@@ -11,8 +11,6 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
 
 let slides: HTMLElement[] = []
 let current = 0
-let postId = ''
-let opener: HTMLElement | null = null
 
 /** A copy of a feed item's video or picture */
 function slideFor(item: HTMLElement) {
@@ -94,7 +92,7 @@ function setCurrent(index: number) {
 		if (n === index) video.play().catch(() => {})
 		else video.pause()
 	})
-	setParams({ post: postId, media: index > 0 ? String(index + 1) : null })
+	setParams({ media: index > 0 ? String(index + 1) : null })
 }
 
 function go(index: number) {
@@ -115,16 +113,30 @@ function nearest() {
 	return best
 }
 
+/**
+ * `from` is the item that opened the viewer from the keyboard, which gets focus back on close. Opened by a
+ * pointer or a shared link there is none: focus stays on the dialog and is let go on close, so no ring shows
+ */
 function open(post: HTMLElement, index: number, from: HTMLElement | null) {
 	reveal(post)
 	const items = [...post.querySelectorAll<HTMLElement>('[data-open]')]
 	if (!items.length) return
-	postId = post.dataset.post!
-	opener = from
+	setParams({ post: post.dataset.post! })
 	slides = items.map(slideFor)
 	track.replaceChildren(...slides)
 	meta.replaceChildren(post.querySelector('[data-post-meta]')!.cloneNode(true))
 	dialog.showModal()
+	// showModal() focuses the close button, which Chrome rings even after a click
+	if (!from) dialog.focus()
+	dialog.addEventListener(
+		'close',
+		() => {
+			if (from?.checkVisibility()) from.focus()
+			// The dialog has already handed focus back to the item, which an Esc rings
+			else if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
+		},
+		{ once: true },
+	)
 	pad()
 	const start = Math.min(Math.max(index, 0), slides.length - 1)
 	scrollTo(start, 'auto')
@@ -135,7 +147,8 @@ document.addEventListener('click', (event) => {
 	const item = (event.target as Element).closest<HTMLElement>('[data-open]')
 	if (!item) return
 	const post = item.closest<HTMLElement>('[data-post]')!
-	open(post, [...post.querySelectorAll('[data-open]')].indexOf(item), item)
+	// A click from Enter or Space has no pointer press count
+	open(post, [...post.querySelectorAll('[data-open]')].indexOf(item), event.detail === 0 ? item : null)
 })
 
 /** -1 or 1 for the left or right half of the current slide; 0 where there is no neighbour */
@@ -218,8 +231,6 @@ dialog.addEventListener('close', () => {
 	meta.replaceChildren()
 	slides = []
 	setParams({ post: null, media: null })
-	if (opener?.checkVisibility()) opener.focus()
-	opener = null
 })
 
 // A tag picked inside the viewer filters the page behind it

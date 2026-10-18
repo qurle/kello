@@ -19,7 +19,6 @@
 	}
 	watch(feed)
 
-	let posts = [...feed.querySelectorAll('[data-post]')]
 	const wide = matchMedia('(min-width: 64rem)')
 
 	/** A custom property in px, whatever unit the token uses */
@@ -37,7 +36,7 @@
 	const reset = () => {
 		feed.removeAttribute('data-scatter')
 		feed.style.height = ''
-		for (const post of posts) {
+		for (const post of feed.querySelectorAll('[data-post]')) {
 			post.style.removeProperty('inset')
 			post.style.removeProperty('width')
 		}
@@ -53,7 +52,7 @@
 		const jitter = length('--scatter-jitter')
 		const column = (feed.clientWidth - (columns - 1) * gap) / columns
 		const width = span * column + (span - 1) * gap
-		const visible = posts.filter((post) => !post.hidden)
+		const visible = [...feed.querySelectorAll('[data-post]:not([hidden])')]
 
 		feed.setAttribute('data-scatter', '')
 		// All widths first, then all heights: two layouts instead of one per post
@@ -100,7 +99,6 @@
 	document.addEventListener('kello:filter', safe)
 	document.addEventListener('kello:posts', ({ detail }) => {
 		for (const post of detail) watch(post)
-		posts = [...feed.querySelectorAll('[data-post]')]
 		// After every listener, so the filter has hidden what it hides
 		queueMicrotask(safe)
 	})
