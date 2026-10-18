@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio';
 import type { Element } from 'domhandler';
 import { parseText } from './html';
+import { fetchRetry, sleep } from './http';
 import type { ScrapedMedia, ScrapedPost } from './types';
 
 const userAgent =
@@ -83,15 +84,11 @@ export function parsePage(html: string): Page {
 
 async function fetchPage(channel: string, before?: number): Promise<string> {
 	const url = `https://t.me/s/${channel}${before ? `?before=${before}` : ''}`;
-	for (let attempt = 1; ; attempt++) {
-		try {
-			const res = await fetch(url, { headers: { 'user-agent': userAgent, 'accept-language': 'en' } });
-			if (!res.ok) throw new Error(`HTTP ${res.status}`);
-			return await res.text();
-		} catch (err) {
-			if (attempt >= 4) throw new Error(`Failed to fetch ${url}: ${(err as Error).message}`);
-			await new Promise((r) => setTimeout(r, 1000 * 2 ** attempt));
-		}
+	try {
+		const res = await fetchRetry(url, { headers: { 'user-agent': userAgent, 'accept-language': 'en' } }, { attempts: 4, delay: (n) => 1000 * 2 ** n, timeoutMs: 30_000 });
+		return await res.text();
+	} catch (err) {
+		throw new Error(`Failed to fetch ${url}: ${(err as Error).message}`);
 	}
 }
 
@@ -118,7 +115,7 @@ export async function scrape(channel: string, pages: number): Promise<ScrapeResu
 			return { posts: [...byId.values()].sort((a, b) => b.telegramId - a.telegramId), reachedStart: true };
 		}
 		before = page.before;
-		await new Promise((r) => setTimeout(r, 400));
+		await sleep(400);
 	}
 	process.stdout.write('\n');
 	return { posts: [...byId.values()].sort((a, b) => b.telegramId - a.telegramId), reachedStart: false };

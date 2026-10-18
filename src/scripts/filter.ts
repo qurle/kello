@@ -35,3 +35,5 @@ document.addEventListener('click', (event) => {
 });
 
 apply();
+// A shared link may open filtered: the feed layout was made before this ran.
+if (selected.size) document.dispatchEvent(new CustomEvent('kello:filter'));

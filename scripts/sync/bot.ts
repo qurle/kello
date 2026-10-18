@@ -2,6 +2,8 @@
 // into a private scratch chat, downloaded from there and deleted. Setup is in AGENTS.md.
 // Every failure is reported and returns undefined, so the sync falls back to the preview's copy.
 
+import { sleep } from './http';
+
 const api = 'https://api.telegram.org';
 /** Bot API downloads stop at 20 MB. */
 const maxDownload = 20 * 1024 * 1024;
@@ -10,7 +12,6 @@ const forwardInterval = 3100;
 /** Consecutive failures after which the bot is dropped for the run. */
 const maxFailures = 3;
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 interface FileRef {
 	file_id: string;
@@ -28,7 +29,15 @@ interface Message {
 	document?: FileRef;
 }
 
-class BotError extends Error {}
+/** `counts` is false for errors about one message, which say nothing about the bot's health. */
+class BotError extends Error {
+	constructor(
+		message: string,
+		readonly counts = true,
+	) {
+		super(message);
+	}
+}
 
 export class TelegramBot {
 	private lastForward = 0;
@@ -52,6 +61,7 @@ export class TelegramBot {
 				method: 'POST',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify(params),
+				signal: AbortSignal.timeout(30_000),
 			}).catch(() => undefined);
 			if (!res) {
 				if (attempt >= 3) throw new BotError(`${method}: network error`);
@@ -79,7 +89,11 @@ export class TelegramBot {
 				await sleep((wait + 1) * 1000);
 				continue;
 			}
-			throw new BotError(`${method}: ${body.description ?? `HTTP ${res.status}`}`);
+			if (res.status >= 500 && attempt < 3) {
+				await sleep(2000 * attempt);
+				continue;
+			}
+			throw new BotError(`${method}: ${body.description ?? `HTTP ${res.status}`}`, res.status !== 400);
 		}
 	}
 
@@ -87,7 +101,7 @@ export class TelegramBot {
 		if (ref.file_size && ref.file_size > maxDownload) return undefined;
 		const file = await this.call<{ file_path?: string }>('getFile', { file_id: ref.file_id });
 		if (!file.file_path) return undefined;
-		const res = await fetch(`${api}/file/bot${this.token}/${file.file_path}`).catch(() => undefined);
+		const res = await fetch(`${api}/file/bot${this.token}/${file.file_path}`, { signal: AbortSignal.timeout(60_000) }).catch(() => undefined);
 		if (!res?.ok) throw new BotError(`download: ${res ? `HTTP ${res.status}` : 'network error'}`);
 		return Buffer.from(await res.arrayBuffer());
 	}
@@ -121,7 +135,7 @@ export class TelegramBot {
 			}
 		} catch (err) {
 			this.warn(`Telegram bot: message ${messageId}: ${(err as Error).message}`);
-			if (++this.failures >= maxFailures) {
+			if (!(err instanceof BotError && !err.counts) && ++this.failures >= maxFailures) {
 				this.disabled = true;
 				this.warn(`Telegram bot: ${maxFailures} failures in a row, using the web preview for the rest of this run`);
 			}
