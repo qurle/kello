@@ -46,3 +46,12 @@
     gap: var(--space-2xs) var(--space-md)
     font-size: var(--text-lg)
     line-height: var(--leading-snug)
+
+// Wide screens: the page spans the window and posts move across it (post.sass).
+@media (min-width: 64rem)
+  .page
+    max-width: none
+    padding-inline: max(var(--page-padding-wide), var(--gutter))
+
+  .filter
+    max-width: var(--container-width)

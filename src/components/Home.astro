@@ -9,6 +9,7 @@ import '../styles/viewer.sass';
 import config from '../../kello.config';
 import { getFeed } from '../lib/feed';
 import { strings, type Lang } from '../lib/i18n';
+import { offsets } from '../lib/offset';
 import { filterTags, tagLabel } from '../lib/tags';
 import Post from './Post.astro';
 
@@ -21,6 +22,7 @@ const t = strings[lang];
 const other = strings[t.switchTo];
 const posts = await getFeed();
 const tags = filterTags(new Set(posts.flatMap((post) => post.tags)));
+const postOffsets = offsets(posts.map((post) => post.telegramId));
 const url = (path: string) => new URL(path, config.site.url).href;
 ---
 
@@ -52,7 +54,7 @@ const url = (path: string) => new URL(path, config.site.url).href;
 				</ul>
 			</nav>
 			<main class="feed">
-				{posts.map((post, index) => <Post post={post} lang={lang} eager={index === 0} />)}
+				{posts.map((post, index) => <Post post={post} lang={lang} eager={index === 0} offset={postOffsets[index]} />)}
 			</main>
 		</div>
 		<dialog class="viewer" aria-label={t.viewer} aria-keyshortcuts="ArrowLeft ArrowRight Escape" data-viewer>

@@ -69,3 +69,10 @@
 
   .post__body
     grid-column: calc(var(--index-columns) + 1) / -1
+
+// Wide screens: each post keeps its column width and sits at its own offset across the page,
+// from flush left (--offset: 0) to flush right (1). Set per post from src/lib/offset.ts.
+@media (min-width: 64rem)
+  .post
+    max-width: var(--container-width)
+    margin-inline-start: calc(var(--offset, 0) * (100% - var(--container-width)))
