@@ -1,5 +1,6 @@
 ---
-import '@fontsource-variable/inter';
+// Inter with its optical-size axis: text cuts at body size, the Display cut for the heading.
+import '@fontsource-variable/inter/opsz.css';
 import '../styles/variables.sass';
 import '../styles/base.sass';
 import '../styles/page.sass';
@@ -12,8 +13,8 @@ import { strings, type Lang } from '../lib/i18n';
 import { filterTags, tagLabel } from '../lib/tags';
 import Post from './Post.astro';
 import feedScript from '../scripts/inline/feed.js?raw';
-import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
-import interCyrillic from '@fontsource-variable/inter/files/inter-cyrillic-wght-normal.woff2?url';
+import interLatin from '@fontsource-variable/inter/files/inter-latin-opsz-normal.woff2?url';
+import interCyrillic from '@fontsource-variable/inter/files/inter-cyrillic-opsz-normal.woff2?url';
 
 interface Props {
 	lang: Lang;
