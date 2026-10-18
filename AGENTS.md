@@ -93,8 +93,8 @@ Setup, once:
 | `scripts/sync/` | `npm run sync`: `scrape.ts` and `html.ts` parse the web preview, `media.ts` and `mp4.ts` download and resize, `tags.ts` maps hashtags, `translate.ts` has the provider chain and Gemini, `google.ts` the Google Translate provider, `store.ts` reads and writes post JSON, `index.ts` runs it all. |
 | `.github/workflows/sync.yml` | Scheduled sync: every 12 hours and on demand. |
 | `src/styles/variables.sass` | Design tokens as CSS custom properties. |
-| `src/styles/fonts.sass` | `@font-face` rules for the self-hosted fonts. |
-| `src/assets/fonts/` | Inter Latin and Cyrillic subsets (with its OFL licence) and the Mustica Pro heading subset. |
+| `src/styles/fonts.sass` | `@font-face` rule for the heading font. |
+| `src/assets/fonts/` | The Mustica Pro heading subset. |
 | `src/styles/*.sass` | Base, page, post, media row and viewer styles, all reading the tokens. |
 | `src/components/Home.astro` | The page, shared by `/` and `/ru` through a `lang` prop. |
 | `src/lib/i18n.ts` | The UI string dictionary. |
@@ -108,9 +108,9 @@ Setup, once:
 The page has three parts: the heading "Kello", a line of tag filters, then posts. Nothing else goes in the header or footer, except the language link (`ru` on `/`, `en` on `/ru`).
 
 - Swiss style: Inter for text, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings and link hover, and appears nowhere else. Selected tags turn `--primary`.
-- Fonts are self-hosted from `src/assets/fonts` with `@font-face` rules in `src/styles/fonts.sass`; nothing loads from another host or from `node_modules`.
-  - Inter (variable weight, no optical-size axis) sets all text through `--font-sans`. Only its Latin and Cyrillic subsets ship, split by `unicode-range`; the posts use nothing else.
-  - The heading "kello" is Mustica Pro SemiBold through `--font-display`, used nowhere else. It is a WOFF2 subset of the owner's OTF (basic Latin, Latin-1 punctuation, general punctuation, basic Cyrillic; about 28 KB) made with `pyftsubset`, keeping only the `kern`, `liga` and `case` features. To change the character set, re-run `pyftsubset` on the OTF, which is not in the repo.
+- Fonts are self-hosted: Vite copies them into `/_astro/` at build time, and nothing loads from another host.
+  - Inter sets all text through `--font-sans`. It comes from the `@fontsource-variable/inter` package (`wght.css`: variable weight, no optical-size axis), whose `unicode-range` subsets mean a page downloads only the Latin and, on `/ru`, Cyrillic files.
+  - The heading "kello" is Mustica Pro SemiBold through `--font-display`, used nowhere else. Its file is in `src/assets/fonts` with an `@font-face` rule in `src/styles/fonts.sass`. It is a WOFF2 subset of the owner's OTF (basic Latin, Latin-1 punctuation, general punctuation, basic Cyrillic; about 28 KB) made with `pyftsubset`, keeping only the `kern`, `liga` and `case` features. To change the character set, re-run `pyftsubset` on the OTF, which is not in the repo.
   - `Home.astro` preloads Mustica Pro on both pages, plus the Inter file for the page's language (Latin on `/`, Cyrillic on `/ru`).
 - Tags, their labels, the heading and every UI string in `src/lib/i18n.ts` are lowercase; the config schema rejects uppercase labels.
 - One text size, `--text-base`, for everything except the heading. The page starts `--page-padding-top` (12rem) down.
