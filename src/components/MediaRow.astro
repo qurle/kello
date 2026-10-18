@@ -16,9 +16,9 @@ const { media, telegramId, lang, eager = false } = Astro.props;
 const t = strings[lang];
 const single = media.length === 1;
 
-// Mosaic shown behind each item while it loads; images also get the dither until they arrive.
+// Tiny previews that image slots show, dithered, until the image arrives.
 const previews = await Promise.all(
-	media.map((item) => (item.type === 'image' ? preview(item.file, item.width) : preview(item.poster, item.width))),
+	media.map((item) => (item.type === 'image' ? preview(item.file, item.width) : undefined)),
 );
 const slotStyle = (index: number) => (previews[index] ? `--preview: url(${previews[index]})` : undefined);
 
@@ -31,6 +31,7 @@ const sizes = single ? '(min-width: 45rem) 40rem, 92vw' : '(min-width: 45rem) 32
 	<ul class="media__track" data-media-track>
 		{media.map((item, index) => (
 			<li class="media__slot" style={slotStyle(index)} data-loading={item.type === 'image' || undefined}>
+				{item.type === 'image' && <span class="media__dither" aria-hidden="true" />}
 				{item.type === 'unavailable' ? (
 					<a class="media__item media__item--unavailable" href={item.messageId ? telegramUrl(item.messageId, true) : telegramUrl(telegramId)}>
 						{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />}

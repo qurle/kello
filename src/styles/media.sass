@@ -21,41 +21,56 @@
   scroll-snap-align: start
   background: var(--surface)
 
-  // The image's own colours as a pixel mosaic, on its own layer: image-rendering is inherited and
-  // would pixelate the real image too.
-  &::before
-    content: ""
-    position: absolute
-    inset: 0
-    background: var(--preview, none) center / cover no-repeat
-    image-rendering: pixelated
-
   img
     transition: opacity var(--duration-base) steps(4, end)
 
   .media[data-single] &
     flex-basis: 100%
 
-// Only with JS, which clears data-loading when the image arrives (src/scripts/inline/feed.js).
-// The dither loops on its own; the image never waits for it.
+// Loading state, only with JS, which clears data-loading when the image arrives
+// (src/scripts/inline/feed.js). The dots crawl on their own loop; the image never waits for it.
+//
+// An ordered dither in CSS: the preview, smoothly scaled and greyed, at half brightness (L / 2), plus
+// the Bayer threshold map at half strength (T / 2), added with plus-lighter. A huge contrast() around
+// 0.5 then turns each point white where L + T > 1, black elsewhere: the image as dots.
+.media__dither
+  display: none
+
 html[data-js] .media__slot[data-loading]
   img
     opacity: 0
 
-  &::after
-    content: ""
+  .media__dither
     position: absolute
     inset: 0
-    z-index: 1
-    background: var(--background)
+    display: block
+    overflow: hidden
     opacity: var(--dither-strength)
-    mask: var(--dither) 0 0 / var(--dither-size) repeat
+    filter: contrast(64)
     pointer-events: none
-    animation: dither var(--dither-duration) steps(4) infinite
+
+    &::before,
+    &::after
+      content: ""
+      position: absolute
+      inset: 0
+
+    &::before
+      // A little past the edges, so the blur doesn't fade them to black.
+      inset: -8px
+      background: var(--preview, none) center / cover no-repeat
+      filter: grayscale(1) blur(4px) brightness(0.5)
+
+    &::after
+      background: var(--dither) 0 0 / var(--dither-size) repeat
+      opacity: 0.5
+      mix-blend-mode: plus-lighter
+      image-rendering: pixelated
+      animation: dither var(--dither-duration) steps(4) infinite
 
 @keyframes dither
   to
-    mask-position: var(--dither-size) var(--dither-size)
+    background-position: var(--dither-size) var(--dither-size)
 
 .media__item
   position: relative
