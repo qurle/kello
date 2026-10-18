@@ -90,6 +90,7 @@ The page has three parts: the heading "Kello", a line of tag filters, then posts
 - Colour scheme follows `prefers-color-scheme`. Every colour comes from a token, so dark mode only redefines the tokens.
 - From 64rem up, the page spans the window with at least 4rem (`--page-padding-wide`) of padding on each side, and the feed scatters (`src/scripts/inline/feed.js`). That script is plain JS inlined right after the feed, so it runs while the page parses. A `data-js` flag set in `<head>` keeps the wide feed hidden until the script has placed it, so the single column never flashes. If the script throws, it drops the flag and the column shows.
   - Posts become narrow columns, `--scatter-span` of `--scatter-columns` grid columns wide, with tags in a row and body-size text.
+  - The tag line uses the same grid. It runs from the column after `--index-columns` to the right edge of the page, so it starts where posts can start.
   - Each post goes in a start column picked by a hash of its id, from the columns that let it sit within `--scatter-jitter` of the highest free spot. It then drops by a further hashed amount up to `--scatter-jitter`. So posts share vertical space without touching, and positions stay stable between visits.
   - No post sits above the one before it, so the feed still reads newest first, top to bottom.
   - The layout re-runs on filter, resize and font load. The Inter file for the page's language is preloaded, so the first layout usually has the right metrics. Without JS, and below 64rem, the feed is a single centred column.
