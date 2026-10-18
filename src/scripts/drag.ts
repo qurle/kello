@@ -4,19 +4,22 @@
 // speed. A slow drag past a sixth of a slide still moves on one. Touch and pens keep the browser's own
 // scrolling, and a press that doesn't move stays a click
 
-/** Pixels a press moves before it becomes a drag */
-const threshold = 6
-/** How far a release coasts, as milliseconds of its speed: the momentum of a flick */
-const coast = 200
-/** Spring rate per millisecond: critically damped, it settles in about 4 / rate */
-const rate = 0.012
+// Feel comes from the --drag-* tokens (variables.sass), read from the track
 /** The release speed is measured over the last moves within this many milliseconds */
 const sampleWindow = 100
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
 
+/** A token in ms or px as a number, `200ms`, `0.2s` and `6px` alike; the fallback if it's missing */
+function token(element: HTMLElement, name: string, fallback: number) {
+	const value = getComputedStyle(element).getPropertyValue(name).trim()
+	const number = parseFloat(value)
+	if (!Number.isFinite(number)) return fallback
+	return value.endsWith('s') && !value.endsWith('ms') ? number * 1000 : number
+}
+
 /** `snaps` gives the scroll position of each slide, in order */
 export function draggable(track: HTMLElement, snaps: () => number[]) {
-	let start: { x: number; left: number } | null = null
+	let start: { x: number; left: number; threshold: number } | null = null
 	let dragging = false
 	let swallowClick = false
 	let samples: { time: number; left: number }[] = []
@@ -41,7 +44,7 @@ export function draggable(track: HTMLElement, snaps: () => number[]) {
 		if ((event.target as Element).closest('video[controls]')) return
 		// Snapping stays off: turning it back on would jump to the nearest slide under the pointer
 		caught = halt()
-		start = { x: event.clientX, left: track.scrollLeft }
+		start = { x: event.clientX, left: track.scrollLeft, threshold: token(track, '--drag-threshold', 6) }
 		samples = []
 	})
 
@@ -49,7 +52,7 @@ export function draggable(track: HTMLElement, snaps: () => number[]) {
 		if (!start) return
 		const dx = event.clientX - start.x
 		if (!dragging) {
-			if (Math.abs(dx) < threshold) return
+			if (Math.abs(dx) < start.threshold) return
 			dragging = true
 			track.setPointerCapture(event.pointerId)
 			track.dataset.dragging = ''
@@ -89,6 +92,9 @@ export function draggable(track: HTMLElement, snaps: () => number[]) {
 		const points = snaps().map((left) => Math.min(Math.max(left, 0), max))
 		const nearestTo = (x: number) =>
 			points.reduce((best, left) => (Math.abs(left - x) < Math.abs(best - x) ? left : best))
+		const coast = token(track, '--drag-coast', 200)
+		// Critically damped, the spring is within 2% of the slide after 6 / rate
+		const rate = 6 / Math.max(token(track, '--drag-settle', 500), 1)
 		let target = nearestTo(here + speed * coast)
 		// A slow drag past a sixth of the gap between slides still means to move on
 		const spacing = points.length > 1 ? Math.abs(points[1] - points[0]) : track.clientWidth
