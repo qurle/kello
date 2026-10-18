@@ -105,13 +105,13 @@ const t = strings[Astro.props.lang]
     &[data-dragging] *
         cursor: grabbing
 
-    // A slide (viewer.ts), at the item's own ratio
+    // A slide (viewer.ts), at the item's own ratio. While loading, its background may be the feed's copy
     :global([data-slide])
         flex: none
         width: min(var(--viewer-media-height) * var(--ratio), var(--viewer-media-max), 100cqw - 2 * var(--gutter))
         aspect-ratio: var(--ratio)
         scroll-snap-align: center
-        background: var(--surface)
+        background: var(--surface) center / cover no-repeat
         cursor: pointer
 
     // Slides drag with a mouse (drag.ts)

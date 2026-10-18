@@ -41,22 +41,30 @@ function slideFor(item: HTMLElement, near: boolean) {
 	slide.dataset.slide = ''
 	slide.style.setProperty('--ratio', String(ratio))
 	slide.append(media)
-	dither(slide, item, media)
+	placeholder(slide, item, media)
 	return slide
 }
 
-/** The feed slot's dithered preview (base.sass) until the picture, or the video's poster or frame, arrives */
-function dither(slide: HTMLElement, item: HTMLElement, media: HTMLElement) {
+/**
+ * Until the picture, or the video's poster or frame, arrives: the feed's copy scaled up if it has loaded,
+ * otherwise the slot's dithered preview (base.sass)
+ */
+function placeholder(slide: HTMLElement, item: HTMLElement, media: HTMLElement) {
+	const shown = item.querySelector('img')
+	const loaded = shown?.complete && shown.naturalWidth > 0 ? shown.currentSrc : ''
 	const preview = item.closest<HTMLElement>('[data-slot]')?.style.getPropertyValue('--preview')
-	if (!preview) return
+	if (!loaded && !preview) return
 	const done = () => slide.removeAttribute('data-loading')
 	slide.dataset.dither = ''
 	slide.dataset.loading = ''
-	slide.style.setProperty('--preview', preview)
-	const mark = document.createElement('span')
-	mark.className = 'dither'
-	mark.ariaHidden = 'true'
-	slide.prepend(mark)
+	if (loaded) slide.style.backgroundImage = `url("${loaded}")`
+	else {
+		slide.style.setProperty('--preview', preview!)
+		const mark = document.createElement('span')
+		mark.className = 'dither'
+		mark.ariaHidden = 'true'
+		slide.prepend(mark)
+	}
 
 	if (media instanceof HTMLVideoElement) {
 		media.addEventListener('loadeddata', done, { once: true })
