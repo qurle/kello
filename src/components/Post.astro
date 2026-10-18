@@ -126,6 +126,7 @@ const tags = sortTags(post.tags)
 		margin-top: var(--space-s)
 
 	.source
+		flex-grow: 1
 		color: var(--primary)
 
 		// Scoped, the rule above outranks the global a:hover
@@ -134,6 +135,13 @@ const tags = sortTags(post.tags)
 
 	.telegram
 		color: var(--secondary)
+
+	// The Telegram link shows in the viewer only, so a feed post without a source has no links line. A post
+	// that can't open the viewer (no media) keeps it
+	:global([data-feed]) .post:has([data-open])
+		.telegram,
+		.links:not(:has(.source))
+			display: none
 
 	// Wide screens: feed.js places each post and sets data-scatter
 	:global(.feed[data-scatter]) .post
