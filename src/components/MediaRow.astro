@@ -42,7 +42,7 @@ const picture = (file: string, item: Item, index: number) => ({
 			<li class="slot" style={slotStyle(index)} data-slot data-dither data-loading={still(item) ? true : undefined}>
 				{still(item) && <span class="dither" aria-hidden="true" />}
 				{item.type === 'unavailable' ? (
-					<a class="item unavailable" href={item.messageId ? telegramUrl(item.messageId, true) : telegramUrl(telegramId)}>
+					<a class="item unavailable" href={item.messageId ? telegramUrl(item.messageId, true) : telegramUrl(telegramId)} data-unavailable>
 						{item.poster && <Picture {...picture(item.poster, item, index)} />}
 						<span class="label">{t.unavailable} <span aria-hidden="true">↗</span></span>
 					</a>
@@ -154,9 +154,13 @@ const picture = (file: string, item: Item, index: number) => ({
         position: absolute
         inset: 0
 
+    // Opens in Telegram; its label lights up like a link
     &.unavailable
         color: var(--secondary)
         cursor: pointer
+
+        &:hover
+            color: var(--accent)
 
     // A row of several drags with a mouse (drag.ts)
     @media (hover: hover) and (pointer: fine)
