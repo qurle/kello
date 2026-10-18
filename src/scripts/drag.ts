@@ -21,22 +21,26 @@ export function draggable(track: HTMLElement, snaps: () => number[]) {
 	let swallowClick = false
 	let samples: { time: number; left: number }[] = []
 	let frame = 0
+	// The press stopped a glide midway, so the track sits between slides with snapping off
+	let caught = false
 
 	const snap = () => dragging || track.style.removeProperty('scroll-snap-type')
-	// A new grab or a wheel stops a glide where it is
-	const stop = () => {
-		if (!frame) return
+	/** Stops a glide where it is; true if one was running */
+	const halt = () => {
+		if (!frame) return false
 		cancelAnimationFrame(frame)
 		frame = 0
-		snap()
+		return true
 	}
-	track.addEventListener('wheel', stop, { passive: true })
+	// A wheel takes over with the browser's own snapping
+	track.addEventListener('wheel', () => halt() && snap(), { passive: true })
 
 	track.addEventListener('pointerdown', (event) => {
 		if (event.pointerType !== 'mouse' || event.button !== 0) return
 		// Native video controls keep their own drags (the viewer under reduced motion)
 		if ((event.target as Element).closest('video[controls]')) return
-		stop()
+		// Snapping stays off: turning it back on would jump to the nearest slide under the pointer
+		caught = halt()
 		start = { x: event.clientX, left: track.scrollLeft }
 		samples = []
 	})
@@ -68,13 +72,15 @@ export function draggable(track: HTMLElement, snaps: () => number[]) {
 		if (!start) return
 		const moved = track.scrollLeft - start.left
 		start = null
-		if (!dragging) return
-		dragging = false
+		// A press that only caught a glide settles on the nearest slide, and isn't a click either
+		if (!dragging && !caught) return
+		const speed = dragging ? releaseSpeed(event.timeStamp) : 0
+		dragging = caught = false
 		delete track.dataset.dragging
 		// The click that ends a drag isn't one
 		swallowClick = true
 		setTimeout(() => (swallowClick = false))
-		glide(moved, releaseSpeed(event.timeStamp))
+		glide(moved, speed)
 	}
 
 	const glide = (moved: number, speed: number) => {
