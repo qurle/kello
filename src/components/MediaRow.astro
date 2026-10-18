@@ -105,6 +105,16 @@ const sizes = single
     .media[data-single] &
         flex-basis: 100%
 
+    // The tint (--media-tint), over the media and the loading dither. The viewer copies only the
+    // picture or video, so it shows them untinted.
+    &::after
+        content: ""
+        position: absolute
+        inset: 0
+        background: var(--media-tint)
+        mix-blend-mode: var(--media-tint-blend)
+        pointer-events: none
+
 // Loading state, with JS only: feed.js clears data-loading when the image arrives.
 // Ordered dither: the greyed preview at half brightness (L / 2) plus the Bayer map at half strength
 // (T / 2), added with plus-lighter; a huge contrast() then makes each point white where L + T > 1.
