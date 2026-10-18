@@ -28,14 +28,17 @@ export default defineConfig({
 
 	media: {
 		dir: 'media',
-		widths: [960, 1920],
-		formats: ['avif', 'webp'],
+		// Telegram's public pages serve photos at 800px at most, so today each image gets a single 800px file.
+		// The larger widths only apply if a bigger source ever comes along.
+		widths: [800, 1280, 1920, 2560],
+		formats: ['webp'],
+		quality: 90,
 		maxVideoMB: 15,
 	},
 
 	// Filter-line order. Post counts as of Oct 2026 are in comments.
 	tags: [
-		{ ru: 'ui', en: 'ui', label: 'UI' }, // 103
+		{ ru: 'ui', en: 'ui' }, // 103
 		{ ru: 'вдохновение', en: 'inspiration', aliases: ['вдохнование'] }, // 89
 		{ ru: 'знания', en: 'learning' }, // 62
 		{ ru: 'портфолио', en: 'portfolio' }, // 25
@@ -48,7 +51,7 @@ export default defineConfig({
 		{ ru: 'карьера', en: 'career' }, // 11
 		{ ru: 'моушен', en: 'motion' }, // 10
 		{ ru: 'сборники', en: 'collections' }, // 9
-		{ ru: 'ux', en: 'ux', label: 'UX' }, // 9
+		{ ru: 'ux', en: 'ux' }, // 9
 		{ ru: 'авторы', en: 'people' }, // 9
 		{ ru: 'текстуры', en: 'textures' }, // 7
 		{ ru: 'дизинж', en: 'design-engineering', label: 'design engineering' }, // 6

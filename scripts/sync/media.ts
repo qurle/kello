@@ -10,14 +10,16 @@ export interface MediaOptions {
 	root: string;
 	widths: number[];
 	formats: ('avif' | 'webp')[];
+	/** WebP quality, 1–100. */
+	quality: number;
 	maxVideoMB: number;
 }
 
 type Warn = (msg: string) => void;
 
 const encode = {
-	avif: (img: Sharp) => img.avif({ quality: 55, effort: 4 }),
-	webp: (img: Sharp) => img.webp({ quality: 78 }),
+	avif: (img: Sharp, _quality: number) => img.avif({ quality: 55, effort: 4 }),
+	webp: (img: Sharp, quality: number) => img.webp({ quality, smartSubsample: true }),
 };
 
 const exists = (file: string) =>
@@ -75,7 +77,7 @@ async function writeImage(source: Buffer, base: string, namedWidth: number, opts
 	for (const w of storedWidths(namedWidth, opts.widths)) {
 		const resized = sharp(source).rotate().resize({ width: Math.min(w, width), withoutEnlargement: true });
 		for (const format of opts.formats) {
-			await writeAtomic(path.join(opts.root, `${base}-${w}.${format}`), await encode[format](resized.clone()).toBuffer());
+			await writeAtomic(path.join(opts.root, `${base}-${w}.${format}`), await encode[format](resized.clone(), opts.quality).toBuffer());
 		}
 	}
 }

@@ -16,7 +16,7 @@ const t = strings[lang];
 const tags = sortTags(post.tags);
 ---
 
-<article class="post" id={`post-${post.telegramId}`} data-post data-tags={tags.join(' ')}>
+<article class="post" id={`post-${post.telegramId}`} data-post={post.telegramId} data-tags={tags.join(' ')}>
 	{post.media.length > 0 && <MediaRow media={post.media} telegramId={post.telegramId} lang={lang} eager={eager} />}
 	<div class="post__meta" data-post-meta>
 		{tags.length > 0 && (

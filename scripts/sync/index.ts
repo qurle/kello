@@ -47,6 +47,7 @@ async function main() {
 		root: path.resolve('public', config.media.dir),
 		widths: config.media.widths,
 		formats: config.media.formats,
+		quality: config.media.quality,
 		maxVideoMB: config.media.maxVideoMB,
 	};
 

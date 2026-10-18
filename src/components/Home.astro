@@ -56,13 +56,11 @@ const url = (path: string) => new URL(path, config.site.url).href;
 			</main>
 		</div>
 		<dialog class="viewer" aria-label={t.viewer} aria-keyshortcuts="ArrowLeft ArrowRight Escape" data-viewer>
-			<div class="viewer__inner">
-				<div class="viewer__bar">
-					<button class="viewer__close" type="button" data-viewer-close>{t.close}</button>
-				</div>
-				<div class="viewer__stage" data-viewer-stage></div>
-				<div class="viewer__meta" data-viewer-meta></div>
+			<div class="viewer__bar">
+				<button class="viewer__close" type="button" data-viewer-close>{t.close}</button>
 			</div>
+			<ul class="viewer__track" data-viewer-track></ul>
+			<div class="viewer__meta" data-viewer-meta></div>
 		</dialog>
 		<script>
 			import '../scripts/filter';

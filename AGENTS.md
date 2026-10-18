@@ -46,7 +46,7 @@ The workflow `.github/workflows/sync.yml` runs `npm run sync` every 12 hours and
 - The web preview at `t.me/s/` is undocumented HTML. Parse hashtags from `a[href^="?q="]` elements, not with a regex over text: a `<br>` between a tag and the next word disappears in `textContent`, which turns `#ui` and `Дамп` into `#uiДамп`.
 - Media URLs on `telesco.pe` are signed and expire, so never link to them from the site. Everything is downloaded at sync time.
 - Some videos have no source file in the preview (posts 213 and 227 as of Oct 2026). These, and any video over `media.maxVideoMB`, get type `unavailable` and link to the post in Telegram.
-- The preview serves photos at 800px wide at most, so most images have a single `-960` file holding the 800px original. Which widths exist follows from the original width: use `imageSources()` in `src/lib/media.ts` rather than assuming every configured width.
+- The preview serves photos at 800px wide at most, so most images have a single `-800.webp` file holding the original. Raising `media.widths` adds nothing until a bigger source exists. Which widths exist follows from the original width: use `imageSources()` in `src/lib/media.ts` rather than assuming every configured width.
 - Video thumbnails in the preview are tiny (≤320px). Sync takes the first frame with ffmpeg as the poster when ffmpeg is on `PATH` (the workflow installs it) and falls back to the thumbnail otherwise; a later run with ffmpeg replaces thumbnail posters. Video width and height come from the MP4 header.
 - Service messages ("Channel created") are skipped, so the site has one post fewer than the channel's message count suggests.
 - Text keeps `b`, `i`, `u`, `s`, `a`, `code`, `blockquote` and `br`. Custom emoji become their plain character, and hashtags outside the leading line become plain text.
@@ -73,28 +73,32 @@ The workflow `.github/workflows/sync.yml` runs `npm run sync` every 12 hours and
 | `src/styles/*.sass` | Base, page, post, media row and viewer styles, all reading the tokens. |
 | `src/components/Home.astro` | The page, shared by `/` and `/ru` through a `lang` prop. |
 | `src/lib/i18n.ts` | The UI string dictionary. |
-| `src/lib/feed.ts` | `getPosts()` plus the fixture posts in dev only. |
+| `src/lib/feed.ts` | `getFeed()`: the posts the page renders. |
 | `src/lib/urls.ts` | Media, `srcset` and Telegram URLs, and the source link domain. |
-| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer. |
-| `src/data/posts/_fixture-*.json` | Fixture posts for `npm run dev`, with media in `public/media/_fixtures/`. The content glob skips them. |
+| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, and `url.ts` for the shared query string. |
 | `public/media/` | Generated images (AVIF and WebP at each configured width) and videos. |
 
 ## Design
 
 The page has three parts: the heading "Kello", a line of tag filters, then posts. Nothing else goes in the header or footer, except the language link (`ru` on `/`, `en` on `/ru`).
 
-- Swiss style: Inter, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks selected tags, focus rings and link hover, and appears nowhere else.
+- Swiss style: Inter, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings and link hover, and appears nowhere else. Selected tags turn `--primary`.
+- Tags and their labels are lowercase; the config schema rejects uppercase labels.
+- Secondary and tertiary greys are deliberately faint (`#b8b8b8` and `#e2e2e2` on light). That's below WCAG text contrast, which is accepted for the quiet parts: unselected tags, the Telegram link and the language link.
 - Colour scheme follows `prefers-color-scheme`. Every colour comes from a token, so dark mode only redefines the tokens.
 - Selected tags combine with AND. Once a tag is selected, any tag that would leave zero posts is dimmed and can't be clicked. The selection is stored in the URL as `?tags=ui,code`.
 - The media row: a single item spans the full container width. With more than one, the first item takes 80% of the width, followed by a 0.5rem gap and the rest, all in one horizontally scrolling row at a fixed ratio with `object-fit: cover`. On hover, previous and next chevrons appear; on touch screens the row swipes with scroll snapping.
-- Clicking an item opens it in a `<dialog>` showing the media uncropped, plus the post's text, tags and links. Clicking the left or right half moves to the previous or next item, the arrow keys do the same, and Esc closes the dialog.
+- Clicking an item opens a `<dialog>`. It shows the post's whole row as a carousel the full width of the dialog, with the clicked item centred and the others at `--viewer-dim` opacity, and the post's text, tags and links below.
+  - Each item is uncropped at its own ratio. Its width is the smallest of `--viewer-media-height` × ratio, `--viewer-media-max` (64rem) and the dialog width minus gutters; the height follows from the ratio.
+  - Clicking the current item's left or right half moves to the previous or next item, as do the arrow keys and swipes. Clicking a neighbour goes to it, and Esc closes the dialog.
+  - While it's open, the URL carries `?post=<id>` and, from the second item on, `&media=<n>`. Loading such a link opens the viewer there. `src/scripts/url.ts` owns the query string for both the filter and the viewer.
 - Videos play muted and looped while they are in view and pause when they leave it. With `prefers-reduced-motion`, they show the poster instead.
 - Post meta: the source link is shown as its domain (`psiquantum.com ↗`) and is the primary link. The Telegram link is quieter. Both are styled as text links, not buttons.
 - No uppercase labels, eyebrows, counters, decorative dividers or rounded cards.
 - Grid: 12 columns from 48rem up. Post tags take the first `--index-columns`; the filter line and post text start after them. Below 48rem everything stacks.
 - Tags no post uses are left out of the filter line.
 
-Tokens added with the UI, beyond the ones above: `--font-mono`, `--text-code`, `--leading-snug` (post text, filter line), `--display-indent` (optical correction for the heading), `--underline-width`, `--underline-offset`, `--index-columns`, `--media-nav-size` (chevron square), `--viewer-media-height`, `--focus-width`, `--focus-offset`. The 48rem breakpoint and the `sizes` attributes in `MediaRow.astro` are written out, since media queries and HTML can't read custom properties.
+Tokens added with the UI, beyond the ones above: `--font-mono`, `--text-code`, `--leading-snug` (post text, filter line), `--display-indent` (optical correction for the heading), `--underline-width`, `--underline-offset`, `--index-columns`, `--media-nav-size` (chevron square), `--viewer-media-height`, `--viewer-media-max`, `--viewer-dim`, `--focus-width`, `--focus-offset`. The 48rem breakpoint and the `sizes` attributes in `MediaRow.astro` are written out, since media queries and HTML can't read custom properties.
 
 Image and poster URLs go through `imageSet()` in `src/lib/urls.ts`, which builds `srcset` from `imageSources()` so only files that exist are referenced.
 

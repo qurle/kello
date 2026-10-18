@@ -1,5 +1,7 @@
 // Media rows: chevrons for a mouse, and videos that play only while in view.
 
+export {};
+
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
 for (const row of document.querySelectorAll<HTMLElement>('[data-media-row]')) {
