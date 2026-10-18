@@ -167,12 +167,13 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 
 	.masthead
 		display: flex
-		flex-wrap: wrap
 		align-items: end
-		gap: var(--space-md)
+		gap: var(--space-m)
 
-		// Takes the free space, so the switches sit at the right; they wrap below when it runs out
 		.heading
+			display: flex
+			flex-direction: column
+			gap: var(--space-xs)
 			flex: 1 1 auto
 
 		.title
@@ -185,22 +186,21 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 
 		.subtitle
 			color: var(--secondary)
-
+			text-wrap: wrap
+			line-height: 1.2
 			a
 				text-decoration: underline
 				text-underline-offset: 3px
-
 				&:hover
 					color: var(--primary)
 
 		.switches
 			display: flex
 			gap: var(--space-xs)
+			color: var(--secondary)
 
 		.theme,
 		.lang
-			color: var(--secondary)
-
 			@media (hover: hover)
 				&:hover
 					color: var(--primary)
@@ -221,27 +221,29 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 			display: inline
 			transition: transform var(--duration-base) var(--ease)
 			will-change: transform
+			height: 0.4em
+			width: auto
 
 		a:hover .logo
 			transform: rotate(15deg)
 
 	.filter
-		margin-top: var(--space-lg)
+		margin-top: var(--space-l)
 
 		.list
 			display: flex
 			flex-wrap: wrap
-			gap: var(--space-2xs) var(--space-sm)
+			gap: var(--space-2xs) var(--space-s)
 
 		@media (min-width: 48rem)
 			display: grid
 			grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr))
-			column-gap: var(--space-md)
+			column-gap: var(--space-m)
 			margin-top: var(--space-xl)
 
 			.list
 				grid-column: calc(var(--index-columns) + 1) / -1
-				gap: var(--space-2xs) var(--space-md)
+				gap: var(--space-2xs) var(--space-m)
 
 		// The tag line sits on the feed's grid, from the column after the index columns to the edge
 		@media (min-width: 64rem)

@@ -111,7 +111,7 @@ Setup, once:
 
 The page has three parts: the heading "kello" with its subtitle (`site.subtitle` in `kello.config.ts`), a line of tag filters, then posts. Nothing else goes in the header or footer, except two switches at the right of the heading and the "more" link to the next page after the feed.
   - The switches are the theme (`auto`, `light`, `dark`; Russian on `/ru`) and the language (`en` on `/`, `ru` on `/ru`, linking to the other language's same page number). Each shows its current state, not the one it switches to. They sit `--space-xs` apart.
-  - The heading takes the free space in the header row (`--space-md` gaps), and the switches wrap below it when there isn't room.
+  - The heading takes the free space in the header row (`--space-m` gaps), and the switches wrap below it when there isn't room.
 
 - Swiss style: Inter for text, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings and link hover (the source link included), and appears nowhere else. Focus rings show for keyboard navigation only: `:focus` has no outline, `:focus-visible` has the ring (`base.sass`). Selected tags turn `--primary`.
 - Fonts are self-hosted: Vite copies them into `/_astro/` at build time, and nothing loads from another host.

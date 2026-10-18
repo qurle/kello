@@ -7,8 +7,8 @@ export default defineConfig({
 		// The line under the heading: `text`, then `link` as a link to `url`. `ru` is optional and
 		// falls back to `en`
 		subtitle: {
-			en: { text: 'knowledge + inspo collected', link: 'by qurle' },
-			ru: { text: 'знания и вдохновение', link: 'от курле' },
+			en: { text: 'knowledge + inspo collected', link: 'by qurle' },
+			ru: { text: 'знания и вдохновение', link: 'от курле' },
 			url: 'https://qurle.net',
 		},
 		// Posts per page. The first page is the HTML of / and /ru; the rest load as the feed's end comes

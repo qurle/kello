@@ -66,22 +66,22 @@ const tags = sortTags(post.tags)
 	.meta
 		display: flex
 		flex-direction: column
-		gap: var(--space-sm)
+		gap: var(--space-s)
 
 		// After the media row
 		&:not(:first-child)
-			margin-top: var(--space-md)
+			margin-top: var(--space-m)
 
 		@media (min-width: 48rem)
 			display: grid
 			grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr))
-			column-gap: var(--space-md)
+			column-gap: var(--space-m)
 			align-items: baseline
 
 	.tags
 		display: flex
 		flex-wrap: wrap
-		gap: var(--space-2xs) var(--space-sm)
+		gap: var(--space-2xs) var(--space-s)
 
 		@media (min-width: 48rem)
 			grid-column: 1 / span var(--index-columns)
@@ -99,7 +99,7 @@ const tags = sortTags(post.tags)
 
 		:global(blockquote)
 			margin: 0
-			padding-inline-start: var(--space-md)
+			padding-inline-start: var(--space-m)
 			color: var(--secondary)
 
 		// Telegram adds a line break after a quote
@@ -122,8 +122,8 @@ const tags = sortTags(post.tags)
 	.links
 		display: flex
 		flex-wrap: wrap
-		gap: var(--space-2xs) var(--space-md)
-		margin-top: var(--space-sm)
+		gap: var(--space-2xs) var(--space-m)
+		margin-top: var(--space-s)
 
 	.source
 		color: var(--primary)
@@ -147,7 +147,7 @@ const tags = sortTags(post.tags)
 
 		.tags
 			flex-direction: row
-			gap: var(--space-2xs) var(--space-sm)
+			gap: var(--space-2xs) var(--space-s)
 
 		.links
 			margin-top: var(--space-xs)

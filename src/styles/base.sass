@@ -71,7 +71,7 @@ code
 // A tag in the filter line or on a post; colour carries the state
 .tag
     color: var(--secondary)
-    transition: color var(--duration-fast) var(--ease)
+    transition: color var(--duration-fast) var(--ease), opacity var(--duration-fast) linear
 
     @media (hover: hover)
         &:hover
@@ -83,6 +83,7 @@ code
     &:disabled
         color: var(--tertiary)
         cursor: default
+        opacity: 0
 
 // Loading media, with JS only: a feed slot (MediaRow.astro) or a viewer slide (viewer.ts) holds a
 // .dither and a --preview, and has data-loading until its picture or video arrives (feed.js, media.ts,
