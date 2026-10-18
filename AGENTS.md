@@ -176,5 +176,9 @@ Image and poster URLs go through `imageSet()` in `src/lib/urls.ts`, which builds
   - Only tokens, fonts and `base.sass` are global, imported in `Home.astro`. A style two components share (the tag button, the loading dither) goes in `base.sass`.
   - Scripts find elements by `data-*` attributes, never by class.
 - Tabs for indentation in TS and Astro markup, four spaces in Sass (in `.sass` files and `<style lang="sass">` blocks, whose rules start at column 0).
+- Code style in TS, JS and Astro frontmatter (`.prettierrc` sets the first two for Prettier):
+  - No semicolons.
+  - Single quotes. Template literals only when they interpolate; JSX attributes keep double quotes.
+  - No period after the last sentence of a comment. Sentences before it end as usual: `// Fetched once. A failed fetch is forgotten`
 - UI strings are English on `/` and Russian on `/ru`. There are only a handful, kept in one dictionary.
 - Before finishing a change, run `npm run build`, which type-checks the content collection against the schema, and `npx tsc --noEmit`. `tsconfig.json` extends Astro's base with `strictNullChecks` on, which Zod's types need; the rest of `strict` stays off.
