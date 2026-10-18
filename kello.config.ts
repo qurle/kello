@@ -12,6 +12,11 @@ export default defineConfig({
 		// A page is ~20 messages; albums take one message per item, so 3 pages are 20–60 posts.
 		// A full re-scan runs with `npm run sync -- --full`.
 		recentPages: 3,
+		// Full-size photos through a bot; see "Full-size photos" in AGENTS.md for the setup.
+		bot: {
+			tokenEnv: 'TELEGRAM_BOT_TOKEN',
+			dumpChatEnv: 'TELEGRAM_DUMP_CHAT_ID',
+		},
 	},
 
 	translation: {

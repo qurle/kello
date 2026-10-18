@@ -36,17 +36,40 @@ npm run sync                     # last channel.recentPages pages
 npm run sync -- --full           # whole channel, deletes anything no longer in it
 npm run sync -- --no-translate   # no translation: English = Russian, no sourceHash, so a real sync translates later
 npm run sync -- --message f.txt  # also write a commit message summary (used by the workflow)
+npm run check-bot                # check the full-size photo bot (see Full-size photos)
 npx astro sync                   # validate src/data/posts/*.json against the schema
 ```
 
 The workflow `.github/workflows/sync.yml` runs `npm run sync` every 12 hours and on demand (with a `full` checkbox), then commits `src/data` and `public/media` if anything changed. It needs `contents: write`, which the workflow requests itself. The `GEMINI_API_KEY` repository secret is optional.
+
+## Full-size photos
+
+Telegram keeps photos at up to 1280px, or 2560px when sent in HD, but its public pages only serve the 800px copy. When a bot is set up, sync fetches the largest copy through the Bot API (`scripts/sync/bot.ts`).
+
+Bots can't read a channel's history, so each photo's message is forwarded from the channel into a private scratch chat. The largest size is downloaded from the forward, and the forward is deleted.
+
+- **New photos** come through the bot first, falling back to the preview.
+- **Existing 800px photos** are upgraded once and marked `full: true` in their post JSON, so later syncs skip them. A regular sync only covers the recent pages; old posts are upgraded by a `--full` run.
+- **Videos the preview doesn't serve** are fetched through the bot if they're under 20 MB and `media.maxVideoMB`.
+- **Pace:** forwards go out one every ~3s to stay under Telegram's per-chat limit, so a full backfill of ~300 photos takes about 20 minutes.
+- **Failures:** any failure falls back to the preview copy. After 3 failures in a row, the bot is dropped for the rest of the run.
+
+Setup, once:
+
+1. Create a bot with @BotFather and keep its token.
+2. Add the bot to the channel as an admin. It needs no particular rights.
+3. Create a private channel as the scratch chat and add the bot there as an admin too. It posts and deletes the forwards there.
+4. Find the scratch chat's id, which starts with `-100`. Either open the chat at `web.telegram.org/a/` and read the id after `#`, or post in the chat and read `chat.id` from `https://api.telegram.org/bot<token>/getUpdates`.
+5. Add the repository secrets `TELEGRAM_BOT_TOKEN` and `TELEGRAM_DUMP_CHAT_ID`. The names come from `channel.bot` in `kello.config.ts`.
+6. Check it locally: put both variables in `.env` (gitignored; the sync and `check-bot` load it) and run `npm run check-bot`. It fetches one photo and prints its full size.
+7. Run the sync workflow once with **full** ticked to upgrade every existing photo.
 
 ## Known limits
 
 - The web preview at `t.me/s/` is undocumented HTML. Parse hashtags from `a[href^="?q="]` elements, not with a regex over text: a `<br>` between a tag and the next word disappears in `textContent`, which turns `#ui` and `Дамп` into `#uiДамп`.
 - Media URLs on `telesco.pe` are signed and expire, so never link to them from the site. Everything is downloaded at sync time.
 - Some videos have no source file in the preview (posts 213 and 227 as of Oct 2026). These, and any video over `media.maxVideoMB`, get type `unavailable` and link to the post in Telegram.
-- The preview serves photos at 800px wide at most, so most images have a single `-800.webp` file holding the original. Raising `media.widths` adds nothing until a bigger source exists. Which widths exist follows from the original width: use `imageSources()` in `src/lib/media.ts` rather than assuming every configured width.
+- The preview serves photos at 800px wide at most. Without the bot (below), most images have a single `-800.webp` file holding that copy. Which widths exist follows from the original width: use `imageSources()` in `src/lib/media.ts` rather than assuming every configured width.
 - Video thumbnails in the preview are tiny (≤320px). Sync takes the first frame with ffmpeg as the poster when ffmpeg is on `PATH` (the workflow installs it) and falls back to the thumbnail otherwise; a later run with ffmpeg replaces thumbnail posters. Video width and height come from the MP4 header.
 - Service messages ("Channel created") are skipped, so the site has one post fewer than the channel's message count suggests.
 - Text keeps `b`, `i`, `u`, `s`, `a`, `code`, `blockquote` and `br`. Custom emoji become their plain character, and hashtags outside the leading line become plain text.
