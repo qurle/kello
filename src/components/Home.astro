@@ -28,9 +28,7 @@ const all = await getPosts()
 // The filter line lists every tag, not just this page's: picking one loads the other pages.
 const tags = filterTags(new Set(all.flatMap((post) => post.tags)))
 const posts = pagePosts(all, page)
-const pages = Array.from({ length: pageCount(all) }, (_, i) =>
-	pagePath(lang, i + 1),
-)
+const pages = Array.from({ length: pageCount(all) }, (_, i) => pagePath(lang, i + 1))
 const next = pages[page]
 const url = (path: string) => new URL(path, config.site.url).href
 const { subtitle } = config.site
@@ -46,39 +44,21 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 		     the first paint (theme.ts). -->
 		<script is:inline>
 			document.documentElement.dataset.js = ''
-			if (/[?&]tags=/.test(location.search))
-				document.documentElement.dataset.filtering = ''
+			if (/[?&]tags=/.test(location.search)) document.documentElement.dataset.filtering = ''
 			try {
 				const theme = localStorage.getItem('theme')
-				if (theme === 'light' || theme === 'dark')
-					document.documentElement.dataset.theme = theme
+				if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme
 			} catch {}
 		</script>
-		<link
-			rel="preload"
-			href={mustica}
-			as="font"
-			type="font/woff2"
-			crossorigin
-		/>
-		<link
-			rel="preload"
-			href={lang === 'ru' ? interCyrillic : interLatin}
-			as="font"
-			type="font/woff2"
-			crossorigin
-		/>
+		<link rel="preload" href={mustica} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={lang === 'ru' ? interCyrillic : interLatin} as="font" type="font/woff2" crossorigin />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{config.site.title}</title>
 		<meta name="description" content={t.description} />
 		<link rel="canonical" href={url(pagePath(lang, page))} />
 		<link rel="alternate" hreflang="en" href={url(pagePath('en', page))} />
 		<link rel="alternate" hreflang="ru" href={url(pagePath('ru', page))} />
-		<link
-			rel="alternate"
-			hreflang="x-default"
-			href={url(pagePath('en', page))}
-		/>
+		<link rel="alternate" hreflang="x-default" href={url(pagePath('en', page))} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<!-- Link previews: public/og.png, 1200×630. -->
 		<meta property="og:type" content="website" />
@@ -100,12 +80,7 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 				<div class="heading">
 					<h1 class="title">
 						<a href={t.path}
-							>{config.site.title}<sup
-								><img
-									class="logo"
-									alt="kello logotype"
-									src="/favicon.svg"
-								/></sup
+							>{config.site.title}<sup><img class="logo" alt="kello logotype" src="/favicon.svg" /></sup
 							></a
 						>
 					</h1>
@@ -122,16 +97,11 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 				</div>
 				<!-- Each switch names the current state; the theme shows the label for html[data-theme]. -->
 				<div class="switches">
-					<button
-						class="theme"
-						type="button"
-						title={t.themeLabel}
-						data-theme-switch
-					>
+					<button class="theme" type="button" title={t.themeLabel} data-theme-switch>
 						<span class="auto">{t.theme.auto}</span>
 						<span class="light">{t.theme.light}</span>
 						<span class="dark">{t.theme.dark}</span>
-					</button>
+					</button> / 
 					<a
 						class="lang"
 						href={pagePath(t.switchTo, page)}
@@ -146,12 +116,7 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 					{
 						tags.map((tag) => (
 							<li>
-								<button
-									class="tag"
-									type="button"
-									data-tag={tag}
-									aria-pressed="false"
-								>
+								<button class="tag" type="button" data-tag={tag} aria-pressed="false">
 									{tagLabel(tag, lang)}
 								</button>
 							</li>
@@ -159,20 +124,10 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 					}
 				</ul>
 			</nav>
-			<main
-				class="feed"
-				data-feed
-				data-page={page}
-				data-pages={JSON.stringify(pages)}
-			>
+			<main class="feed" data-feed data-page={page} data-pages={JSON.stringify(pages)}>
 				{
 					posts.map((post, index) => (
-						<Post
-							post={post}
-							lang={lang}
-							page={page}
-							eager={page === 1 && index === 0}
-						/>
+						<Post post={post} lang={lang} page={page} eager={page === 1 && index === 0} />
 					))
 				}
 			</main>
@@ -197,121 +152,121 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 </html>
 
 <style lang="sass">
-// Page frame: heading, language link, filter line, feed.
+	// Page frame: heading, language link, filter line, feed.
 
-.page
-    box-sizing: content-box
-    max-width: var(--container-width)
-    margin-inline: auto
-    padding: var(--page-padding-top) var(--gutter) var(--space-2xl)
+	.page
+		box-sizing: content-box
+		max-width: var(--container-width)
+		margin-inline: auto
+		padding: var(--page-padding-top) var(--gutter) var(--space-2xl)
 
-    // Wide screens: the page spans the window and posts move across it (Post.astro).
-    @media (min-width: 64rem)
-        max-width: none
-        padding-inline: max(var(--page-padding-wide), var(--gutter))
+		// Wide screens: the page spans the window and posts move across it (Post.astro).
+		@media (min-width: 64rem)
+			max-width: none
+			padding-inline: max(var(--page-padding-wide), var(--gutter))
 
-.masthead
-    display: flex
-    flex-wrap: wrap
-    align-items: end
-    gap: var(--space-md)
+	.masthead
+		display: flex
+		flex-wrap: wrap
+		align-items: end
+		gap: var(--space-md)
 
-    // Takes the free space, so the switches sit at the right; they wrap below when it runs out.
-    .heading
-        flex: 1 1 auto
+		// Takes the free space, so the switches sit at the right; they wrap below when it runs out.
+		.heading
+			flex: 1 1 auto
 
-    .title
-        margin-inline-start: var(--display-indent)
-        font-family: var(--font-display)
-        font-size: var(--text-display)
-        font-weight: var(--weight-display)
-        line-height: var(--leading-tight)
-        letter-spacing: var(--tracking-display)
+		.title
+			margin-inline-start: var(--display-indent)
+			font-family: var(--font-display)
+			font-size: var(--text-display)
+			font-weight: var(--weight-display)
+			line-height: var(--leading-tight)
+			letter-spacing: var(--tracking-display)
 
-    .subtitle
-        color: var(--secondary)
+		.subtitle
+			color: var(--secondary)
 
-        a
-            text-decoration: underline
-            text-underline-offset: 3px
+			a
+				text-decoration: underline
+				text-underline-offset: 3px
 
-            &:hover
-                color: var(--primary)
+				&:hover
+					color: var(--primary)
 
-    .switches
-        display: flex
-        gap: var(--space-xs)
+		.switches
+			display: flex
+			gap: var(--space-xs)
 
-    .theme,
-    .lang
-        color: var(--secondary)
+		.theme,
+		.lang
+			color: var(--secondary)
 
-        @media (hover: hover)
-            &:hover
-                color: var(--primary)
+			@media (hover: hover)
+				&:hover
+					color: var(--primary)
 
-    // Only the current theme's name shows. Without JS there's nothing to switch.
-    .theme span
-        display: none
+		// Only the current theme's name shows. Without JS there's nothing to switch.
+		.theme span
+			display: none
 
-    :global(html:not([data-theme])) & .theme .auto,
-    :global(html[data-theme="light"]) & .theme .light,
-    :global(html[data-theme="dark"]) & .theme .dark
-        display: inline
+		:global(html:not([data-theme])) & .theme .auto,
+		:global(html[data-theme="light"]) & .theme .light,
+		:global(html[data-theme="dark"]) & .theme .dark
+			display: inline
 
-    :global(html:not([data-js])) & .theme
-        display: none
+		:global(html:not([data-js])) & .theme
+			display: none
 
-    .logo
-        display: inline
-        transition: transform var(--duration-base) var(--ease)
-        will-change: transform
+		.logo
+			display: inline
+			transition: transform var(--duration-base) var(--ease)
+			will-change: transform
 
-    a:hover .logo
-        transform: rotate(15deg)
+		a:hover .logo
+			transform: rotate(15deg)
 
-.filter
-    margin-top: var(--space-lg)
+	.filter
+		margin-top: var(--space-lg)
 
-    .list
-        display: flex
-        flex-wrap: wrap
-        gap: var(--space-2xs) var(--space-sm)
+		.list
+			display: flex
+			flex-wrap: wrap
+			gap: var(--space-2xs) var(--space-sm)
 
-    @media (min-width: 48rem)
-        display: grid
-        grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr))
-        column-gap: var(--space-md)
-        margin-top: var(--space-xl)
+		@media (min-width: 48rem)
+			display: grid
+			grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr))
+			column-gap: var(--space-md)
+			margin-top: var(--space-xl)
 
-        .list
-            grid-column: calc(var(--index-columns) + 1) / -1
-            gap: var(--space-2xs) var(--space-md)
+			.list
+				grid-column: calc(var(--index-columns) + 1) / -1
+				gap: var(--space-2xs) var(--space-md)
 
-    // The tag line sits on the feed's grid, from the column after the index columns to the edge.
-    @media (min-width: 64rem)
-        grid-template-columns: repeat(var(--scatter-columns), minmax(0, 1fr))
-        column-gap: var(--scatter-gap)
+		// The tag line sits on the feed's grid, from the column after the index columns to the edge.
+		@media (min-width: 64rem)
+			grid-template-columns: repeat(var(--scatter-columns), minmax(0, 1fr))
+			column-gap: var(--scatter-gap)
 
-.feed
-    margin-top: var(--space-2xl)
+	.feed
+		margin-top: var(--space-2xl)
 
-    // A shared ?tags= link: hidden until every page is in and filtered (filter.ts).
-    :global(html[data-filtering]) &
-        visibility: hidden
+		// A shared ?tags= link: hidden until every page is in and filtered (filter.ts).
+		:global(html[data-filtering]) &
+			visibility: hidden
 
-    // Wide screens: feed.js places each post and sets data-scatter. The feed stays hidden until then.
-    @media (min-width: 64rem)
-        :global(html[data-js]) &:not([data-scatter])
-            visibility: hidden
+		// Wide screens: feed.js places each post and sets data-scatter. The feed stays hidden until then.
+		@media (min-width: 64rem)
+			:global(html[data-js]) &:not([data-scatter])
+				visibility: hidden
 
-    &[data-scatter]
-        position: relative
+		&[data-scatter]
+			position: relative
 
-// The next page: a plain link without JS, and with it the point where pages.ts loads the next one.
-.more
-    display: block
-    width: fit-content
-    margin-top: var(--post-gap)
-    color: var(--secondary)
+	// The next page: a plain link without JS, and with it the point where pages.ts loads the next one.
+	.more
+		display: block
+		width: fit-content
+		margin-top: var(--post-gap)
+		color: var(--secondary)
 </style>
