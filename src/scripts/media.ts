@@ -37,10 +37,12 @@ function setUpRow(row: HTMLElement) {
 	const next = row.querySelector<HTMLButtonElement>('[data-media-next]')
 	if (!prev || !next) return
 
-	// The rest of the row loads once it's scrolled, or the mouse reaches the next chevron. Until then only
-	// the slots showing in the row are revealed (`nearing` sees the row's clipping)
+	// The rest of the row loads once it's scrolled, a mouse presses it (a drag can coast several slides) or
+	// reaches the next chevron. Until then only the slots showing in the row are revealed (`nearing` sees the
+	// row's clipping)
 	const revealRow = () => reveal(row)
 	track.addEventListener('scroll', revealRow, { once: true, passive: true })
+	track.addEventListener('pointerdown', revealRow, { once: true })
 	next.addEventListener('pointerenter', revealRow, { once: true })
 
 	const update = () => {
@@ -65,13 +67,33 @@ function setUpRow(row: HTMLElement) {
 }
 
 // Pictures go in within half a window of it, rather than the browser's lazy-loading distance of several
-// windows, and those already in view load first
+// windows, and those in view load first. While the page scrolls, a slot goes in only once it has stayed
+// that near for `dwell` ms, so a fast scroll doesn't start downloads for slots it flies past, which would
+// hold up the ones where it stops. At rest, the first load included, it goes in at once
+const dwell = 120
+let lastScroll = -Infinity
+addEventListener('scroll', () => (lastScroll = performance.now()), { passive: true })
+const waiting = new Map<Element, number>()
+
+function settleIn(slot: Element) {
+	waiting.delete(slot)
+	nearing.unobserve(slot)
+	const box = slot.getBoundingClientRect()
+	reveal(slot, box.top < innerHeight && box.bottom > 0 ? 'high' : 'low')
+}
+
 const nearing = new IntersectionObserver(
 	(entries) => {
-		for (const { target, isIntersecting, boundingClientRect: box } of entries) {
+		for (const { target, isIntersecting } of entries) {
+			clearTimeout(waiting.get(target))
+			waiting.delete(target)
 			if (!isIntersecting) continue
-			nearing.unobserve(target)
-			reveal(target, box.top < innerHeight && box.bottom > 0 ? 'high' : 'low')
+			if (performance.now() - lastScroll > dwell) settleIn(target)
+			else
+				waiting.set(
+					target,
+					window.setTimeout(() => settleIn(target), dwell),
+				)
 		}
 	},
 	{ rootMargin: '50% 0px' },
