@@ -13,6 +13,9 @@ let slides: HTMLElement[] = []
 let current = 0
 let postId = ''
 let opener: HTMLElement | null = null
+// Opened by Enter or Space on an item: focus goes to the close button and back to the item, with rings.
+// Opened by a pointer or a shared link, focus stays on the dialog and is let go on close, so no ring shows
+let byKeyboard = false
 
 /** A copy of a feed item's video or picture */
 function slideFor(item: HTMLElement) {
@@ -115,16 +118,19 @@ function nearest() {
 	return best
 }
 
-function open(post: HTMLElement, index: number, from: HTMLElement | null) {
+function open(post: HTMLElement, index: number, from: HTMLElement | null, keyboard = false) {
 	reveal(post)
 	const items = [...post.querySelectorAll<HTMLElement>('[data-open]')]
 	if (!items.length) return
 	postId = post.dataset.post!
 	opener = from
+	byKeyboard = keyboard
 	slides = items.map(slideFor)
 	track.replaceChildren(...slides)
 	meta.replaceChildren(post.querySelector('[data-post-meta]')!.cloneNode(true))
 	dialog.showModal()
+	// showModal() focuses the close button, which Chrome rings even after a click
+	if (!keyboard) dialog.focus()
 	pad()
 	const start = Math.min(Math.max(index, 0), slides.length - 1)
 	scrollTo(start, 'auto')
@@ -135,7 +141,8 @@ document.addEventListener('click', (event) => {
 	const item = (event.target as Element).closest<HTMLElement>('[data-open]')
 	if (!item) return
 	const post = item.closest<HTMLElement>('[data-post]')!
-	open(post, [...post.querySelectorAll('[data-open]')].indexOf(item), item)
+	// A click from Enter or Space has no pointer press count
+	open(post, [...post.querySelectorAll('[data-open]')].indexOf(item), item, event.detail === 0)
 })
 
 /** -1 or 1 for the left or right half of the current slide; 0 where there is no neighbour */
@@ -218,7 +225,9 @@ dialog.addEventListener('close', () => {
 	meta.replaceChildren()
 	slides = []
 	setParams({ post: null, media: null })
-	if (opener?.checkVisibility()) opener.focus()
+	if (byKeyboard && opener?.checkVisibility()) opener.focus()
+	// The dialog has already handed focus back to the item, which an Esc rings
+	else if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
 	opener = null
 })
 

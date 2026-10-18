@@ -10,7 +10,7 @@ interface Props {
 const t = strings[Astro.props.lang]
 ---
 
-<dialog class="viewer" aria-label={t.viewer} aria-keyshortcuts="ArrowLeft ArrowRight Escape" data-viewer>
+<dialog class="viewer" tabindex="-1" aria-label={t.viewer} aria-keyshortcuts="ArrowLeft ArrowRight Escape" data-viewer>
 	<div class="bar">
 		<button class="close" type="button" data-viewer-close>{t.close}</button>
 	</div>
@@ -35,6 +35,10 @@ const t = strings[Astro.props.lang]
     overscroll-behavior: contain
     // Slides size against the dialog, which excludes its scrollbar, unlike 100vw
     container-type: inline-size
+
+    // Focused itself when opened by a pointer (viewer.ts); a ring round the whole window says nothing
+    &:focus-visible
+        outline: none
 
     &::backdrop
         background: transparent
