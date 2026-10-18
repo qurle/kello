@@ -9,16 +9,14 @@ interface Props {
 	post: Post;
 	lang: Lang;
 	eager?: boolean;
-	/** Horizontal position on wide screens, 0–1; see src/lib/offset.ts. */
-	offset?: number;
 }
 
-const { post, lang, eager = false, offset = 0 } = Astro.props;
+const { post, lang, eager = false } = Astro.props;
 const t = strings[lang];
 const tags = sortTags(post.tags);
 ---
 
-<article class="post" id={`post-${post.telegramId}`} data-post={post.telegramId} data-tags={tags.join(' ')} style={`--offset: ${offset}`}>
+<article class="post" id={`post-${post.telegramId}`} data-post={post.telegramId} data-tags={tags.join(' ')}>
 	{post.media.length > 0 && <MediaRow media={post.media} telegramId={post.telegramId} lang={lang} eager={eager} />}
 	<div class="post__meta" data-post-meta>
 		{tags.length > 0 && (
