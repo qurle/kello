@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import sharp, { type Sharp } from 'sharp';
 import { imageSources, storedWidths } from '../../src/lib/media';
+import type { TelegramBot } from './bot';
 import { firstFrame, hasFfmpeg, mp4Size } from './mp4';
 import type { MediaEntry, ScrapedMedia, ScrapedPost } from './types';
 
@@ -13,6 +14,8 @@ export interface MediaOptions {
 	/** WebP quality, 1–100. */
 	quality: number;
 	maxVideoMB: number;
+	/** Fetches full-size photos and preview-less videos when the bot is set up; see bot.ts. */
+	bot?: TelegramBot;
 }
 
 type Warn = (msg: string) => void;
@@ -112,21 +115,28 @@ async function syncVideo(post: ScrapedPost, item: ScrapedMedia & { type: 'video'
 	const thumb = item.poster ? await download(item.poster).catch(() => undefined) : undefined;
 	const thumbSize = thumb && (await sizeOf(thumb));
 
+	const maxBytes = opts.maxVideoMB * 1024 * 1024;
+	let video: Buffer | undefined;
 	if (item.url) {
-		try {
-			const video = await download(item.url, opts.maxVideoMB * 1024 * 1024);
-			const file = path.join(opts.root, `${base}.mp4`);
-			await writeAtomic(file, video);
-			const size = mp4Size(video) ?? (item.width && item.height ? { width: item.width, height: item.height } : thumbSize);
-			if (!size) throw new Error('unknown video size');
-			const frame = hasFfmpeg() ? await firstFrame(file).catch((err) => void warn(`post ${post.telegramId}: ${err.message}`)) : undefined;
-			const poster = frame ?? thumb;
-			if (poster) await writeImage(poster, `${base}-poster`, size.width, opts);
-			return { type: 'video', messageId: item.messageId, file: `${base}.mp4`, poster: poster && `${base}-poster`, ...size };
-		} catch (err) {
+		video = await download(item.url, maxBytes).catch((err) => {
 			if (!(err instanceof TooLarge)) throw err;
 			warn(`post ${post.telegramId}: video ${n} is over ${opts.maxVideoMB} MB, linked to Telegram instead`);
-		}
+			return undefined;
+		});
+	} else if (opts.bot) {
+		// The preview has no file for this video; the bot can fetch it if it's small enough.
+		video = await opts.bot.video(item.messageId, maxBytes);
+	}
+
+	if (video) {
+		const file = path.join(opts.root, `${base}.mp4`);
+		await writeAtomic(file, video);
+		const size = mp4Size(video) ?? (item.width && item.height ? { width: item.width, height: item.height } : thumbSize);
+		if (!size) throw new Error('unknown video size');
+		const frame = hasFfmpeg() ? await firstFrame(file).catch((err) => void warn(`post ${post.telegramId}: ${err.message}`)) : undefined;
+		const poster = frame ?? thumb;
+		if (poster) await writeImage(poster, `${base}-poster`, size.width, opts);
+		return { type: 'video', messageId: item.messageId, file: `${base}.mp4`, poster: poster && `${base}-poster`, ...size };
 	}
 
 	const width = item.width ?? thumbSize?.width;
@@ -150,20 +160,37 @@ async function syncItem(
 			await writeImage(frame, `${post.telegramId}/${n}-poster`, prev.width, opts);
 			return { ...prev, poster: `${post.telegramId}/${n}-poster` };
 		}
-		// An unavailable video whose source has appeared, or now fits under the limit, is tried again.
-		if (!(prev.type === 'unavailable' && item.type === 'video' && item.url)) return prev;
-		const length = await fetch(item.url, { method: 'HEAD' })
-			.then((r) => Number(r.headers.get('content-length')))
-			.catch(() => 0);
-		if (!length || length > opts.maxVideoMB * 1024 * 1024) return prev;
+		if (prev.type === 'image') return upgradeImage(prev, opts);
+		// An unavailable video is tried again when its source has appeared or now fits under the
+		// limit, or through the bot when it's set up.
+		if (!(prev.type === 'unavailable' && item.type === 'video')) return prev;
+		if (item.url) {
+			const length = await fetch(item.url, { method: 'HEAD' })
+				.then((r) => Number(r.headers.get('content-length')))
+				.catch(() => 0);
+			if (!length || length > opts.maxVideoMB * 1024 * 1024) return prev;
+		} else if (!opts.bot) return prev;
 	}
 
 	if (item.type === 'video') return syncVideo(post, item, n, opts, warn);
 	const base = `${post.telegramId}/${n}`;
-	const source = await download(item.url);
+	const full = await opts.bot?.photo(item.messageId);
+	const source = full ?? (await download(item.url));
 	const size = await sizeOf(source);
 	await writeImage(source, base, size.width, opts);
-	return { type: 'image', messageId: item.messageId, file: base, ...size };
+	return { type: 'image', messageId: item.messageId, file: base, ...size, ...(full && { full: true }) };
+}
+
+/** Replaces a web-preview photo with Telegram's largest copy, once, when the bot is set up. */
+async function upgradeImage(prev: MediaEntry & { type: 'image' }, opts: MediaOptions): Promise<MediaEntry> {
+	if (prev.full || !opts.bot || !prev.messageId) return prev;
+	const source = await opts.bot.photo(prev.messageId);
+	if (!source) return prev;
+	const size = await sizeOf(source);
+	// Rarely the preview already had the largest copy; marking it full still saves the next sync a forward.
+	if (size.width <= prev.width) return { ...prev, full: true };
+	await writeImage(source, prev.file, size.width, opts);
+	return { ...prev, ...size, full: true };
 }
 
 /** Downloads a post's media in album order, reusing files from the previous sync, and removes stale files. */

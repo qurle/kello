@@ -15,6 +15,8 @@ const image = z.object({
 	file: z.string(),
 	width: z.number(),
 	height: z.number(),
+	/** Telegram's largest copy, fetched through the bot; otherwise the web preview's (800px at most). */
+	full: z.boolean().optional(),
 });
 
 const video = z.object({

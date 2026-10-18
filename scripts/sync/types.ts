@@ -31,7 +31,7 @@ export interface ScrapedPost {
 }
 
 export type MediaEntry =
-	| { type: 'image'; messageId?: number; file: string; width: number; height: number }
+	| { type: 'image'; messageId?: number; file: string; width: number; height: number; full?: boolean }
 	| { type: 'video'; messageId?: number; file: string; poster?: string; width: number; height: number }
 	| { type: 'unavailable'; messageId?: number; poster?: string; width?: number; height?: number };
 

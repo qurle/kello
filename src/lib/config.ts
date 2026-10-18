@@ -26,6 +26,15 @@ export const configSchema = z.object({
 		username: z.string(),
 		/** Pages (~20 messages each) re-checked on a regular sync to catch edits and deletions. */
 		recentPages: z.number().int().positive(),
+		/**
+		 * Optional Telegram bot for full-size photos (scripts/sync/bot.ts). Environment variables holding
+		 * its token and the id of the private chat it forwards into; without both, sync uses the web
+		 * preview's 800px copies.
+		 */
+		bot: z.object({
+			tokenEnv: z.string(),
+			dumpChatEnv: z.string(),
+		}),
 	}),
 	translation: z.object({
 		/**

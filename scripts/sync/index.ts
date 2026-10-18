@@ -10,6 +10,7 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import config from '../../kello.config';
+import { TelegramBot } from './bot';
 import { removeMedia, syncMedia, type MediaOptions } from './media';
 import { scrape } from './scrape';
 import { readPosts, removePost, writePost } from './store';
@@ -42,6 +43,24 @@ async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>
 	);
 }
 
+/** The bot for full-size photos, if its variables are set and it can see both chats. */
+async function connectBot(): Promise<TelegramBot | undefined> {
+	const token = process.env[config.channel.bot.tokenEnv];
+	const dumpChat = process.env[config.channel.bot.dumpChatEnv];
+	if (!token || !dumpChat) {
+		console.log(`${config.channel.bot.tokenEnv} or ${config.channel.bot.dumpChatEnv} is not set, photos stay at the web preview's size.`);
+		return undefined;
+	}
+	const bot = new TelegramBot(token, config.channel.username, dumpChat, warn);
+	try {
+		console.log(`Telegram bot @${await bot.check()} ready for full-size photos.`);
+		return bot;
+	} catch (err) {
+		warn(`Telegram bot not usable, photos stay at the web preview's size: ${(err as Error).message}`);
+		return undefined;
+	}
+}
+
 async function main() {
 	const mediaOpts: MediaOptions = {
 		root: path.resolve('public', config.media.dir),
@@ -49,6 +68,7 @@ async function main() {
 		formats: config.media.formats,
 		quality: config.media.quality,
 		maxVideoMB: config.media.maxVideoMB,
+		bot: await connectBot(),
 	};
 
 	let translator: Translator | undefined;
