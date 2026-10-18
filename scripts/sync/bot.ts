@@ -38,6 +38,8 @@ export class TelegramBot {
 	private lastForward = 0;
 	private failures = 0;
 	private disabled = false;
+	/** Forwards run one at a time, even though the sync handles several posts at once. */
+	private queue: Promise<unknown> = Promise.resolve();
 
 	constructor(
 		private token: string,
@@ -64,9 +66,17 @@ export class TelegramBot {
 				ok?: boolean;
 				result?: T;
 				description?: string;
-				parameters?: { retry_after?: number };
+				parameters?: { retry_after?: number; migrate_to_chat_id?: number };
 			};
 			if (body.ok) return body.result as T;
+			// A group that became a supergroup gets a new id; Telegram says which, so follow it.
+			const moved = body.parameters?.migrate_to_chat_id;
+			if (moved && String(params.chat_id) === this.dumpChat && attempt < 5) {
+				this.dumpChat = String(moved);
+				params = { ...params, chat_id: this.dumpChat };
+				this.warn(`Telegram bot: the scratch chat became a supergroup with id ${moved}; using it for this run. Update the dump chat id secret to ${moved}.`);
+				continue;
+			}
 			const wait = body.parameters?.retry_after;
 			if (res.status === 429 && wait && attempt < 5) {
 				this.warn(`Telegram bot: rate limited, waiting ${wait}s`);
@@ -87,7 +97,13 @@ export class TelegramBot {
 	}
 
 	/** Forwards a channel message into the scratch chat, hands it to `use`, then deletes the forward. */
-	private async withForward<T>(messageId: number, use: (message: Message) => Promise<T | undefined>): Promise<T | undefined> {
+	private withForward<T>(messageId: number, use: (message: Message) => Promise<T | undefined>): Promise<T | undefined> {
+		const run = this.queue.then(() => this.forwardOnce(messageId, use));
+		this.queue = run.catch(() => undefined);
+		return run;
+	}
+
+	private async forwardOnce<T>(messageId: number, use: (message: Message) => Promise<T | undefined>): Promise<T | undefined> {
 		if (this.disabled) return undefined;
 		try {
 			await sleep(Math.max(0, this.lastForward + forwardInterval - Date.now()));
