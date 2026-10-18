@@ -1,47 +1,51 @@
-// Media viewer: a post's whole row as a carousel in a <dialog>. The open post and item live in the URL (?post=&media=)
-
+// Media viewer: a post's row as a carousel in a <dialog>, its post and item in the URL (?post=&media=)
 import { draggable } from './drag'
-import { reveal } from './media'
+import { onLoad, reveal } from './media'
+import { reducedMotion, scrollBehavior } from './motion'
 import { loadAll } from './pages'
 import { getParam, setParams } from './url'
 
 const dialog = document.querySelector<HTMLDialogElement>('[data-viewer]')!
 const track = dialog.querySelector<HTMLElement>('[data-viewer-track]')!
 const meta = dialog.querySelector<HTMLElement>('[data-viewer-meta]')!
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
+const closeButton = dialog.querySelector<HTMLElement>('[data-viewer-close]')!
 
 let slides: HTMLElement[] = []
 let current = 0
 
-/** A copy of a feed item's video or picture */
-function slideFor(item: HTMLElement) {
+/** A copy of a feed item's video or picture. `near` slides load now, the rest as they come close */
+function slideFor(item: HTMLElement, near: boolean) {
 	const media = (item.querySelector('video') ?? item.querySelector('picture'))!.cloneNode(true) as HTMLElement
 	const sized = media.querySelector('img') ?? media
-	const width = Number(sized.getAttribute('width')) || 16
-	const height = Number(sized.getAttribute('height')) || 9
+	const ratio = (Number(sized.getAttribute('width')) || 16) / (Number(sized.getAttribute('height')) || 9)
 
-	media.querySelectorAll('source, img').forEach((element) => element.setAttribute('sizes', 'min(64rem, 100vw)'))
-	media.querySelector('img')?.setAttribute('loading', 'eager')
+	// The slide's width, as Viewer.astro sizes it, so a portrait image doesn't fetch a landscape's file
+	const style = getComputedStyle(track)
+	const height = style.getPropertyValue('--viewer-media-height').trim().replace('dvh', 'vh')
+	const sizes = `min(calc(${height} * ${ratio.toFixed(3)}), ${style.getPropertyValue('--viewer-media-max').trim()}, 100vw)`
+	media.querySelectorAll('source, img').forEach((element) => element.setAttribute('sizes', sizes))
+	const img = media.querySelector('img')
+	if (img) img.loading = near ? 'eager' : 'lazy'
+
 	if (media instanceof HTMLVideoElement) {
 		media.removeAttribute('data-autoplay')
-		// The feed shows the poster as a picture under the video; here it is the video's own poster
+		// In the feed the poster is a picture under the video
 		const poster = item.querySelector('img')
 		if (poster) media.poster = poster.currentSrc || poster.src
-		media.preload = 'metadata'
+		media.preload = 'none'
 		media.muted = true
-		// Reduced motion: no autoplay, the person presses play
 		media.controls = reducedMotion.matches
 	}
 
 	const slide = document.createElement('li')
 	slide.dataset.slide = ''
-	slide.style.setProperty('--ratio', `${width} / ${height}`)
+	slide.style.setProperty('--ratio', String(ratio))
 	slide.append(media)
 	dither(slide, item, media)
 	return slide
 }
 
-/** The feed slot's dithered preview (base.sass) on a slide until its picture, or video poster or frame, arrives */
+/** The feed slot's dithered preview (base.sass) until the picture, or the video's poster or frame, arrives */
 function dither(slide: HTMLElement, item: HTMLElement, media: HTMLElement) {
 	const preview = item.closest<HTMLElement>('[data-slot]')?.style.getPropertyValue('--preview')
 	if (!preview) return
@@ -58,30 +62,24 @@ function dither(slide: HTMLElement, item: HTMLElement, media: HTMLElement) {
 		media.addEventListener('loadeddata', done, { once: true })
 		if (media.poster) {
 			const poster = new Image()
-			poster.addEventListener('load', done, { once: true })
 			poster.src = media.poster
+			onLoad(poster, done)
 		}
-		return
+	} else {
+		const img = media.querySelector('img')
+		if (img) onLoad(img, done)
+		else done()
 	}
-	const img = media.querySelector('img')
-	if (!img) return done()
-	img.addEventListener('load', done, { once: true })
-	img.addEventListener('error', done, { once: true })
-	if (img.complete && img.naturalWidth) done()
 }
 
-const smooth = () => (reducedMotion.matches ? 'auto' : 'smooth')
+/** Scroll position that centres a slide */
+const centre = (slide: HTMLElement) => slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2
 
-/** Room at both ends, so the first and last slide can sit in the middle */
+/** Room at both ends, so the first and last slides can sit in the middle */
 function pad() {
 	const half = (slide: HTMLElement) => `${(track.clientWidth - slide.offsetWidth) / 2}px`
 	track.style.setProperty('--pad-start', half(slides[0]))
 	track.style.setProperty('--pad-end', half(slides.at(-1)!))
-}
-
-function scrollTo(index: number, behavior: ScrollBehavior) {
-	const slide = slides[index]
-	track.scrollTo({ left: slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2, behavior })
 }
 
 function setCurrent(index: number) {
@@ -99,31 +97,28 @@ function setCurrent(index: number) {
 function go(index: number) {
 	if (index < 0 || index >= slides.length) return
 	setCurrent(index)
-	scrollTo(index, smooth())
+	track.scrollTo({ left: centre(slides[index]), behavior: scrollBehavior() })
 }
 
-/** The slide whose centre is closest to the track's centre */
-function nearest() {
-	const middle = track.scrollLeft + track.clientWidth / 2
-	let best = 0
-	slides.forEach((slide, n) => {
-		const distance = Math.abs(slide.offsetLeft + slide.offsetWidth / 2 - middle)
-		const bestDistance = Math.abs(slides[best].offsetLeft + slides[best].offsetWidth / 2 - middle)
-		if (distance < bestDistance) best = n
-	})
-	return best
-}
+/** The slide closest to the middle */
+const nearest = () =>
+	slides.reduce(
+		(best, slide, n) =>
+			Math.abs(centre(slide) - track.scrollLeft) < Math.abs(centre(slides[best]) - track.scrollLeft) ? n : best,
+		0,
+	)
 
 /**
- * `from` is the item that opened the viewer from the keyboard, which gets focus back on close. Opened by a
- * pointer or a shared link there is none: focus stays on the dialog and is let go on close, so no ring shows
+ * `from` is the item that opened the viewer by keyboard, which gets focus back on close. Opened by a
+ * pointer or a link, focus stays on the dialog and is let go on close, so no ring shows
  */
 function open(post: HTMLElement, index: number, from: HTMLElement | null) {
 	reveal(post)
 	const items = [...post.querySelectorAll<HTMLElement>('[data-open]')]
 	if (!items.length) return
+	const start = Math.min(Math.max(index, 0), items.length - 1)
 	setParams({ post: post.dataset.post! })
-	slides = items.map(slideFor)
+	slides = items.map((item, n) => slideFor(item, Math.abs(n - start) <= 1))
 	track.replaceChildren(...slides)
 	meta.replaceChildren(post.querySelector('[data-post-meta]')!.cloneNode(true))
 	dialog.showModal()
@@ -133,14 +128,13 @@ function open(post: HTMLElement, index: number, from: HTMLElement | null) {
 		'close',
 		() => {
 			if (from?.checkVisibility()) from.focus()
-			// The dialog has already handed focus back to the item, which an Esc rings
+			// The dialog has handed focus back to the item already, which an Esc rings
 			else if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
 		},
 		{ once: true },
 	)
 	pad()
-	const start = Math.min(Math.max(index, 0), slides.length - 1)
-	scrollTo(start, 'auto')
+	track.scrollLeft = centre(slides[start])
 	setCurrent(start)
 }
 
@@ -148,30 +142,23 @@ document.addEventListener('click', (event) => {
 	const item = (event.target as Element).closest<HTMLElement>('[data-open]')
 	if (!item) return
 	const post = item.closest<HTMLElement>('[data-post]')!
-	// A click from Enter or Space has no pointer press count
+	// Enter or Space make a click with no press count
 	open(post, [...post.querySelectorAll('[data-open]')].indexOf(item), event.detail === 0 ? item : null)
 })
 
-/** -1 or 1 for the left or right half of the current slide; 0 where there is no neighbour */
-function sideAt(slide: HTMLElement, x: number) {
-	const { left, width } = slide.getBoundingClientRect()
-	const direction = x < left + width / 2 ? -1 : 1
-	const target = current + direction
-	return target < 0 || target >= slides.length ? 0 : direction
-}
-
+// A click on the current slide steps by its half; on another slide, goes there
 track.addEventListener('click', (event) => {
 	const target = event.target as Element
-	// Native video controls keep their clicks
 	if (target.closest('video[controls]')) return
 	const slide = target.closest<HTMLElement>('[data-slide]')
 	if (!slide) return
 	const index = slides.indexOf(slide)
-	go(index === current ? current + sideAt(slide, event.clientX) : index)
+	if (index !== current) return go(index)
+	const { left, width } = slide.getBoundingClientRect()
+	go(current + (event.clientX < left + width / 2 ? -1 : 1))
 })
 
-// Slides scroll to their centre; the scroll handler below makes the one it lands on current
-draggable(track, () => slides.map((slide) => slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2))
+draggable(track, () => slides.map(centre))
 
 // After a swipe or scroll, the slide in the middle becomes current
 let settle = 0
@@ -180,7 +167,6 @@ track.addEventListener(
 	() => {
 		clearTimeout(settle)
 		settle = window.setTimeout(() => {
-			// Emptying the track on close scrolls it too
 			if (!dialog.open || !slides.length) return
 			const index = nearest()
 			if (index !== current) setCurrent(index)
@@ -192,7 +178,7 @@ track.addEventListener(
 new ResizeObserver(() => {
 	if (!dialog.open) return
 	pad()
-	scrollTo(current, 'auto')
+	track.scrollLeft = centre(slides[current])
 }).observe(track)
 
 dialog.addEventListener('keydown', (event) => {
@@ -201,8 +187,6 @@ dialog.addEventListener('keydown', (event) => {
 	else return
 	event.preventDefault()
 })
-
-const closeButton = dialog.querySelector<HTMLElement>('[data-viewer-close]')!
 
 /** Anywhere outside the media and the post's text */
 const inCloseZone = (target: EventTarget | null) =>
@@ -229,10 +213,8 @@ dialog.addEventListener('close', () => {
 	setParams({ post: null, media: null })
 })
 
-// A tag picked inside the viewer filters the page behind it
-document.addEventListener('kello:filter', () => {
-	if (dialog.open) dialog.close()
-})
+// A tag picked in the viewer filters the page behind it
+document.addEventListener('kello:filter', () => dialog.open && dialog.close())
 
 // A shared link opens its post, loading the other pages if it isn't on this one
 const shared = getParam('post')

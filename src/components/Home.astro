@@ -1,5 +1,5 @@
 ---
-// Inter, variable weight, bundled from fontsource. Mustica Pro for the heading is in fonts.sass
+// Inter from fontsource; Mustica Pro for the heading is in fonts.sass
 import '@fontsource-variable/inter/wght.css'
 import '../styles/fonts.sass'
 import '../styles/variables.sass'
@@ -25,7 +25,7 @@ interface Props {
 const { lang, page = 1 } = Astro.props
 const t = strings[lang]
 const all = await getPosts()
-// The filter line lists every tag, not just this page's: picking one loads the other pages
+// Every tag, not just this page's: picking one loads the other pages
 const tags = filterTags(new Set(all.flatMap((post) => post.tags)))
 const posts = pagePosts(all, page)
 const pages = Array.from({ length: pageCount(all) }, (_, i) => pagePath(lang, i + 1))
@@ -152,15 +152,13 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 </html>
 
 <style lang="sass">
-	// Page frame: heading, language link, filter line, feed
-
 	.page
 		box-sizing: content-box
 		max-width: var(--container-width)
 		margin-inline: auto
 		padding: var(--page-padding-top) var(--gutter) var(--space-2xl)
 
-		// Wide screens: the page spans the window and posts move across it (Post.astro)
+		// Wide screens: the page spans the window
 		@media (min-width: 64rem)
 			max-width: none
 			padding-inline: max(var(--page-padding-wide), var(--gutter))
@@ -186,7 +184,6 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 
 		.subtitle
 			color: var(--secondary)
-			text-wrap: wrap
 			line-height: 1.2
 			a
 				text-decoration: underline
@@ -205,7 +202,7 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 				&:hover
 					color: var(--primary)
 
-		// Only the current theme's name shows. Without JS there's nothing to switch
+		// Only the current theme's name shows; without JS there's nothing to switch
 		.theme span
 			display: none
 
@@ -220,7 +217,6 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 		.logo
 			display: inline
 			transition: transform var(--duration-base) var(--ease)
-			will-change: transform
 			height: 0.4em
 			width: auto
 
@@ -245,7 +241,7 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 				grid-column: calc(var(--index-columns) + 1) / -1
 				gap: var(--space-2xs) var(--space-m)
 
-		// The tag line sits on the feed's grid, from the column after the index columns to the edge
+		// On the feed's grid, after the index columns
 		@media (min-width: 64rem)
 			grid-template-columns: repeat(var(--scatter-columns), minmax(0, 1fr))
 			column-gap: var(--scatter-gap)
@@ -253,11 +249,11 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 	.feed
 		margin-top: var(--space-2xl)
 
-		// A shared ?tags= link: hidden until every page is in and filtered (filter.ts)
+		// A shared ?tags= link: hidden until every page is in and filtered
 		:global(html[data-filtering]) &
 			visibility: hidden
 
-		// Wide screens: feed.js places each post and sets data-scatter. The feed stays hidden until then
+		// Wide screens: hidden until feed.js has placed the posts
 		@media (min-width: 64rem)
 			:global(html[data-js]) &:not([data-scatter])
 				visibility: hidden
@@ -265,7 +261,7 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 		&[data-scatter]
 			position: relative
 
-	// The next page: a plain link without JS, and with it the point where pages.ts loads the next one
+	// The next page: a link without JS; with it, where pages.ts loads the next
 	.more
 		display: block
 		width: fit-content

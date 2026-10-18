@@ -15,21 +15,25 @@ interface Props {
 const { media, telegramId, lang, eager = false } = Astro.props
 const t = strings[lang]
 const single = media.length === 1
-// With JS, every picture but the first post's first waits in a <noscript> until it nears the window, or
-// its row is scrolled (media.ts)
-const held = (index: number) => !(eager && index === 0)
+type Item = Props['media'][number]
 
-// Previews shown dithered until the image or video poster arrives
-const still = (item: Props['media'][number]) =>
-	item.type === 'image' ? item.file : item.type === 'video' ? item.poster : undefined
+// The image or video poster, whose preview dithers until it arrives
+const still = (item: Item) => (item.type === 'image' ? item.file : item.type === 'video' ? item.poster : undefined)
 const previews = await Promise.all(media.map((item) => preview(still(item), item.width)))
 const slotStyle = (index: number) => (previews[index] ? `--preview: url(${previews[index]})` : undefined)
 
-// From 64rem a post is a third of the window less 4rem of padding on each side (--scatter-span of
-// --scatter-columns); below, the container is at most 40rem. With several items a slot takes 80% (--media-lead)
+// From 64rem a post is a third of the window less the page padding; below, at most 40rem. A slot of
+// several takes --media-lead (80%)
 const sizes = single
 	? '(min-width: 64rem) calc((100vw - 8rem) / 3), (min-width: 45rem) 40rem, 92vw'
 	: '(min-width: 64rem) calc((100vw - 8rem) / 3.75), (min-width: 45rem) 32rem, 74vw'
+const picture = (file: string, item: Item, index: number) => ({
+	file,
+	width: item.width,
+	height: item.height,
+	sizes,
+	eager: eager && index === 0,
+})
 ---
 
 <div class="media" data-media-row data-single={single || undefined}>
@@ -39,17 +43,17 @@ const sizes = single
 				{still(item) && <span class="dither" aria-hidden="true" />}
 				{item.type === 'unavailable' ? (
 					<a class="item unavailable" href={item.messageId ? telegramUrl(item.messageId, true) : telegramUrl(telegramId)}>
-						{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} later={held(index)} />}
+						{item.poster && <Picture {...picture(item.poster, item, index)} />}
 						<span class="label">{t.unavailable} <span aria-hidden="true">↗</span></span>
 					</a>
 				) : (
 					<button class="item" type="button" data-open aria-label={`${t.open} ${index + 1}/${media.length}`}>
 						{item.type === 'image' ? (
-							<Picture file={item.file} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} later={held(index)} />
+							<Picture {...picture(item.file, item, index)} />
 						) : (
 							<>
-								{/* The poster is a lazy picture under the video rather than its poster attribute, which loads eagerly and at one size */}
-								{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} later={held(index)} />}
+								{/* A picture under the video, not its poster attribute, which loads at once and at one size */}
+								{item.poster && <Picture {...picture(item.poster, item, index)} />}
 								<video
 									src={mediaUrl(item.file)}
 									width={item.width}
@@ -80,13 +84,13 @@ const sizes = single
 </div>
 
 <style lang="sass">
-// The media row. Picture.astro's elements are reached with :global()
+// Picture.astro's elements are reached with :global()
 
 .media
     position: relative
 
 .track
-    // Offset parent of the slots, whose positions drag.ts reads
+    // Offset parent of the slots, for drag.ts
     position: relative
     display: flex
     gap: var(--media-gap)
@@ -98,7 +102,7 @@ const sizes = single
     &::-webkit-scrollbar
         display: none
 
-    // Mid-drag (drag.ts): the hand closes, and nothing gets selected
+    // Mid-drag (drag.ts)
     &[data-dragging]
         user-select: none
 
@@ -111,12 +115,13 @@ const sizes = single
     aspect-ratio: var(--media-ratio)
     scroll-snap-align: start
     background: var(--surface)
+    // Off screen, the browser skips painting it, dither and all. Its size comes from the width and ratio
+    content-visibility: auto
 
     .media[data-single] &
         flex-basis: 100%
 
-    // The tint (--media-tint), over the media and the loading dither. The viewer copies only the
-    // picture or video, so it shows them untinted
+    // The tint, over media and dither. The viewer copies only the picture or video, so stays untinted
     &::after
         content: ""
         position: absolute
@@ -153,7 +158,7 @@ const sizes = single
         color: var(--secondary)
         cursor: pointer
 
-    // A row of several drags with a mouse (drag.ts); a click without moving still opens the viewer
+    // A row of several drags with a mouse (drag.ts)
     @media (hover: hover) and (pointer: fine)
         .media:not([data-single]) &
             cursor: grab

@@ -15,7 +15,6 @@ export interface ImageSource {
 	/** The file's real pixel width */
 	width: number
 	format: string
-	w: number
 }
 
 /** Every stored file of an image, smallest first, per format */
@@ -25,6 +24,6 @@ export function imageSources(
 	media: { widths: readonly number[]; formats: readonly string[] },
 ): ImageSource[] {
 	return storedWidths(width, media.widths).flatMap((w) =>
-		media.formats.map((format) => ({ file: `${base}-${w}.${format}`, width: Math.min(w, width), format, w })),
+		media.formats.map((format) => ({ file: `${base}-${w}.${format}`, width: Math.min(w, width), format })),
 	)
 }

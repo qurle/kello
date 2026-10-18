@@ -104,7 +104,7 @@ Setup, once:
 | `src/lib/preview.ts` | Build-time 16px previews for the loading dither. |
 | `src/lib/tags.ts` | Tag labels, order and the filter line's tags. |
 | `src/lib/urls.ts` | Media, `srcset` and Telegram URLs, and the source link domain. |
-| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, `drag.ts` for mouse drag in both, `pages.ts` for loading the other feed pages, `theme.ts` for the theme switch, and `url.ts` for the shared query string. `inline/feed.js` is the exception, inlined in Home.astro: scattered feed and loading state. |
+| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, `drag.ts` for mouse drag in both, `motion.ts` for the reduced-motion check they share, `pages.ts` for loading the other feed pages, `theme.ts` for the theme switch, and `url.ts` for the shared query string. `inline/feed.js` is the exception, inlined in Home.astro: scattered feed and loading state. |
 | `public/media/` | Generated images (WebP, or AVIF too if `media.formats` lists it, at each stored width) and videos. |
 
 ## Design
@@ -122,9 +122,9 @@ The page has three parts: the heading "kello" with its subtitle (`site.subtitle`
 - One text size, `--text-base`, for everything except the heading. The page starts `--page-padding-top` (12rem) down.
 - Post text is typeset at build time (`src/lib/typography.ts`, applied in `getPosts()`). A hyphen or en dash between spaces becomes an em dash. Emoji from Telegram stay.
 - Secondary and tertiary greys are deliberately faint (`#b8b8b8` and `#e2e2e2` on light). That's below WCAG text contrast, which is accepted for the quiet parts: unselected tags, the Telegram link and the switches.
-- Colour scheme follows `prefers-color-scheme`, unless the theme switch picks light or dark. Every colour comes from a token, so dark mode only redefines the tokens.
+- Colour scheme follows `prefers-color-scheme`, unless the theme switch picks light or dark. Every colour is a token written as `light-dark(<light>, <dark>)`, and `color-scheme` on `<html>` picks the side.
   - The switch (`src/scripts/theme.ts`) cycles auto, light, dark. It sets `data-theme` on `<html>` (none for auto) and keeps it in `localStorage`; the inline script in `<head>` applies it before the first paint.
-  - `variables.sass` holds the dark tokens twice: under `prefers-color-scheme: dark` for `:root:not([data-theme="light"])`, and for `:root[data-theme="dark"]`. Keep the two in step.
+  - `[data-theme="light"]` and `[data-theme="dark"]` set `color-scheme`. The tint blend (`darken`, `lighten` in dark) isn't a colour, so it alone is set for dark twice: under `prefers-color-scheme: dark` without `data-theme="light"`, and with `data-theme="dark"`.
   - The button shows the label for the current `data-theme` through CSS, so it's right from the first paint. Without JS it's hidden.
 - From 64rem up, the page spans the window with at least 4rem (`--page-padding-wide`) of padding on each side, and the feed scatters (`src/scripts/inline/feed.js`). That script is plain JS inlined right after the feed, so it runs while the page parses. A `data-js` flag set in `<head>` keeps the wide feed hidden until the script has placed it, so the single column never flashes. If the script throws, it drops the flag and the column shows.
   - Posts become narrow columns, `--scatter-span` of `--scatter-columns` grid columns wide, with tags in a row and body-size text.
@@ -145,12 +145,14 @@ The page has three parts: the heading "kello" with its subtitle (`site.subtitle`
 - Selected tags combine with AND. Once a tag is selected, any tag that would leave zero posts is dimmed and can't be clicked. The selection is stored in the URL as `?tags=ui,code`.
 - The media row: a single item spans the full container width. With more than one, the first item takes 80% of the width, followed by a 0.5rem gap and the rest, all in one horizontally scrolling row at a fixed 16:9 (`--media-ratio`) with `object-fit: cover`. On hover, previous and next chevrons appear; on touch screens the row swipes with scroll snapping. With a mouse it drags under a hand cursor (see Mouse drag below), and a click without moving still opens the viewer.
 - Pictures load as they near the window, not at the browser's lazy-loading distance, which is several windows.
-  - Every picture but the first post's first is put in a `<noscript data-later>` by `Picture.astro` (`later`). With JS that is inert text.
+  - Every picture that isn't eager (all but the first post's first) is put in a `<noscript data-later>` by `Picture.astro`. With JS that is inert text.
+  - Slots have `content-visibility: auto`, so off screen the browser skips painting them, dither filters and animation included. Their size comes from width and `--media-ratio`, so layout doesn't change.
   - `src/scripts/media.ts` reveals a slot once it is within half a window, at `fetchpriority` high if it is in view and low if not. While the page scrolls, a slot must stay that near for 120ms (`dwell`) first, so a fast scroll doesn't start downloads for slots it flies past; at rest, the first load included, it goes in at once. Slots hidden by their row's scroll stay out until the row scrolls, a mouse presses it (a drag can coast several slides) or reaches its next chevron; then the rest of the row goes in, lazy. The viewer reveals a row before copying it.
   - Without JS they are ordinary lazy pictures.
   - `pages.ts` turns a fetched page's `<noscript>` back into text before adopting its posts, because `DOMParser` parses it as markup.
 - Feed media sit under a flat tint so they separate from the background: `--media-tint` (#f7f7f7) with `darken` on light, which caps white at the tint, and #191919 with `lighten` on dark. It is a `::after` on each slot, so the viewer, which copies only the picture or video, shows media untinted.
 - Clicking an item opens a `<dialog>`. It shows the post's whole row as a carousel the full width of the dialog, with the clicked item centred, and the post's text, tags and links below.
+  - The clicked slide and its neighbours load at once, the rest lazily as the track nears them. Each slide's `sizes` follows its own ratio (`--viewer-media-height` × ratio, capped at `--viewer-media-max`), so a portrait image doesn't fetch a landscape-sized file. Videos don't preload; the current one plays.
   - Each item is uncropped at its own ratio. Its width is the smallest of `--viewer-media-height` × ratio, `--viewer-media-max` (64rem) and the dialog width minus gutters; the height follows from the ratio.
   - Clicking the current item's left or right half moves to the previous or next item, as do the arrow keys, swipes and mouse drags. Slides show a hand cursor. Clicking a neighbour goes to it. Esc, the close button, or a click anywhere outside the media and the post's text block (the top bar, the gaps, the margins) closes the dialog. While a mouse is over such a spot, the close button shows its hover state.
   - Focus follows how it was opened. With Enter or Space on an item, it goes to the close button and back to the item on close, with focus rings. With a click or a shared link, the dialog focuses itself and lets focus go on close, so no ring shows, even after an Esc.

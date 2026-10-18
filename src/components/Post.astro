@@ -58,7 +58,7 @@ const tags = sortTags(post.tags)
 </article>
 
 <style lang="sass">
-	// A post: media row, then tags, text and links. The viewer shows a copy of the meta, which keeps these styles
+	// The viewer shows a copy of the meta, which keeps these styles
 
 	.post + .post
 		margin-top: var(--post-gap)
@@ -92,7 +92,7 @@ const tags = sortTags(post.tags)
 		@media (min-width: 48rem)
 			grid-column: calc(var(--index-columns) + 1) / -1
 
-	// Telegram's markup, set as HTML, so its elements are reached with :global()
+	// Telegram's markup, set as HTML, so reached with :global()
 	.text
 		max-width: var(--text-width)
 		overflow-wrap: break-word
@@ -128,14 +128,14 @@ const tags = sortTags(post.tags)
 	.source
 		color: var(--primary)
 
-		// Scoped, this rule outranks the global a:hover, so the hover is restated
+		// Scoped, the rule above outranks the global a:hover
 		&:hover
 			color: var(--accent)
 
 	.telegram
 		color: var(--secondary)
 
-	// Wide screens: feed.js places each post in the feed (Home.astro) and sets data-scatter
+	// Wide screens: feed.js places each post and sets data-scatter
 	:global(.feed[data-scatter]) .post
 		position: absolute
 		margin: 0
@@ -152,10 +152,8 @@ const tags = sortTags(post.tags)
 		.links
 			margin-top: var(--space-xs)
 
-	// Settle: a post comes in at the bottom of the window rolled back by --settle-angle around its
-	// bottom edge, seen through --settle-perspective, and stands up over the first --settle-distance of
-	// scrolling, tied to the scroll position. Only `transform`, so feed.js's layout is untouched. Browsers
-	// without scroll-driven animations, and reduced motion, show posts flat
+	// Settle: a post enters rolled back around its bottom edge and stands up over --settle-distance of
+	// scrolling. Only `transform`, so feed.js's layout is untouched
 	@supports (animation-timeline: view())
 		@media (prefers-reduced-motion: no-preference)
 			.post
