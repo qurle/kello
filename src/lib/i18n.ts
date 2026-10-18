@@ -1,4 +1,4 @@
-// UI strings, lowercase: `/` is English, `/ru` Russian.
+// UI strings, lowercase: `/` is English, `/ru` Russian
 export const strings = {
 	en: {
 		description: 'notes on design, interfaces and tools, from the telegram channel the_kello.',
@@ -34,6 +34,6 @@ export const strings = {
 		next: 'вперёд',
 		more: 'ещё',
 	},
-} as const;
+} as const
 
-export type Lang = keyof typeof strings;
+export type Lang = keyof typeof strings

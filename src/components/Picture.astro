@@ -1,21 +1,21 @@
 ---
-import { imageSet } from '../lib/urls';
+import { imageSet } from '../lib/urls'
 
 interface Props {
-	/** Path without width and extension. */
-	file: string;
-	/** Original width: decides which files exist. */
-	width?: number;
-	height?: number;
-	sizes: string;
-	eager?: boolean;
-	/** Held back in a <noscript> until media.ts reveals it. Without JS it is an ordinary lazy picture. */
-	later?: boolean;
+	/** Path without width and extension */
+	file: string
+	/** Original width: decides which files exist */
+	width?: number
+	height?: number
+	sizes: string
+	eager?: boolean
+	/** Held back in a <noscript> until media.ts reveals it. Without JS it is an ordinary lazy picture */
+	later?: boolean
 }
 
-const { file, width, height, sizes, eager = false, later = false } = Astro.props;
-const { formats, fallbackFormat, src } = imageSet(file, width);
-const Wrap = later ? 'noscript' : Fragment;
+const { file, width, height, sizes, eager = false, later = false } = Astro.props
+const { formats, fallbackFormat, src } = imageSet(file, width)
+const Wrap = later ? 'noscript' : Fragment
 ---
 
 <Wrap {...(later ? { 'data-later': '' } : {})}><picture>

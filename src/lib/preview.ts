@@ -1,19 +1,19 @@
-// Build-time previews for the loading state: images shrunk to 16px and inlined as WebP data URLs (MediaRow.astro dithers them).
-import path from 'node:path';
-import sharp from 'sharp';
-import config from '../../kello.config';
-import { imageSources } from './media';
+// Build-time previews for the loading state: images shrunk to 16px and inlined as WebP data URLs (MediaRow.astro dithers them)
+import path from 'node:path'
+import sharp from 'sharp'
+import config from '../../kello.config'
+import { imageSources } from './media'
 
-const previewWidth = 16;
-const cache = new Map<string, Promise<string | undefined>>();
+const previewWidth = 16
+const cache = new Map<string, Promise<string | undefined>>()
 
-/** Data URL of an image's preview, or undefined if its file is missing. */
+/** Data URL of an image's preview, or undefined if its file is missing */
 export function preview(file: string | undefined, width: number | undefined) {
-	if (!file || !width) return Promise.resolve(undefined);
-	const key = `${file}@${width}`;
+	if (!file || !width) return Promise.resolve(undefined)
+	const key = `${file}@${width}`
 	if (!cache.has(key)) {
-		const source = imageSources(file, width, config.media)[0];
-		const absolute = path.resolve('public', config.media.dir, source.file);
+		const source = imageSources(file, width, config.media)[0]
+		const absolute = path.resolve('public', config.media.dir, source.file)
 		cache.set(
 			key,
 			sharp(absolute)
@@ -22,7 +22,7 @@ export function preview(file: string | undefined, width: number | undefined) {
 				.toBuffer()
 				.then((webp) => `data:image/webp;base64,${webp.toString('base64')}`)
 				.catch(() => undefined),
-		);
+		)
 	}
-	return cache.get(key)!;
+	return cache.get(key)!
 }

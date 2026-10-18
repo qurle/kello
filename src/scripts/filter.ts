@@ -1,54 +1,57 @@
 // Tag filter: AND over the selected tags, kept in the URL as ?tags=a,b. A selection covers every
-// page of the feed, so picking a tag loads the pages not yet in it first.
-import { loadAll } from './pages';
-import { getParam, setParams } from './url';
+// page of the feed, so picking a tag loads the pages not yet in it first
+import { loadAll } from './pages'
+import { getParam, setParams } from './url'
 
-const root = document.documentElement;
-const known = new Set([...document.querySelectorAll<HTMLElement>('[data-filter] [data-tag]')].map((button) => button.dataset.tag!));
-const selected = new Set((getParam('tags') ?? '').split(',').filter((tag) => known.has(tag)));
+const root = document.documentElement
+const known = new Set(
+	[...document.querySelectorAll<HTMLElement>('[data-filter] [data-tag]')].map((button) => button.dataset.tag!),
+)
+const selected = new Set((getParam('tags') ?? '').split(',').filter((tag) => known.has(tag)))
 
-const tagsOf = (post: HTMLElement) => new Set((post.dataset.tags ?? '').split(' ').filter(Boolean));
-const matches = (tags: Set<string>) => [...selected].every((tag) => tags.has(tag));
+const tagsOf = (post: HTMLElement) => new Set((post.dataset.tags ?? '').split(' ').filter(Boolean))
+const matches = (tags: Set<string>) => [...selected].every((tag) => tags.has(tag))
 
 function apply() {
-	const visible: Set<string>[] = [];
+	const visible: Set<string>[] = []
 	for (const post of document.querySelectorAll<HTMLElement>('[data-feed] > [data-post]')) {
-		const tags = tagsOf(post);
-		post.hidden = !matches(tags);
-		if (!post.hidden) visible.push(tags);
+		const tags = tagsOf(post)
+		post.hidden = !matches(tags)
+		if (!post.hidden) visible.push(tags)
 	}
 
 	for (const button of document.querySelectorAll<HTMLButtonElement>('[data-tag]')) {
-		const tag = button.dataset.tag!;
-		const on = selected.has(tag);
-		button.setAttribute('aria-pressed', String(on));
-		// A tag that would leave no posts can't be picked.
-		if (button.closest('[data-filter]')) button.disabled = !on && selected.size > 0 && !visible.some((tags) => tags.has(tag));
+		const tag = button.dataset.tag!
+		const on = selected.has(tag)
+		button.setAttribute('aria-pressed', String(on))
+		// A tag that would leave no posts can't be picked
+		if (button.closest('[data-filter]'))
+			button.disabled = !on && selected.size > 0 && !visible.some((tags) => tags.has(tag))
 	}
 
-	setParams({ tags: selected.size ? [...selected].join(',') : null });
+	setParams({ tags: selected.size ? [...selected].join(',') : null })
 }
 
 async function update() {
-	if (selected.size) await loadAll();
-	apply();
-	delete root.dataset.filtering;
-	document.dispatchEvent(new CustomEvent('kello:filter'));
+	if (selected.size) await loadAll()
+	apply()
+	delete root.dataset.filtering
+	document.dispatchEvent(new CustomEvent('kello:filter'))
 }
 
 document.addEventListener('click', (event) => {
-	const button = (event.target as Element).closest<HTMLButtonElement>('[data-tag]');
-	if (!button || button.disabled) return;
-	const tag = button.dataset.tag!;
-	if (!selected.delete(tag)) selected.add(tag);
-	update();
-});
+	const button = (event.target as Element).closest<HTMLButtonElement>('[data-tag]')
+	if (!button || button.disabled) return
+	const tag = button.dataset.tag!
+	if (!selected.delete(tag)) selected.add(tag)
+	update()
+})
 
-// Posts from another page follow the current selection.
-document.addEventListener('kello:posts', () => apply());
+// Posts from another page follow the current selection
+document.addEventListener('kello:posts', () => apply())
 
-if (selected.size) update();
+if (selected.size) update()
 else {
-	apply();
-	delete root.dataset.filtering;
+	apply()
+	delete root.dataset.filtering
 }

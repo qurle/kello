@@ -1,5 +1,5 @@
 // Reset, element defaults, the tag button, which the filter line and posts share, and the loading
-// dither, which feed slots and viewer slides share. Everything else is styled in its component.
+// dither, which feed slots and viewer slides share. Everything else is styled in its component
 
 *, *::before, *::after
     box-sizing: border-box
@@ -9,7 +9,7 @@ html
     text-size-adjust: 100%
     scrollbar-gutter: stable
 
-    // No page scroll behind the viewer.
+    // No page scroll behind the viewer
     &:has(dialog[open])
         overflow: hidden
 
@@ -56,7 +56,7 @@ button
     cursor: pointer
 
 // Focus rings for keyboard navigation only: no outline on plain focus, which some browsers draw on a
-// press, and the ring on :focus-visible.
+// press, and the ring on :focus-visible
 :focus
     outline: none
 
@@ -68,7 +68,7 @@ code
     font-family: var(--font-mono)
     font-size: var(--text-code)
 
-// A tag in the filter line or on a post; colour carries the state.
+// A tag in the filter line or on a post; colour carries the state
 .tag
     color: var(--secondary)
     transition: color var(--duration-fast) var(--ease)
@@ -87,7 +87,7 @@ code
 // Loading media, with JS only: a feed slot (MediaRow.astro) or a viewer slide (viewer.ts) holds a
 // .dither and a --preview, and has data-loading until its picture or video arrives (feed.js, media.ts,
 // viewer.ts). Ordered dither: the greyed preview at half brightness (L / 2) plus the Bayer map at half
-// strength (T / 2), added with plus-lighter; a huge contrast() then makes each point white where L + T > 1.
+// strength (T / 2), added with plus-lighter; a huge contrast() then makes each point white where L + T > 1
 .dither
     display: none
 
@@ -119,7 +119,7 @@ html[data-js] [data-loading]
             inset: 0
 
         &::before
-            // Past the edges, so the blur doesn't darken them.
+            // Past the edges, so the blur doesn't darken them
             inset: -8px
             background: var(--preview, none) center / cover no-repeat
             filter: blur(4px) brightness(0.5)

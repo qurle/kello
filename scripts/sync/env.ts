@@ -1,4 +1,4 @@
-// Local runs keep secrets in .env (gitignored); variables already set, as in the workflow, win.
+// Local runs keep secrets in .env (gitignored); variables already set, as in the workflow, win
 try {
-	process.loadEnvFile();
+	process.loadEnvFile()
 } catch {}

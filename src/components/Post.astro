@@ -9,7 +9,7 @@ import MediaRow from './MediaRow.astro'
 interface Props {
 	post: Post
 	lang: Lang
-	/** The feed page it is on, so posts fetched from other pages go in order (pages.ts). */
+	/** The feed page it is on, so posts fetched from other pages go in order (pages.ts) */
 	page: number
 	eager?: boolean
 }
@@ -58,7 +58,7 @@ const tags = sortTags(post.tags)
 </article>
 
 <style lang="sass">
-	// A post: media row, then tags, text and links. The viewer shows a copy of the meta, which keeps these styles.
+	// A post: media row, then tags, text and links. The viewer shows a copy of the meta, which keeps these styles
 
 	.post + .post
 		margin-top: var(--post-gap)

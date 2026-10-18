@@ -1,34 +1,35 @@
 ---
-import type { Post } from '../lib/posts';
-import { strings, type Lang } from '../lib/i18n';
-import { mediaUrl, telegramUrl } from '../lib/urls';
-import { preview } from '../lib/preview';
-import Picture from './Picture.astro';
+import type { Post } from '../lib/posts'
+import { strings, type Lang } from '../lib/i18n'
+import { mediaUrl, telegramUrl } from '../lib/urls'
+import { preview } from '../lib/preview'
+import Picture from './Picture.astro'
 
 interface Props {
-	media: Post['media'];
-	telegramId: number;
-	lang: Lang;
-	eager?: boolean;
+	media: Post['media']
+	telegramId: number
+	lang: Lang
+	eager?: boolean
 }
 
-const { media, telegramId, lang, eager = false } = Astro.props;
-const t = strings[lang];
-const single = media.length === 1;
+const { media, telegramId, lang, eager = false } = Astro.props
+const t = strings[lang]
+const single = media.length === 1
 // With JS, every picture but the first post's first waits in a <noscript> until it nears the window, or
-// its row is scrolled (media.ts).
-const held = (index: number) => !(eager && index === 0);
+// its row is scrolled (media.ts)
+const held = (index: number) => !(eager && index === 0)
 
-// Previews shown dithered until the image or video poster arrives.
-const still = (item: Props['media'][number]) => (item.type === 'image' ? item.file : item.type === 'video' ? item.poster : undefined);
-const previews = await Promise.all(media.map((item) => preview(still(item), item.width)));
-const slotStyle = (index: number) => (previews[index] ? `--preview: url(${previews[index]})` : undefined);
+// Previews shown dithered until the image or video poster arrives
+const still = (item: Props['media'][number]) =>
+	item.type === 'image' ? item.file : item.type === 'video' ? item.poster : undefined
+const previews = await Promise.all(media.map((item) => preview(still(item), item.width)))
+const slotStyle = (index: number) => (previews[index] ? `--preview: url(${previews[index]})` : undefined)
 
 // From 64rem a post is a third of the window less 4rem of padding on each side (--scatter-span of
-// --scatter-columns); below, the container is at most 40rem. With several items a slot takes 80% (--media-lead).
+// --scatter-columns); below, the container is at most 40rem. With several items a slot takes 80% (--media-lead)
 const sizes = single
 	? '(min-width: 64rem) calc((100vw - 8rem) / 3), (min-width: 45rem) 40rem, 92vw'
-	: '(min-width: 64rem) calc((100vw - 8rem) / 3.75), (min-width: 45rem) 32rem, 74vw';
+	: '(min-width: 64rem) calc((100vw - 8rem) / 3.75), (min-width: 45rem) 32rem, 74vw'
 ---
 
 <div class="media" data-media-row data-single={single || undefined}>
@@ -47,7 +48,7 @@ const sizes = single
 							<Picture file={item.file} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} later={held(index)} />
 						) : (
 							<>
-								{/* The poster is a lazy picture under the video rather than its poster attribute, which loads eagerly and at one size. */}
+								{/* The poster is a lazy picture under the video rather than its poster attribute, which loads eagerly and at one size */}
 								{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} later={held(index)} />}
 								<video
 									src={mediaUrl(item.file)}
@@ -79,7 +80,7 @@ const sizes = single
 </div>
 
 <style lang="sass">
-// The media row. Picture.astro's elements are reached with :global().
+// The media row. Picture.astro's elements are reached with :global()
 
 .media
     position: relative
@@ -106,7 +107,7 @@ const sizes = single
         flex-basis: 100%
 
     // The tint (--media-tint), over the media and the loading dither. The viewer copies only the
-    // picture or video, so it shows them untinted.
+    // picture or video, so it shows them untinted
     &::after
         content: ""
         position: absolute
@@ -134,7 +135,7 @@ const sizes = single
         height: 100%
         object-fit: cover
 
-    // Over its poster picture, which shows until the first frame.
+    // Over its poster picture, which shows until the first frame
     video
         position: absolute
         inset: 0
@@ -177,7 +178,7 @@ const sizes = single
     &.next
         inset-inline-end: var(--space-xs)
 
-    // Chevrons for a mouse only.
+    // Chevrons for a mouse only
     @media (hover: hover) and (pointer: fine)
         .media:hover &:not([data-off])
             opacity: 1
