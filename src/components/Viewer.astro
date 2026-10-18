@@ -131,7 +131,7 @@ const t = strings[Astro.props.lang]
 .meta
     padding-block: var(--space-l) var(--space-xl)
 
-// Phones: the media and text sit at the bottom of the screen, nearer the thumb
+// Phones: the close bar, media and text sit together at the bottom of the screen, nearer the thumb
 @media not all and (min-width: 48rem)
     .viewer[open]
         display: flex
@@ -140,7 +140,7 @@ const t = strings[Astro.props.lang]
         > *
             flex-shrink: 0
 
-    .track
+    .bar
         margin-top: auto
 
     .bar,
