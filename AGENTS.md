@@ -90,6 +90,7 @@ Setup, once:
 | `src/lib/media.ts` | `imageSources()`: which image files exist for a media entry, with real widths for `srcset`. |
 | `scripts/sync/` | `npm run sync`: `scrape.ts` and `html.ts` parse the web preview, `media.ts` and `mp4.ts` download and resize, `tags.ts` maps hashtags, `translate.ts` has the `Translator` interface and the markup check, `google.ts` the Google Translate provider, `bot.ts` fetches full-size media, `store.ts` reads and writes post JSON, `types.ts` has the shared shapes, `env.ts` loads `.env`, `index.ts` runs it all. |
 | `scripts/check-bot.ts` | `npm run check-bot`. |
+| `scripts/format.ts` | Part of `npm run format`: Prettier on the frontmatter of `.astro` files. |
 | `.github/workflows/sync.yml` | Scheduled sync: every 12 hours and on demand. |
 | `src/styles/variables.sass` | Design tokens as CSS custom properties. |
 | `src/styles/fonts.sass` | `@font-face` rule for the heading font. |
@@ -176,5 +177,12 @@ Image and poster URLs go through `imageSet()` in `src/lib/urls.ts`, which builds
   - Only tokens, fonts and `base.sass` are global, imported in `Home.astro`. A style two components share (the tag button, the loading dither) goes in `base.sass`.
   - Scripts find elements by `data-*` attributes, never by class.
 - Tabs for indentation in TS and Astro markup, four spaces in Sass (in `.sass` files and `<style lang="sass">` blocks, whose rules start at column 0).
+- Code style in TS, JS and Astro frontmatter:
+  - No semicolons.
+  - Single quotes. Template literals only when they interpolate; HTML and JSX attributes keep double quotes.
+  - No period after the last sentence of a comment, in any language here (TS, JS, Sass, HTML). Sentences before it end as usual: `// Fetched once. A failed fetch is forgotten`
+  - `npm run format` applies `.prettierrc` (also tabs and 120 columns; JSON in two spaces, as npm writes it). It runs Prettier on TS, JS, JSON and YAML, then `scripts/format.ts` on the frontmatter of `.astro` files.
+  - Astro templates and their `<style lang="sass">` blocks are formatted by hand and listed in `.prettierignore`, so editors leave them alone too. `prettier-plugin-astro` doesn't work here: it adds whitespace between inline elements, which renders (a space before the logo), reindents Sass, which Prettier can't parse, and its 0.x versions corrupt files around `prettier-ignore`.
+  - Prettier doesn't touch comments; the final-period rule is kept by hand.
 - UI strings are English on `/` and Russian on `/ru`. There are only a handful, kept in one dictionary.
-- Before finishing a change, run `npm run build`, which type-checks the content collection against the schema, and `npx tsc --noEmit`. `tsconfig.json` extends Astro's base with `strictNullChecks` on, which Zod's types need; the rest of `strict` stays off.
+- Before finishing a change, run `npm run format`, then `npm run build`, which type-checks the content collection against the schema, and `npx tsc --noEmit`. `tsconfig.json` extends Astro's base with `strictNullChecks` on, which Zod's types need; the rest of `strict` stays off.

@@ -1,26 +1,26 @@
-import { defineConfig } from './src/lib/config';
+import { defineConfig } from './src/lib/config'
 
 export default defineConfig({
 	site: {
 		title: 'kello',
 		url: 'https://kello.qurle.net',
 		// The line under the heading: `text`, then `link` as a link to `url`. `ru` is optional and
-		// falls back to `en`.
+		// falls back to `en`
 		subtitle: {
 			en: { text: 'knowledge + inspo collected', link: 'by qurle' },
 			ru: { text: 'знания и вдохновение', link: 'от курле' },
 			url: 'https://qurle.net',
 		},
 		// Posts per page. The first page is the HTML of / and /ru; the rest load as the feed's end comes
-		// into view, and all of them when a tag is picked.
+		// into view, and all of them when a tag is picked
 		pageSize: 24,
 	},
 
 	channel: {
 		username: 'the_kello',
-		// A page is ~20 messages; albums take one per item.
+		// A page is ~20 messages; albums take one per item
 		recentPages: 3,
-		// Full-size photos: see AGENTS.md.
+		// Full-size photos: see AGENTS.md
 		bot: {
 			tokenEnv: 'TELEGRAM_BOT_TOKEN',
 			dumpChatEnv: 'TELEGRAM_DUMP_CHAT_ID',
@@ -29,14 +29,14 @@ export default defineConfig({
 
 	media: {
 		dir: 'media',
-		// The preview serves photos at 800px; wider files exist only for full-size photos and video posters.
+		// The preview serves photos at 800px; wider files exist only for full-size photos and video posters
 		widths: [800, 1280, 1920, 2560],
 		formats: ['webp'],
 		quality: 90,
 		maxVideoMB: 15,
 	},
 
-	// Filter-line order; post counts as of Oct 2026.
+	// Filter-line order; post counts as of Oct 2026
 	tags: [
 		{ ru: 'ui', en: 'ui' }, // 103
 		{ ru: 'вдохновение', en: 'inspiration', aliases: ['вдохнование'] }, // 89
@@ -68,4 +68,4 @@ export default defineConfig({
 		{ ru: 'иконки', en: 'icons' }, // 2
 		{ ru: 'плагины', en: 'plugins' }, // 1
 	],
-});
+})

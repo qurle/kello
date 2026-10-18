@@ -1,13 +1,13 @@
 ---
 // Media viewer: a full-screen <dialog> with a post's row edge to edge, items uncropped. viewer.ts fills it
-// with copies of the post's media and meta, so the styles for those reach them with :global().
-import { strings, type Lang } from '../lib/i18n';
+// with copies of the post's media and meta, so the styles for those reach them with :global()
+import { strings, type Lang } from '../lib/i18n'
 
 interface Props {
-	lang: Lang;
+	lang: Lang
 }
 
-const t = strings[Astro.props.lang];
+const t = strings[Astro.props.lang]
 ---
 
 <dialog class="viewer" aria-label={t.viewer} aria-keyshortcuts="ArrowLeft ArrowRight Escape" data-viewer>
@@ -33,7 +33,7 @@ const t = strings[Astro.props.lang];
     color: var(--primary)
     overflow-y: auto
     overscroll-behavior: contain
-    // Slides size against the dialog, which excludes its scrollbar, unlike 100vw.
+    // Slides size against the dialog, which excludes its scrollbar, unlike 100vw
     container-type: inline-size
 
     &::backdrop
@@ -65,13 +65,13 @@ const t = strings[Astro.props.lang];
     color: var(--secondary)
     transition: color var(--duration-fast) var(--ease)
 
-    // Also lit over the close zone (viewer.ts).
+    // Also lit over the close zone (viewer.ts)
     &:hover,
     &[data-hover]
         color: var(--primary)
 
 .track
-    // Offset parent of the slides.
+    // Offset parent of the slides
     position: relative
     display: flex
     align-items: center
@@ -85,7 +85,7 @@ const t = strings[Astro.props.lang];
     &::-webkit-scrollbar
         display: none
 
-    // Widths set in viewer.ts so the first and last slides can reach the middle.
+    // Widths set in viewer.ts so the first and last slides can reach the middle
     &::before,
     &::after
         content: ""
@@ -104,7 +104,7 @@ const t = strings[Astro.props.lang];
         cursor: e-resize
 
     // A slide, made by viewer.ts. Height follows from the item's own ratio. While its media load it
-    // shows the loading dither (base.sass).
+    // shows the loading dither (base.sass)
     :global([data-slide])
         flex: none
         width: min(var(--viewer-media-height) * var(--ratio), var(--viewer-media-max), 100cqw - 2 * var(--gutter))

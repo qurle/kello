@@ -6,19 +6,19 @@
 //   320: { text: { en: 'Same HTML subset as synced text.' } },
 
 export interface PostOverride {
-	/** Leaves the post out. */
-	hidden?: boolean;
-	/** Replaces the tags (English slugs). */
-	tags?: string[];
+	/** Leaves the post out */
+	hidden?: boolean
+	/** Replaces the tags (English slugs) */
+	tags?: string[]
 	text?: {
-		/** Replaces the English text. */
-		en?: string;
-	};
+		/** Replaces the English text */
+		en?: string
+	}
 }
 
-export type Overrides = Record<number, PostOverride>;
+export type Overrides = Record<number, PostOverride>
 
 export const overrides: Overrides = {
-	// The channel's pinned hashtag index.
+	// The channel's pinned hashtag index
 	21: { hidden: true },
-};
+}

@@ -1,0 +1,12 @@
+# Generated, or not ours to format
+dist/
+.astro/
+node_modules/
+public/
+src/data/posts/
+src/data/tag-suggestions.json
+package-lock.json
+# Prose, wrapped by hand
+*.md
+# Templates: scripts/format.ts formats their frontmatter only
+*.astro
