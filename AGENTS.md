@@ -83,14 +83,28 @@ The workflow `.github/workflows/sync.yml` runs `npm run sync` every 12 hours and
 The page has three parts: the heading "Kello", a line of tag filters, then posts. Nothing else goes in the header or footer, except the language link (`ru` on `/`, `en` on `/ru`).
 
 - Swiss style: Inter, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings and link hover, and appears nowhere else. Selected tags turn `--primary`.
-- Tags and their labels are lowercase; the config schema rejects uppercase labels.
+- Inter is loaded with its optical-size axis (`@fontsource-variable/inter/opsz.css`). Body text gets the text cut automatically, and the heading is pinned to the Display cut with `--opsz-display` (32). The preloaded font file must be the `opsz` one too.
+- Tags, their labels, the heading and UI words (telegram, close, watch in telegram) are lowercase; the config schema rejects uppercase labels.
+- One text size, `--text-base`, for everything except the heading. The page starts `--page-padding-top` (12rem) down.
+- Post text is typeset at build time (`src/lib/typography.ts`, applied in `getPosts()`). A hyphen or en dash between spaces becomes an em dash. Emoji from Telegram stay.
 - Secondary and tertiary greys are deliberately faint (`#b8b8b8` and `#e2e2e2` on light). That's below WCAG text contrast, which is accepted for the quiet parts: unselected tags, the Telegram link and the language link.
 - Colour scheme follows `prefers-color-scheme`. Every colour comes from a token, so dark mode only redefines the tokens.
+- From 64rem up, the page spans the window with at least 4rem (`--page-padding-wide`) of padding on each side, and the feed scatters (`src/scripts/inline/feed.js`). That script is plain JS inlined right after the feed, so it runs while the page parses. A `data-js` flag set in `<head>` keeps the wide feed hidden until the script has placed it, so the single column never flashes. If the script throws, it drops the flag and the column shows.
+  - Posts become narrow columns, `--scatter-span` of `--scatter-columns` grid columns wide, with tags in a row and body-size text.
+  - The tag line uses the same grid. It runs from the column after `--index-columns` to the right edge of the page, so it starts where posts can start.
+  - Each post goes in a start column picked by a hash of its id, from the columns that let it sit within `--scatter-jitter` of the highest free spot. It then drops by a further hashed amount up to `--scatter-jitter`. So posts share vertical space without touching, and positions stay stable between visits.
+  - No post sits above the one before it, so the feed still reads newest first, top to bottom.
+  - The layout re-runs on filter, resize and font load. The Inter file for the page's language is preloaded, so the first layout usually has the right metrics. Without JS, and below 64rem, the feed is a single centred column.
+- Media loading state: an image slot shows its image as an ordered dither (fine dots) until the image arrives.
+  - The source is a 16px-wide preview made at build time (`src/lib/preview.ts`, about 100 bytes of inline WebP).
+  - In CSS (`media.sass`), the preview is scaled up smoothly, greyed and halved in brightness, and a 4×4 Bayer threshold map at half strength is added with `mix-blend-mode: plus-lighter`. `contrast(64)` then turns each point black or white, which is an ordered dither of the image.
+  - The threshold map steps through offsets in a loop, so the dots crawl. The loop is ambient and never delays the image: the image's `load` event clears `data-loading`, and the image steps in over `--duration-base`. Images already in the cache are cleared before the first paint.
+  - Without JS, nothing is hidden. Videos show their poster with no dither. Tune with the `--dither-*` tokens.
 - Selected tags combine with AND. Once a tag is selected, any tag that would leave zero posts is dimmed and can't be clicked. The selection is stored in the URL as `?tags=ui,code`.
 - The media row: a single item spans the full container width. With more than one, the first item takes 80% of the width, followed by a 0.5rem gap and the rest, all in one horizontally scrolling row at a fixed ratio with `object-fit: cover`. On hover, previous and next chevrons appear; on touch screens the row swipes with scroll snapping.
-- Clicking an item opens a `<dialog>`. It shows the post's whole row as a carousel the full width of the dialog, with the clicked item centred and the others at `--viewer-dim` opacity, and the post's text, tags and links below.
+- Clicking an item opens a `<dialog>`. It shows the post's whole row as a carousel the full width of the dialog, with the clicked item centred, and the post's text, tags and links below.
   - Each item is uncropped at its own ratio. Its width is the smallest of `--viewer-media-height` × ratio, `--viewer-media-max` (64rem) and the dialog width minus gutters; the height follows from the ratio.
-  - Clicking the current item's left or right half moves to the previous or next item, as do the arrow keys and swipes. Clicking a neighbour goes to it, and Esc closes the dialog.
+  - Clicking the current item's left or right half moves to the previous or next item, as do the arrow keys and swipes. Clicking a neighbour goes to it. Esc, the close button, or a click anywhere outside the media and the post's text block (the top bar, the gaps, the margins) closes the dialog. While a mouse is over such a spot, the close button shows its hover state.
   - While it's open, the URL carries `?post=<id>` and, from the second item on, `&media=<n>`. Loading such a link opens the viewer there. `src/scripts/url.ts` owns the query string for both the filter and the viewer.
 - Videos play muted and looped while they are in view and pause when they leave it. With `prefers-reduced-motion`, they show the poster instead.
 - Post meta: the source link is shown as its domain (`psiquantum.com ↗`) and is the primary link. The Telegram link is quieter. Both are styled as text links, not buttons.
@@ -98,7 +112,7 @@ The page has three parts: the heading "Kello", a line of tag filters, then posts
 - Grid: 12 columns from 48rem up. Post tags take the first `--index-columns`; the filter line and post text start after them. Below 48rem everything stacks.
 - Tags no post uses are left out of the filter line.
 
-Tokens added with the UI, beyond the ones above: `--font-mono`, `--text-code`, `--leading-snug` (post text, filter line), `--display-indent` (optical correction for the heading), `--underline-width`, `--underline-offset`, `--index-columns`, `--media-nav-size` (chevron square), `--viewer-media-height`, `--viewer-media-max`, `--viewer-dim`, `--focus-width`, `--focus-offset`. The 48rem breakpoint and the `sizes` attributes in `MediaRow.astro` are written out, since media queries and HTML can't read custom properties.
+Tokens added with the UI, beyond the ones above: `--font-mono`, `--text-code`, `--display-indent` (optical correction for the heading), `--underline-width`, `--underline-offset`, `--index-columns`, `--media-nav-size` (chevron square), `--viewer-media-height`, `--viewer-media-max`, `--focus-width`, `--focus-offset`. The 48rem breakpoint and the `sizes` attributes in `MediaRow.astro` are written out, since media queries and HTML can't read custom properties.
 
 Image and poster URLs go through `imageSet()` in `src/lib/urls.ts`, which builds `srcset` from `imageSources()` so only files that exist are referenced.
 

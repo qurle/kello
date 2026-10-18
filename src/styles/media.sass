@@ -15,13 +15,62 @@
     display: none
 
 .media__slot
+  position: relative
   flex: 0 0 var(--media-lead)
   aspect-ratio: var(--media-ratio)
   scroll-snap-align: start
   background: var(--surface)
 
+  img
+    transition: opacity var(--duration-base) steps(4, end)
+
   .media[data-single] &
     flex-basis: 100%
+
+// Loading state, only with JS, which clears data-loading when the image arrives
+// (src/scripts/inline/feed.js). The dots crawl on their own loop; the image never waits for it.
+//
+// An ordered dither in CSS: the preview, smoothly scaled and greyed, at half brightness (L / 2), plus
+// the Bayer threshold map at half strength (T / 2), added with plus-lighter. A huge contrast() around
+// 0.5 then turns each point white where L + T > 1, black elsewhere: the image as dots.
+.media__dither
+  display: none
+
+html[data-js] .media__slot[data-loading]
+  img
+    opacity: 0
+
+  .media__dither
+    position: absolute
+    inset: 0
+    display: block
+    overflow: hidden
+    opacity: var(--dither-strength)
+    filter: contrast(64)
+    pointer-events: none
+
+    &::before,
+    &::after
+      content: ""
+      position: absolute
+      inset: 0
+
+    &::before
+      // A little past the edges, so the blur doesn't fade them to black.
+      inset: -8px
+      background: var(--preview, none) center / cover no-repeat
+      filter: grayscale(1) blur(4px) brightness(0.5)
+
+    &::after
+      background: var(--dither) 0 0 / var(--dither-size) repeat
+      opacity: 0.5
+      mix-blend-mode: plus-lighter
+      image-rendering: pixelated
+      animation: dither var(--dither-duration) steps(4) infinite
+
+@keyframes dither
+  to
+    background-position: var(--dither-size) var(--dither-size)
 
 .media__item
   position: relative
@@ -51,7 +100,6 @@
   inset-block-end: 0
   padding: var(--space-xs) var(--space-sm)
   background: var(--overlay)
-  font-size: var(--text-sm)
 
 .media__nav
   position: absolute

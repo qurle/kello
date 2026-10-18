@@ -28,4 +28,7 @@ export interface PostOverride {
 
 export type Overrides = Record<number, PostOverride>;
 
-export const overrides: Overrides = {};
+export const overrides: Overrides = {
+	// The channel's pinned hashtag index ("🧭 Navigation"): the site has its own tag line.
+	21: { hidden: true },
+};

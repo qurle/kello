@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { overrides as defaultOverrides, type Overrides } from '../data/overrides';
+import { typeset } from './typography';
 
 export type Post = CollectionEntry<'posts'>['data'];
 
@@ -19,8 +20,10 @@ export function applyOverrides(posts: Post[], overrides: Overrides = defaultOver
 	});
 }
 
-/** All visible posts with overrides applied, newest first. */
+/** All visible posts with overrides and typographic fixes applied, newest first. */
 export async function getPosts(): Promise<Post[]> {
 	const posts = (await getCollection('posts')).map((entry) => entry.data);
-	return applyOverrides(posts).sort((a, b) => b.date.getTime() - a.date.getTime());
+	return applyOverrides(posts)
+		.map((post) => (post.text ? { ...post, text: { ru: typeset(post.text.ru), en: typeset(post.text.en) } } : post))
+		.sort((a, b) => b.date.getTime() - a.date.getTime());
 }
