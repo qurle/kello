@@ -31,6 +31,8 @@ const posts = pagePosts(all, page)
 const pages = Array.from({ length: pageCount(all) }, (_, i) => pagePath(lang, i + 1))
 const next = pages[page]
 const url = (path: string) => new URL(path, config.site.url).href
+const { subtitle } = config.site
+const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 ---
 
 <!doctype html>
@@ -72,9 +74,13 @@ const url = (path: string) => new URL(path, config.site.url).href
 							></a
 						>
 					</h1>
-					<div class="subtitle">
-						knowledge + inspo collected <a href="https://qurle.net" target="_blank">by qurle</a>
-					</div>
+					{
+						subtitle && subtitleLine && (
+							<div class="subtitle">
+								{subtitleLine.text} <a href={subtitle.url} target="_blank">{subtitleLine.link}</a>
+							</div>
+						)
+					}
 				</div>
 				<span>
 					<a

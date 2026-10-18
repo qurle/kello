@@ -108,7 +108,7 @@ Setup, once:
 
 ## Design
 
-The page has three parts: the heading "Kello", a line of tag filters, then posts. Nothing else goes in the header or footer, except the language link (`ru` on `/`, `en` on `/ru`, to the same page number) and the "more" link to the next page after the feed.
+The page has three parts: the heading "kello" with its subtitle (`site.subtitle` in `kello.config.ts`), a line of tag filters, then posts. Nothing else goes in the header or footer, except the language link (`ru` on `/`, `en` on `/ru`, to the same page number) and the "more" link to the next page after the feed.
 
 - Swiss style: Inter for text, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings and link hover, and appears nowhere else. Selected tags turn `--primary`.
 - Fonts are self-hosted: Vite copies them into `/_astro/` at build time, and nothing loads from another host.

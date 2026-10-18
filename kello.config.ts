@@ -5,6 +5,12 @@ export default defineConfig({
 		title: 'Kello',
 		// TODO: the production domain.
 		url: 'https://kello.vercel.app',
+		// The line under the heading: `text`, then `link` as a link to `url`. `ru` is optional and
+		// falls back to `en`.
+		subtitle: {
+			en: { text: 'knowledge + inspo collected', link: 'by qurle' },
+			url: 'https://qurle.net',
+		},
 		// Posts per page. The first page is the HTML of / and /ru; the rest load as the feed's end comes
 		// into view, and all of them when a tag is picked.
 		pageSize: 24,
