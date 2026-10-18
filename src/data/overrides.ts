@@ -170,7 +170,6 @@ const english: Record<number, string> = {
 	263: 'The bento-and-glow trend seems to have cooled off, but Raycast still pulls it off.',
 	274: 'A cute minimalist personal site.<br><br>If you’re into encryption, there’s a detailed article on Base32 inside.',
 	275: 'A site with beautiful console apps (TUI — text-based user interface)',
-	276: 'Okay, honestly I only like 4 of them, but hopefully the collection keeps growing',
 	277: 'Super stylish mini music tutorials from drumboii<br><br><a href="https://www.tiktok.com/@drumboii_real">https://www.tiktok.com/@drumboii_real</a>',
 	283: 'A beautiful feature preview from Linear',
 	284: 'Plus a fun footer with movie-style credits',
@@ -195,4 +194,5 @@ export const overrides: Overrides = {
 	...Object.fromEntries(Object.entries(english).map(([id, en]) => [id, { text: { en } }])),
 	// The channel's pinned hashtag index
 	21: { hidden: true },
+	276: { hidden: true },
 }
