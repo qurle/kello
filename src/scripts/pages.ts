@@ -1,17 +1,38 @@
 // Paged feed: a page's HTML holds its own posts, and the others come from their pages' HTML. The next
-// page loads as the "more" link nears the window; every page loads when a filter or a shared link needs
-// them (`loadAll`). New posts go in page order and announce themselves with `kello:posts`.
+// page's HTML is fetched straight away, ahead of the images, and its posts go in as the "more" link nears
+// the window; every page loads when a filter or a shared link needs them (`loadAll`). New posts go in
+// page order and announce themselves with `kello:posts`.
 
 const feed = document.querySelector<HTMLElement>('[data-feed]')!;
 const urls: string[] = JSON.parse(feed.dataset.pages ?? '[]');
 const more = document.querySelector<HTMLAnchorElement>('[data-more]');
 const loaded = new Map<number, Promise<void>>([[Number(feed.dataset.page), Promise.resolve()]]);
+const fetched = new Map<number, Promise<HTMLElement[]>>();
 
-async function fetchPosts(page: number) {
-	const response = await fetch(urls[page - 1]);
+async function fetchPage(page: number) {
+	// High priority: a page is about 15 KB and shouldn't queue behind images.
+	const response = await fetch(urls[page - 1], { priority: 'high' });
 	if (!response.ok) throw new Error(`${urls[page - 1]}: ${response.status}`);
 	const html = new DOMParser().parseFromString(await response.text(), 'text/html');
+	// Parsed without scripting, a row's held-back pictures are elements. As text they wait like this page's.
+	for (const later of html.querySelectorAll('noscript')) later.textContent = later.innerHTML;
 	return [...html.querySelectorAll<HTMLElement>('[data-feed] > [data-post]')];
+}
+
+/** A page's posts, fetched once. A failed fetch is forgotten, so the next call tries again. */
+function fetchPosts(page: number) {
+	if (!fetched.has(page)) {
+		const posts = fetchPage(page);
+		posts.catch(() => fetched.delete(page));
+		fetched.set(page, posts);
+	}
+	return fetched.get(page)!;
+}
+
+/** Fetches the next page's HTML now, so its posts are ready when the scroll gets there. */
+function prefetch() {
+	const page = nextPage();
+	if (page) fetchPosts(page).catch(() => {});
 }
 
 /** Before the first post of a later page, so the feed stays newest first. */
@@ -72,6 +93,7 @@ if (more) {
 			busy = false;
 			updateMore();
 		}
+		prefetch();
 		// Observing again reports where the link is now, so a short page loads the next one too.
 		if (more.isConnected) {
 			observer.unobserve(more);
@@ -83,6 +105,7 @@ if (more) {
 		rootMargin: '0px 0px 200% 0px',
 	});
 	observer.observe(more);
+	prefetch();
 	more.addEventListener('click', (event) => {
 		event.preventDefault();
 		loadNext().catch(() => (location.href = more.href));
