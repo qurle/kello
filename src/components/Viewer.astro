@@ -130,4 +130,24 @@ const t = strings[Astro.props.lang]
 
 .meta
     padding-block: var(--space-l) var(--space-xl)
+
+// Phones: the close bar, media and text sit together at the bottom of the screen, nearer the thumb
+@media not all and (min-width: 48rem)
+    .viewer[open]
+        display: flex
+        flex-direction: column
+
+        > *
+            flex-shrink: 0
+
+    .bar
+        margin-top: auto
+
+    .bar,
+    .meta
+        // Auto margins would shrink them in the column
+        margin-inline: max(0px, (100% - var(--container-width)) / 2 - var(--gutter))
+
+    .meta
+        padding-bottom: calc(var(--space-xl) + env(safe-area-inset-bottom))
 </style>

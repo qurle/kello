@@ -152,6 +152,7 @@ The page has three parts: the heading "kello" with its subtitle (`site.subtitle`
   - `pages.ts` turns a fetched page's `<noscript>` back into text before adopting its posts, because `DOMParser` parses it as markup.
 - Feed media sit under a flat tint so they separate from the background: `--media-tint` (#f7f7f7) with `darken` on light, which caps white at the tint, and #191919 with `lighten` on dark. It is a `::after` on each slot, so the viewer, which copies only the picture or video, shows media untinted.
 - Clicking an item opens a `<dialog>`. It shows the post's whole row as a carousel the full width of the dialog, with the clicked item centred, and the post's text, tags and links below.
+  - Below 48rem the close bar, the media and the text sit together at the bottom of the screen, the bar right above the media.
   - The clicked slide and its neighbours load at once, the rest lazily as the track nears them. Each slide's `sizes` follows its own ratio (`--viewer-media-height` × ratio, capped at `--viewer-media-max`), so a portrait image doesn't fetch a landscape-sized file. Videos don't preload; the current one plays.
   - Until a slide's media arrive it shows a placeholder: the feed's copy of the picture or poster, scaled up as its background, if that has loaded; otherwise the slot's dithered preview.
   - Each item is uncropped at its own ratio. Its width is the smallest of `--viewer-media-height` × ratio, `--viewer-media-max` (64rem) and the dialog width minus gutters; the height follows from the ratio.
