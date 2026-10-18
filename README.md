@@ -1,10 +1,10 @@
 # kello
 
-knowledge + inspo collected [by qurle](https://qurle.net)
+knowledge + inspo collected [by qurle](https://qurle.net). live on [kello.press](https://kello.press) and [kello.qurle.net](https://kello.qurle.net)
 
-![kello](public/cover.png)
+[![kello](public/cover.png)]([https://](https://kello.qurle.net))
 
-A static Astro site that mirrors the Telegram channel [the_kello](https://t.me/s/the_kello) in English, with the original Russian at `/ru`. A GitHub Action pulls new posts every 12 hours, and Vercel rebuilds the site. How it works is in [AGENTS.md](AGENTS.md).
+A static Astro site that mirrors the Telegram channel [the\_kello](https://t.me/the_kello) in English, with the original Russian at `/ru`. A GitHub Action pulls new posts every 12 hours, and Vercel rebuilds the site. How it works is in [AGENTS.md](AGENTS.md).
 
 ```sh
 npm run dev     # dev server
@@ -23,4 +23,4 @@ Any public channel works: one whose posts open at `t.me/s/<username>`. Translati
 5. Import the repo on Vercel; the Astro preset needs no settings. The sync workflow then runs every 12 hours. Run it once from the Actions tab to check that it can push.
 6. Optional: full-size photos through a Telegram bot. Setup is in [AGENTS.md](AGENTS.md#full-size-photos).
 
-Swap `public/favicon.svg`, `public/og.png` (1200×630) and the heading font in `src/assets/fonts` for your own.
+Swap `public/favicon.svg` and `public/og.png` (1200×630) for your own.
