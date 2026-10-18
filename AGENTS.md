@@ -92,6 +92,8 @@ Setup, once:
 | `scripts/check-bot.ts` | `npm run check-bot`. |
 | `.github/workflows/sync.yml` | Scheduled sync: every 12 hours and on demand. |
 | `src/styles/variables.sass` | Design tokens as CSS custom properties. |
+| `src/styles/fonts.sass` | `@font-face` rule for the heading font. |
+| `src/assets/fonts/` | The Mustica Pro heading subset. |
 | `src/styles/*.sass` | Base, page, post, media row and viewer styles, all reading the tokens. |
 | `src/components/` | `Home.astro` is the page, shared by `/` and `/ru` through a `lang` prop; it renders `Post.astro`, which renders `MediaRow.astro` and `Picture.astro`. |
 | `src/lib/i18n.ts` | The UI string dictionary. |
@@ -106,8 +108,11 @@ Setup, once:
 
 The page has three parts: the heading "Kello", a line of tag filters, then posts. Nothing else goes in the header or footer, except the language link (`ru` on `/`, `en` on `/ru`).
 
-- Swiss style: Inter, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings and link hover, and appears nowhere else. Selected tags turn `--primary`.
-- Inter is loaded with its optical-size axis (`@fontsource-variable/inter/opsz.css`). Body text gets the text cut automatically, and the heading is pinned to the Display cut with `--opsz-display` (32). The preloaded font file must be the `opsz` one too.
+- Swiss style: Inter for text, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings and link hover, and appears nowhere else. Selected tags turn `--primary`.
+- Fonts are self-hosted: Vite copies them into `/_astro/` at build time, and nothing loads from another host.
+  - Inter sets all text through `--font-sans`. It comes from the `@fontsource-variable/inter` package (`wght.css`: variable weight, no optical-size axis), whose `unicode-range` subsets mean a page downloads only the Latin and, on `/ru`, Cyrillic files.
+  - The heading "kello" is Mustica Pro SemiBold through `--font-display`, used nowhere else. Its file is in `src/assets/fonts` with an `@font-face` rule in `src/styles/fonts.sass`. It is a WOFF2 subset of the owner's OTF (basic Latin, Latin-1 punctuation, general punctuation, basic Cyrillic; about 28 KB) made with `pyftsubset`, keeping only the `kern`, `liga` and `case` features. To change the character set, re-run `pyftsubset` on the OTF, which is not in the repo.
+  - `Home.astro` preloads Mustica Pro on both pages, plus the Inter file for the page's language (Latin on `/`, Cyrillic on `/ru`).
 - Tags, their labels, the heading and every UI string in `src/lib/i18n.ts` are lowercase; the config schema rejects uppercase labels.
 - One text size, `--text-base`, for everything except the heading. The page starts `--page-padding-top` (12rem) down.
 - Post text is typeset at build time (`src/lib/typography.ts`, applied in `getPosts()`). A hyphen or en dash between spaces becomes an em dash. Emoji from Telegram stay.
@@ -118,7 +123,7 @@ The page has three parts: the heading "Kello", a line of tag filters, then posts
   - The tag line uses the same grid. It runs from the column after `--index-columns` to the right edge of the page, so it starts where posts can start.
   - Each post goes in a start column picked by a hash of its id (`data-hash`), from the columns that let it sit within `--scatter-jitter` of the highest free spot. It then drops by a further hashed amount up to `--scatter-jitter`. So posts share vertical space without touching, and positions stay stable between visits.
   - No post sits above the one before it, so the feed still reads newest first, top to bottom.
-  - The layout re-runs on filter, resize and font load. The Inter file for the page's language is preloaded, so the first layout usually has the right metrics. Without JS, and below 64rem, the feed is a single centred column.
+  - The layout re-runs on filter, resize and font load. The heading font and the Inter file for the page's language are preloaded, so the first layout usually has the right metrics. Without JS, and below 64rem, the feed is a single centred column.
 - Media loading state: an image slot shows its image as an ordered dither (fine dots) until the image arrives.
   - The source is a 16px-wide preview made at build time (`src/lib/preview.ts`, about 100 bytes of inline WebP).
   - In CSS (`media.sass`), the preview is scaled up smoothly, greyed and halved in brightness, and a 4×4 Bayer threshold map at half strength is added with `mix-blend-mode: plus-lighter`. `contrast(64)` then turns each point black or white, which is an ordered dither of the image.
