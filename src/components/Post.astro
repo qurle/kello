@@ -110,6 +110,10 @@ const tags = sortTags(post.tags);
 .source
     color: var(--primary)
 
+    // Scoped, this rule outranks the global a:hover, so the hover is restated.
+    &:hover
+        color: var(--accent)
+
 .telegram
     color: var(--tertiary)
 
