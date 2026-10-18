@@ -4,7 +4,7 @@ import { typeset } from './typography';
 
 export type Post = CollectionEntry<'posts'>['data'];
 
-/** Applies hand-written overrides to synced posts. Hidden posts are dropped. */
+/** Applies overrides and drops hidden posts. */
 export function applyOverrides(posts: Post[], overrides: Overrides = defaultOverrides): Post[] {
 	return posts.flatMap((post) => {
 		const o = overrides[post.telegramId];
@@ -20,7 +20,7 @@ export function applyOverrides(posts: Post[], overrides: Overrides = defaultOver
 	});
 }
 
-/** All visible posts with overrides and typographic fixes applied, newest first. */
+/** Visible posts with overrides and typography applied, newest first. */
 export async function getPosts(): Promise<Post[]> {
 	const posts = (await getCollection('posts')).map((entry) => entry.data);
 	return applyOverrides(posts)

@@ -1,8 +1,4 @@
-// Media viewer: the post's whole row, uncropped, in a full-width carousel inside a <dialog>.
-// The current item sits in the middle. Clicking its left or right half, the arrow keys or a swipe
-// move between items; clicking a neighbour goes to it. Esc, the close button, or a click anywhere
-// outside the media and the post's text closes it, and focus goes back to the opener.
-// The open post is kept in the URL as ?post=<id>&media=<n> so it can be shared.
+// Media viewer: a post's whole row as a carousel in a <dialog>. The open post and item live in the URL (?post=&media=).
 
 import { getParam, setParams } from './url';
 
@@ -16,7 +12,7 @@ let current = 0;
 let postId = '';
 let opener: HTMLElement | null = null;
 
-/** A copy of a feed item's picture or video, sized for the viewer. */
+/** A copy of a feed item's picture or video. */
 function slideFor(item: HTMLElement) {
 	const media = item.querySelector('picture, video')!.cloneNode(true) as HTMLElement;
 	const sized = media.querySelector('img') ?? media;
@@ -29,7 +25,7 @@ function slideFor(item: HTMLElement) {
 		media.removeAttribute('data-autoplay');
 		media.preload = 'metadata';
 		media.muted = true;
-		// With reduced motion a video waits for the person to press play.
+		// Reduced motion: no autoplay, the person presses play.
 		media.controls = reducedMotion.matches;
 	}
 
@@ -42,7 +38,7 @@ function slideFor(item: HTMLElement) {
 
 const smooth = () => (reducedMotion.matches ? 'auto' : 'smooth');
 
-/** Room before the first and after the last slide, so either can sit in the middle. */
+/** Room at both ends, so the first and last slide can sit in the middle. */
 function pad() {
 	const half = (slide: HTMLElement) => `${(track.clientWidth - slide.offsetWidth) / 2}px`;
 	track.style.setProperty('--pad-start', half(slides[0]));
@@ -101,12 +97,12 @@ function open(post: HTMLElement, index: number, from: HTMLElement | null) {
 
 document.addEventListener('click', (event) => {
 	const item = (event.target as Element).closest<HTMLElement>('[data-open]');
-	if (!item || dialog.contains(item)) return;
+	if (!item) return;
 	const post = item.closest<HTMLElement>('[data-post]')!;
 	open(post, [...post.querySelectorAll('[data-open]')].indexOf(item), item);
 });
 
-/** -1 or 1 for a point over the current slide's left or right half; 0 at the ends of the row. */
+/** -1 or 1 for the left or right half of the current slide; 0 where there is no neighbour. */
 function sideAt(slide: HTMLElement, x: number) {
 	const { left, width } = slide.getBoundingClientRect();
 	const direction = x < left + width / 2 ? -1 : 1;
@@ -116,7 +112,7 @@ function sideAt(slide: HTMLElement, x: number) {
 
 track.addEventListener('click', (event) => {
 	const target = event.target as Element;
-	// Native video controls take their own clicks.
+	// Native video controls keep their clicks.
 	if (target.closest('video[controls]')) return;
 	const slide = target.closest<HTMLElement>('.viewer__slide');
 	if (!slide) return;
@@ -131,7 +127,7 @@ track.addEventListener('mousemove', (event) => {
 	track.dataset.side = side < 0 ? 'prev' : side > 0 ? 'next' : '';
 });
 
-// Swipes and trackpad scrolls pick the slide that ends up in the middle.
+// After a swipe or scroll, the slide in the middle becomes current.
 let settle = 0;
 track.addEventListener(
 	'scroll',
@@ -162,7 +158,7 @@ dialog.addEventListener('keydown', (event) => {
 
 const closeButton = dialog.querySelector<HTMLElement>('[data-viewer-close]')!;
 
-/** Outside the media and the post's text block: the bar, the gaps, the margins. */
+/** Anywhere outside the media and the post's text. */
 const inCloseZone = (target: EventTarget | null) =>
 	target instanceof Element && !target.closest('.viewer__slide, .viewer__meta > *');
 
@@ -170,7 +166,7 @@ dialog.addEventListener('click', (event) => {
 	if (inCloseZone(event.target)) dialog.close();
 });
 
-// The close button lights up wherever a click would close, so the empty space reads as a target.
+// The close button lights up wherever a click would close.
 dialog.addEventListener('pointermove', (event) => {
 	const zone = event.pointerType === 'mouse' && inCloseZone(event.target);
 	closeButton.toggleAttribute('data-hover', zone);
@@ -189,12 +185,12 @@ dialog.addEventListener('close', () => {
 	opener = null;
 });
 
-// Picking a tag inside the viewer filters the page behind it.
+// A tag picked inside the viewer filters the page behind it.
 document.addEventListener('kello:filter', () => {
 	if (dialog.open) dialog.close();
 });
 
-// A shared link opens its post straight away.
+// A shared link opens its post.
 const shared = getParam('post');
 const sharedPost = shared ? document.querySelector<HTMLElement>(`[data-post="${CSS.escape(shared)}"]`) : null;
 if (sharedPost) {

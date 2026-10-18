@@ -1,17 +1,13 @@
-// Full-size media through the Telegram Bot API. The public web preview serves photos at 800px at
-// most; Telegram keeps them at up to 1280px (2560px when sent in HD). Bots can't read a channel's
-// history, so each item is forwarded from the channel into a private scratch chat, the largest copy
-// is downloaded from the forwarded message, and the forward is deleted again.
-//
-// Needs a bot that is an admin of the channel and of the scratch chat (see AGENTS.md). Every failure
-// is reported and returns undefined, so the sync falls back to the web preview's copy.
+// Full-size media through the Bot API. Bots can't read channel history, so each item is forwarded
+// into a private scratch chat, downloaded from there and deleted. Setup is in AGENTS.md.
+// Every failure is reported and returns undefined, so the sync falls back to the preview's copy.
 
 const api = 'https://api.telegram.org';
 /** Bot API downloads stop at 20 MB. */
 const maxDownload = 20 * 1024 * 1024;
-/** Forwards into one chat, spaced to stay well under Telegram's ~20 messages a minute per chat. */
+/** Spaced to stay under Telegram's ~20 messages a minute per chat. */
 const forwardInterval = 3100;
-/** Consecutive failures after which the bot is given up on for the rest of the run. */
+/** Consecutive failures after which the bot is dropped for the run. */
 const maxFailures = 3;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
@@ -38,7 +34,7 @@ export class TelegramBot {
 	private lastForward = 0;
 	private failures = 0;
 	private disabled = false;
-	/** Forwards run one at a time, even though the sync handles several posts at once. */
+	/** Forwards run one at a time. */
 	private queue: Promise<unknown> = Promise.resolve();
 
 	constructor(
@@ -49,7 +45,7 @@ export class TelegramBot {
 		private warn: (msg: string) => void,
 	) {}
 
-	/** Calls a Bot API method, waiting out rate limits. The token never appears in errors. */
+	/** Calls a Bot API method, waiting out rate limits. Errors never contain the token. */
 	private async call<T>(method: string, params: Record<string, unknown>): Promise<T> {
 		for (let attempt = 1; ; attempt++) {
 			const res = await fetch(`${api}/bot${this.token}/${method}`, {
@@ -69,7 +65,7 @@ export class TelegramBot {
 				parameters?: { retry_after?: number; migrate_to_chat_id?: number };
 			};
 			if (body.ok) return body.result as T;
-			// A group that became a supergroup gets a new id; Telegram says which, so follow it.
+			// A group upgraded to a supergroup gets a new id.
 			const moved = body.parameters?.migrate_to_chat_id;
 			if (moved && String(params.chat_id) === this.dumpChat && attempt < 5) {
 				this.dumpChat = String(moved);
@@ -96,7 +92,7 @@ export class TelegramBot {
 		return Buffer.from(await res.arrayBuffer());
 	}
 
-	/** Forwards a channel message into the scratch chat, hands it to `use`, then deletes the forward. */
+	/** Forwards a message into the scratch chat, passes it to `use`, then deletes the forward. */
 	private withForward<T>(messageId: number, use: (message: Message) => Promise<T | undefined>): Promise<T | undefined> {
 		const run = this.queue.then(() => this.forwardOnce(messageId, use));
 		this.queue = run.catch(() => undefined);
@@ -133,7 +129,7 @@ export class TelegramBot {
 		}
 	}
 
-	/** The largest copy of a photo message, or undefined. */
+	/** The largest copy of a photo. */
 	photo(messageId: number): Promise<Buffer | undefined> {
 		return this.withForward(messageId, async (message) => {
 			const largest = message.photo?.at(-1);
@@ -144,7 +140,7 @@ export class TelegramBot {
 		});
 	}
 
-	/** A video message's file if it's under the Bot API's 20 MB and `maxBytes`, or undefined. */
+	/** A video's file, if under 20 MB and `maxBytes`. */
 	video(messageId: number, maxBytes: number): Promise<Buffer | undefined> {
 		return this.withForward(messageId, async (message) => {
 			const ref = message.video ?? message.animation ?? (message.document?.mime_type?.startsWith('video/') ? message.document : undefined);
@@ -153,7 +149,7 @@ export class TelegramBot {
 		});
 	}
 
-	/** Checks the token and that the bot can see both chats. Throws with a readable reason. */
+	/** Checks the token and access to both chats; returns the bot's username. */
 	async check(): Promise<string> {
 		const me = await this.call<{ username: string }>('getMe', {});
 		await this.call('getChat', { chat_id: `@${this.channel}` });

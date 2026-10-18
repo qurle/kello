@@ -1,11 +1,8 @@
-// File naming for synced images, shared by scripts/sync and the site.
-//
-// An image (or video poster) `base` with original width `width` is stored as `<base>-<w>.<format>` for
-// each configured width `w` below the original, plus the first configured width at or above it, which
-// holds the original size. Nothing is upscaled and no two files are the same picture.
-// The web preview serves photos at 800px at most, so most images have a single `-800` file today.
+// File naming for images, shared by sync and the site. An image or poster `base` of width `width` is
+// stored as `<base>-<w>.<format>` for each configured width below it, plus the first at or above it,
+// which holds the original size. Nothing is upscaled.
 
-/** Configured widths that exist on disk for an image of this original width, ascending. */
+/** Configured widths stored for an image of this width, ascending. */
 export function storedWidths(width: number, widths: readonly number[]): number[] {
 	const sorted = [...widths].sort((a, b) => a - b);
 	const cap = sorted.findIndex((w) => w >= width);
@@ -13,15 +10,15 @@ export function storedWidths(width: number, widths: readonly number[]): number[]
 }
 
 export interface ImageSource {
-	/** Path under `public/<media.dir>`, e.g. `338/1-800.webp`. */
+	/** Path under the media folder, e.g. `338/1-800.webp`. */
 	file: string;
-	/** Real pixel width of that file, for `srcset` descriptors. */
+	/** The file's real pixel width. */
 	width: number;
 	format: string;
 	w: number;
 }
 
-/** Every stored file of an image, smallest first, for each format. */
+/** Every stored file of an image, smallest first, per format. */
 export function imageSources(
 	base: string,
 	width: number,

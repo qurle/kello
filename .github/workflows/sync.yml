@@ -2,7 +2,7 @@ name: Sync from Telegram
 
 on:
   schedule:
-    # Every 12 hours, off the hour to dodge the busiest scheduler slots.
+    # Off the hour, to dodge busy scheduler slots.
     - cron: '17 */12 * * *'
   workflow_dispatch:
     inputs:
@@ -14,7 +14,7 @@ on:
 permissions:
   contents: write
 
-# One sync at a time; a queued run waits instead of racing the push.
+# One sync at a time.
 concurrency:
   group: sync
   cancel-in-progress: false
@@ -22,7 +22,7 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    # A full run with the bot backfilling full-size photos forwards one message every ~3s.
+    # A full run with the bot forwards one message every ~3s.
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
@@ -32,7 +32,7 @@ jobs:
           node-version: 24
           cache: npm
 
-      # ffmpeg grabs the first frame of each video as its poster.
+      # ffmpeg takes each video's first frame as its poster.
       - name: Install ffmpeg
         run: command -v ffmpeg || (sudo apt-get update -q && sudo apt-get install -y -q ffmpeg)
 
@@ -40,7 +40,7 @@ jobs:
 
       - name: Sync
         env:
-          # Optional: a bot that fetches full-size photos (see AGENTS.md). Without them, photos stay 800px.
+          # Optional, see AGENTS.md: without them photos stay 800px.
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_DUMP_CHAT_ID: ${{ secrets.TELEGRAM_DUMP_CHAT_ID }}
         run: npm run sync -- --message "$RUNNER_TEMP/commit-message.txt" ${{ inputs.full && '--full' || '' }}

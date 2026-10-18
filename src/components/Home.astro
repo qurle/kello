@@ -9,7 +9,7 @@ import '../styles/post.sass';
 import '../styles/media.sass';
 import '../styles/viewer.sass';
 import config from '../../kello.config';
-import { getFeed } from '../lib/feed';
+import { getPosts } from '../lib/posts';
 import { strings, type Lang } from '../lib/i18n';
 import { filterTags, tagLabel } from '../lib/tags';
 import Post from './Post.astro';
@@ -25,7 +25,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = strings[lang];
 const other = strings[t.switchTo];
-const posts = await getFeed();
+const posts = await getPosts();
 const tags = filterTags(new Set(posts.flatMap((post) => post.tags)));
 const url = (path: string) => new URL(path, config.site.url).href;
 ---
@@ -34,7 +34,7 @@ const url = (path: string) => new URL(path, config.site.url).href;
 <html lang={lang}>
 	<head>
 		<meta charset="utf-8" />
-		<!-- Lets CSS hold the wide feed back until the inline script below the feed has placed it. -->
+		<!-- Lets CSS hold the wide feed back until feed.js has placed it. -->
 		<script is:inline>document.documentElement.dataset.js = '';</script>
 		<link rel="preload" href={mustica} as="font" type="font/woff2" crossorigin />
 		<link rel="preload" href={lang === 'ru' ? interCyrillic : interLatin} as="font" type="font/woff2" crossorigin />

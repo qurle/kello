@@ -1,22 +1,18 @@
 import { sameMarkup, type TranslationItem, type Translator } from './translate';
 
-// The keyless endpoint behind Google Translate's web widget. Undocumented, so it can change or start
-// refusing requests; the chain in translate.ts then hands the posts to the next provider.
-// `format=html` keeps tags in place and accepts several `q` per request, returned in order.
+// The keyless endpoint behind Google Translate's web widget. Undocumented: it can change or refuse requests.
+// `format=html` keeps tags in place and takes several `q` per request, answered in order.
 const endpoint = 'https://translate.googleapis.com/translate_a/t?client=gtx&sl=ru&tl=en&format=html';
 const wordEndpoint = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=ru&tl=en&dt=t&q=';
 
-/** Text characters per request, kept well under the endpoint's limit. */
+/** Characters per request, under the endpoint's limit. */
 const maxChars = 4000;
 const pause = 1000;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const cyrillic = /[а-яё]/i;
 
-/**
- * Swaps each href for an index so URLs never reach the translator, and marks link text with no Cyrillic
- * (brand names, @mentions, URLs) and <code> as `translate="no"`.
- */
+/** Swaps hrefs for indices, and marks <code> and link text without Cyrillic (names, @mentions) `translate="no"`. */
 function protect(html: string) {
 	const hrefs: string[] = [];
 	const text = html
@@ -28,7 +24,7 @@ function protect(html: string) {
 	return { text, hrefs };
 }
 
-/** Puts the hrefs back and removes the spaces Google adds around tags. */
+/** Puts hrefs back and drops the spaces Google adds around tags. */
 function restore(en: string, hrefs: string[]) {
 	return en
 		.replace(/<a\b[^>]*?\bi="?(\d+)"?[^>]*>/g, (_, i: string) => `<a href="${hrefs[Number(i)] ?? ''}">`)
@@ -39,7 +35,7 @@ function restore(en: string, hrefs: string[]) {
 		.trim();
 }
 
-/** Groups items so each request stays under `maxChars`. */
+/** Groups items under `maxChars` per request. */
 function batches<T extends { text: string }>(items: T[]) {
 	const out: T[][] = [];
 	let current: T[] = [];
@@ -62,7 +58,7 @@ export class GoogleTranslator implements Translator {
 
 	constructor(private warn: (msg: string) => void) {}
 
-	/** Spaces requests out and retries rate limits and server errors a few times. */
+	/** Spaces requests out; retries rate limits and server errors. */
 	private async request(url: string, body?: string): Promise<unknown> {
 		for (let attempt = 1; ; attempt++) {
 			await sleep(Math.max(0, this.lastCall + pause - Date.now()));
@@ -89,7 +85,7 @@ export class GoogleTranslator implements Translator {
 			try {
 				result = await this.request(endpoint, batch.map((b) => `q=${encodeURIComponent(b.text)}`).join('&'));
 			} catch (err) {
-				// Blocked or down: stop here; the rest keep their English and are retried next sync.
+				// Blocked or down: the rest are retried next sync.
 				this.warn((err as Error).message);
 				break;
 			}

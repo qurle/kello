@@ -3,16 +3,15 @@ import { defineConfig } from './src/lib/config';
 export default defineConfig({
 	site: {
 		title: 'Kello',
-		// Replace with the production domain once it exists.
+		// TODO: the production domain.
 		url: 'https://kello.vercel.app',
 	},
 
 	channel: {
 		username: 'the_kello',
-		// A page is ~20 messages; albums take one message per item, so 3 pages are 20–60 posts.
-		// A full re-scan runs with `npm run sync -- --full`.
+		// A page is ~20 messages; albums take one per item.
 		recentPages: 3,
-		// Full-size photos through a bot; see "Full-size photos" in AGENTS.md for the setup.
+		// Full-size photos: see AGENTS.md.
 		bot: {
 			tokenEnv: 'TELEGRAM_BOT_TOKEN',
 			dumpChatEnv: 'TELEGRAM_DUMP_CHAT_ID',
@@ -21,15 +20,14 @@ export default defineConfig({
 
 	media: {
 		dir: 'media',
-		// Telegram's public pages serve photos at 800px at most, so today each image gets a single 800px file.
-		// The larger widths only apply if a bigger source ever comes along.
+		// The preview serves photos at 800px; wider files exist only for full-size photos and video posters.
 		widths: [800, 1280, 1920, 2560],
 		formats: ['webp'],
 		quality: 90,
 		maxVideoMB: 15,
 	},
 
-	// Filter-line order. Post counts as of Oct 2026 are in comments.
+	// Filter-line order; post counts as of Oct 2026.
 	tags: [
 		{ ru: 'ui', en: 'ui' }, // 103
 		{ ru: 'вдохновение', en: 'inspiration', aliases: ['вдохнование'] }, // 89

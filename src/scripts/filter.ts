@@ -1,5 +1,4 @@
 // Tag filter: AND over the selected tags, kept in the URL as ?tags=a,b.
-
 import { getParam, setParams } from './url';
 
 const posts = [...document.querySelectorAll<HTMLElement>('[data-post]')];
@@ -19,7 +18,7 @@ function apply() {
 		const tag = button.dataset.tag!;
 		const on = selected.has(tag);
 		button.setAttribute('aria-pressed', String(on));
-		// A tag that would leave nothing to show can't be picked.
+		// A tag that would leave no posts can't be picked.
 		if (button.closest('[data-filter]')) button.disabled = !on && selected.size > 0 && !visible.some((tags) => tags.has(tag));
 	}
 

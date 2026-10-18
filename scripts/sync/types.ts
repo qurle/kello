@@ -1,7 +1,6 @@
-// Shapes shared by the sync steps. `PostFile` mirrors the schema in src/content.config.ts;
-// keep the two in step.
+// Shapes shared by the sync steps. `PostFile` mirrors the schema in src/content.config.ts.
 
-/** A media item as found in the web preview, before anything is downloaded. */
+/** A media item as found in the preview, before download. */
 export type ScrapedMedia =
 	| {
 			type: 'image';
@@ -12,7 +11,7 @@ export type ScrapedMedia =
 	| {
 			type: 'video';
 			messageId: number;
-			/** Missing when the preview shows "Media is too big". */
+			/** Missing when the preview says "Media is too big". */
 			url?: string;
 			poster?: string;
 			width?: number;
@@ -24,7 +23,7 @@ export interface ScrapedPost {
 	date: string;
 	/** Hashtags as written, lowercased, without `#`. */
 	rawTags: string[];
-	/** Sanitised HTML, hashtag line and trailing source URL removed. Empty when the post has no text. */
+	/** Sanitised HTML without the hashtag line and source URL; empty when there is no text. */
 	html: string;
 	link?: string;
 	media: ScrapedMedia[];

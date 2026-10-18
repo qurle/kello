@@ -8,7 +8,7 @@ const userAgent =
 
 export interface Page {
 	posts: ScrapedPost[];
-	/** Pass as `?before=` to get the next older page. Missing on the oldest page. */
+	/** For `?before=` to get the next older page; missing on the oldest. */
 	before?: number;
 }
 
@@ -25,13 +25,13 @@ export function parsePage(html: string): Page {
 
 	$('.tgme_widget_message[data-post]').each((_, el) => {
 		const message = $(el);
-		// "Channel created", pinned-message notices and the like.
+		// "Channel created", pinned-message notices.
 		if (message.hasClass('service_message')) return;
 		const telegramId = Number(message.attr('data-post')!.split('/')[1]);
 		const date = message.find('.tgme_widget_message_date time[datetime]').attr('datetime');
 		if (!telegramId || !date) return;
 
-		// The text block is sometimes nested in a second `.js-message_text`; a reply quote has its own text block.
+		// Sometimes nested twice; a reply quote has its own block.
 		const textEl = message
 			.find('.js-message_text')
 			.filter((_, t) => $(t).closest('.tgme_widget_message_reply').length === 0)
@@ -51,7 +51,7 @@ export function parsePage(html: string): Page {
 					if (url) media.push({ type: 'image', messageId, url });
 					return;
 				}
-				// `style="width:3018px;padding-top:48.5%"` holds the video's real size.
+				// `width:3018px;padding-top:48.5%` is the video's real size.
 				const wrapStyle = item.find('.tgme_widget_message_video_wrap').attr('style') ?? '';
 				const width = Number(wrapStyle.match(/width:\s*(\d+)px/)?.[1]) || undefined;
 				const ratio = Number(wrapStyle.match(/padding-top:\s*([\d.]+)%/)?.[1]) || undefined;
@@ -76,7 +76,7 @@ export function parsePage(html: string): Page {
 	});
 
 	const before = Number($('.tme_messages_more[data-before]').first().attr('data-before')) || undefined;
-	// Guard against a page that links to itself.
+	// Ignore a page that links to itself.
 	const oldest = Math.min(...posts.map((p) => p.telegramId));
 	return { posts, before: before && before <= oldest ? before : undefined };
 }
@@ -97,7 +97,7 @@ async function fetchPage(channel: string, before?: number): Promise<string> {
 
 export interface ScrapeResult {
 	posts: ScrapedPost[];
-	/** True when the walk reached the first post of the channel. */
+	/** The walk reached the channel's first post. */
 	reachedStart: boolean;
 }
 
@@ -108,7 +108,7 @@ export async function scrape(channel: string, pages: number): Promise<ScrapeResu
 	for (let i = 0; i < pages; i++) {
 		const page = parsePage(await fetchPage(channel, before));
 		for (const post of page.posts) {
-			// An album cut by a page boundary can show up twice; keep the fuller copy.
+			// An album cut by a page boundary shows up twice: keep the fuller copy.
 			const seen = byId.get(post.telegramId);
 			if (!seen || post.media.length > seen.media.length) byId.set(post.telegramId, post);
 		}

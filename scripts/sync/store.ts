@@ -14,7 +14,7 @@ export async function readPosts(): Promise<Map<number, PostFile>> {
 	return posts;
 }
 
-/** Fixed key order and tab indentation keep diffs small. */
+/** Fixed key order keeps diffs small. */
 export const serializePost = (p: PostFile) =>
 	JSON.stringify(
 		{
@@ -30,7 +30,7 @@ export const serializePost = (p: PostFile) =>
 		'\t',
 	) + '\n';
 
-/** Writes the post if its file content changed. Returns whether it did. */
+/** Writes the post if it changed; returns whether it did. */
 export async function writePost(post: PostFile): Promise<boolean> {
 	const file = path.join(postsDir, `${post.telegramId}.json`);
 	const next = serializePost(post);

@@ -1,4 +1,4 @@
-// Every UI string on the site, all lowercase. `/` is English, `/ru` is Russian.
+// UI strings, lowercase: `/` is English, `/ru` Russian.
 export const strings = {
 	en: {
 		description: 'notes on design, interfaces and tools, from the telegram channel the_kello.',

@@ -1,11 +1,9 @@
-// npm run sync [-- --full] [-- --no-translate] [-- --message <file>]
-//
-//   --full            walk the whole channel instead of `channel.recentPages` pages, and delete
-//                     anything local that is no longer in it
-//   --no-translate    skip translation: English text is a copy of the Russian, left without `sourceHash`
-//                     so the next real sync translates it
-//   --message <file>  write a commit message summarising the run (used by .github/workflows/sync.yml)
-//   --allow-mass-delete  delete even if more posts vanished than looks plausible
+// npm run sync [-- --full] [-- --no-translate] [-- --allow-mass-delete] [-- --message <file>]
+//   --full               walk the whole channel and delete what is gone from it
+//   --no-translate       English = Russian, without `sourceHash`, so a later sync translates
+//   --allow-mass-delete  delete even if implausibly many posts vanished
+//   --message <file>     write a commit message summarising the run
+import './env';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -18,11 +16,6 @@ import { TagMapper } from './tags';
 import { GoogleTranslator } from './google';
 import type { Translator } from './translate';
 import type { PostFile, ScrapedPost } from './types';
-
-// Local runs keep secrets in .env (gitignored); variables already set, as in the workflow, win.
-try {
-	process.loadEnvFile();
-} catch {}
 
 const args = process.argv.slice(2);
 const full = args.includes('--full');
@@ -48,7 +41,7 @@ async function pool<T>(items: T[], limit: number, fn: (item: T) => Promise<void>
 	);
 }
 
-/** The bot for full-size photos, if its variables are set and it can see both chats. */
+/** The full-size photo bot, if configured and able to see both chats. */
 async function connectBot(): Promise<TelegramBot | undefined> {
 	const token = process.env[config.channel.bot.tokenEnv];
 	const dumpChat = process.env[config.channel.bot.dumpChatEnv];
@@ -85,11 +78,11 @@ async function main() {
 	const { posts: scraped, reachedStart } = await scrape(config.channel.username, full ? Infinity : config.channel.recentPages);
 	if (!scraped.length) throw new Error('No posts found in the web preview. Has the markup changed?');
 
-	// On a partial walk the oldest post may be an album cut off by the page boundary: leave it alone.
+	// On a partial walk the oldest post may be an album cut by the page boundary: leave it alone.
 	const boundary = reachedStart ? undefined : scraped.at(-1)!.telegramId;
 	const current = boundary === undefined ? scraped : scraped.filter((p) => p.telegramId > boundary);
 
-	// Media and tags, a few posts at a time.
+	// Media and tags, three posts at a time.
 	const drafts = new Map<number, PostFile>();
 	console.log(`Syncing media for ${current.length} posts`);
 	await pool(current, 3, async (post: ScrapedPost) => {
@@ -109,7 +102,7 @@ async function main() {
 		}
 	});
 
-	// Text: reuse translations whose source is unchanged, translate the rest.
+	// Reuse translations whose source is unchanged, translate the rest.
 	const pending: PostFile[] = [];
 	for (const draft of drafts.values()) {
 		if (!draft.text) continue;
@@ -128,7 +121,7 @@ async function main() {
 		try {
 			if (translator) result = await translator.translate(pending.map((d) => ({ id: d.telegramId, html: d.text!.ru })));
 		} catch (err) {
-			// A failing translator never fails the sync: every pending post is kept as below.
+			// A failing translator never fails the sync.
 			warn(`Translation failed: ${(err as Error).message}`);
 		}
 		for (const draft of pending) {
@@ -139,7 +132,7 @@ async function main() {
 				draft.sourceHash = sha256(draft.text!.ru);
 				translated++;
 			} else {
-				// Not translated: keep the old English if any, else the Russian, and leave the hash stale so the next sync retries.
+				// Keep the old English, else the Russian; the stale hash makes the next sync retry.
 				draft.text!.en = (!noTranslate && prev?.text?.en) || draft.text!.ru;
 				draft.sourceHash = noTranslate ? undefined : prev?.sourceHash;
 			}
@@ -153,11 +146,12 @@ async function main() {
 		if (await writePost(draft)) existing.has(draft.telegramId) ? updated++ : added++;
 	}
 
-	// Deletions: everything the walk covered that is gone from Telegram.
+	// Deletions: whatever the walk covered that is gone from Telegram.
 	const seen = new Set(scraped.map((p) => p.telegramId));
 	const gone = [...existing.keys()].filter((id) => !seen.has(id) && (boundary === undefined || id > boundary));
 	const limit = Math.max(10, Math.ceil(existing.size * 0.2));
-	if (gone.length > limit && !allowMassDelete) {
+	const refuse = gone.length > limit && !allowMassDelete;
+	if (refuse) {
 		warn(`${gone.length} posts are missing from Telegram, more than the limit of ${limit}. Not deleting; rerun with --allow-mass-delete if this is real.`);
 	} else {
 		for (const id of gone) {
@@ -172,11 +166,10 @@ async function main() {
 			}
 		}
 	}
-	const deleted = gone.length <= limit || allowMassDelete ? gone.length : 0;
+	const deleted = refuse ? 0 : gone.length;
 
 	await tags.save();
 
-	// Summary
 	const counts = [added && `${added} new`, updated && `${updated} updated`, deleted && `${deleted} deleted`].filter(Boolean);
 	const lines = [`Sync: ${counts.join(', ') || 'no post changes'}`];
 	const body: string[] = [];

@@ -69,7 +69,7 @@ Setup, once:
 - Media URLs on `telesco.pe` are signed and expire, so never link to them from the site. Everything is downloaded at sync time.
 - Some videos have no source file in the preview (posts 213 and 227 as of Oct 2026). These, and any video over `media.maxVideoMB`, get type `unavailable` and link to the post in Telegram.
 - The preview serves photos at 800px wide at most. Without the bot (below), most images have a single `-800.webp` file holding that copy. Which widths exist follows from the original width: use `imageSources()` in `src/lib/media.ts` rather than assuming every configured width.
-- Video thumbnails in the preview are tiny (≤320px). Sync takes the first frame with ffmpeg as the poster when ffmpeg is on `PATH` (the workflow installs it) and falls back to the thumbnail otherwise; a later run with ffmpeg replaces thumbnail posters. Video width and height come from the MP4 header.
+- Video thumbnails in the preview are tiny (≤320px). Sync takes the first frame with ffmpeg as the poster when ffmpeg is on `PATH` (the workflow installs it) and falls back to the thumbnail otherwise; Video width and height come from the MP4 header.
 - Service messages ("Channel created") are skipped, so the site has one post fewer than the channel's message count suggests.
 - Text keeps `b`, `i`, `u`, `s`, `a`, `code`, `blockquote` and `br`. Custom emoji become their plain character, and hashtags outside the leading line become plain text.
 - Albums use one message id per item, so post ids are not consecutive.
@@ -88,18 +88,21 @@ Setup, once:
 | `src/data/tag-suggestions.json` | Generated: slugs the translator suggested for hashtags missing from the config. Exists only when there are some. |
 | `src/lib/posts.ts` | `getPosts()`: the posts collection with overrides applied, hidden posts dropped, newest first. Use it instead of `getCollection('posts')`. |
 | `src/lib/media.ts` | `imageSources()`: which image files exist for a media entry, with real widths for `srcset`. |
-| `scripts/sync/` | `npm run sync`: `scrape.ts` and `html.ts` parse the web preview, `media.ts` and `mp4.ts` download and resize, `tags.ts` maps hashtags, `translate.ts` has the `Translator` interface and the markup check, `google.ts` the Google Translate provider, `store.ts` reads and writes post JSON, `index.ts` runs it all. |
+| `scripts/sync/` | `npm run sync`: `scrape.ts` and `html.ts` parse the web preview, `media.ts` and `mp4.ts` download and resize, `tags.ts` maps hashtags, `translate.ts` has the `Translator` interface and the markup check, `google.ts` the Google Translate provider, `bot.ts` fetches full-size media, `store.ts` reads and writes post JSON, `types.ts` has the shared shapes, `env.ts` loads `.env`, `index.ts` runs it all. |
+| `scripts/check-bot.ts` | `npm run check-bot`. |
 | `.github/workflows/sync.yml` | Scheduled sync: every 12 hours and on demand. |
 | `src/styles/variables.sass` | Design tokens as CSS custom properties. |
 | `src/styles/fonts.sass` | `@font-face` rule for the heading font. |
 | `src/assets/fonts/` | The Mustica Pro heading subset. |
 | `src/styles/*.sass` | Base, page, post, media row and viewer styles, all reading the tokens. |
-| `src/components/Home.astro` | The page, shared by `/` and `/ru` through a `lang` prop. |
+| `src/components/` | `Home.astro` is the page, shared by `/` and `/ru` through a `lang` prop; it renders `Post.astro`, which renders `MediaRow.astro` and `Picture.astro`. |
 | `src/lib/i18n.ts` | The UI string dictionary. |
-| `src/lib/feed.ts` | `getFeed()`: the posts the page renders. |
+| `src/lib/hash.ts` | `hash()`: a stable integer from a post id. Post.astro writes it to `data-hash`; the feed scatter and settle scripts read it. |
+| `src/lib/preview.ts` | Build-time 16px previews for the loading dither. |
+| `src/lib/tags.ts` | Tag labels, order and the filter line's tags. |
 | `src/lib/urls.ts` | Media, `srcset` and Telegram URLs, and the source link domain. |
-| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, post settle on scroll, and `url.ts` for the shared query string. |
-| `public/media/` | Generated images (AVIF and WebP at each configured width) and videos. |
+| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, post settle on scroll, and `url.ts` for the shared query string. `inline/feed.js` is the exception, inlined in Home.astro: scattered feed and loading state. |
+| `public/media/` | Generated images (WebP, or AVIF too if `media.formats` lists it, at each stored width) and videos. |
 
 ## Design
 
@@ -118,7 +121,7 @@ The page has three parts: the heading "Kello", a line of tag filters, then posts
 - From 64rem up, the page spans the window with at least 4rem (`--page-padding-wide`) of padding on each side, and the feed scatters (`src/scripts/inline/feed.js`). That script is plain JS inlined right after the feed, so it runs while the page parses. A `data-js` flag set in `<head>` keeps the wide feed hidden until the script has placed it, so the single column never flashes. If the script throws, it drops the flag and the column shows.
   - Posts become narrow columns, `--scatter-span` of `--scatter-columns` grid columns wide, with tags in a row and body-size text.
   - The tag line uses the same grid. It runs from the column after `--index-columns` to the right edge of the page, so it starts where posts can start.
-  - Each post goes in a start column picked by a hash of its id, from the columns that let it sit within `--scatter-jitter` of the highest free spot. It then drops by a further hashed amount up to `--scatter-jitter`. So posts share vertical space without touching, and positions stay stable between visits.
+  - Each post goes in a start column picked by a hash of its id (`data-hash`), from the columns that let it sit within `--scatter-jitter` of the highest free spot. It then drops by a further hashed amount up to `--scatter-jitter`. So posts share vertical space without touching, and positions stay stable between visits.
   - No post sits above the one before it, so the feed still reads newest first, top to bottom.
   - The layout re-runs on filter, resize and font load. The heading font and the Inter file for the page's language are preloaded, so the first layout usually has the right metrics. Without JS, and below 64rem, the feed is a single centred column.
 - Media loading state: an image slot shows its image as an ordered dither (fine dots) until the image arrives.
@@ -151,4 +154,4 @@ Image and poster URLs go through `imageSet()` in `src/lib/urls.ts`, which builds
 - Styles are written in indented `.sass` syntax, using CSS features only: no Sass variables, mixins, `@extend` or functions. Read values from the tokens in `variables.sass` instead of hard-coding them.
 - Tabs for indentation in TS and Astro files, two spaces in `.sass`.
 - UI strings are English on `/` and Russian on `/ru`. There are only a handful, kept in one dictionary.
-- Before finishing a change, run `npm run build`. It type-checks the content collection against the schema.
+- Before finishing a change, run `npm run build`, which type-checks the content collection against the schema, and `npx tsc --noEmit`. `tsconfig.json` extends Astro's base with `strictNullChecks` on, which Zod's types need; the rest of `strict` stays off.

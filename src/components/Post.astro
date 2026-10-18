@@ -1,7 +1,8 @@
 ---
-import type { Post } from '../lib/feed';
+import type { Post } from '../lib/posts';
 import { strings, type Lang } from '../lib/i18n';
 import { domain, telegramUrl } from '../lib/urls';
+import { hash } from '../lib/hash';
 import { sortTags, tagLabel } from '../lib/tags';
 import MediaRow from './MediaRow.astro';
 
@@ -16,7 +17,7 @@ const t = strings[lang];
 const tags = sortTags(post.tags);
 ---
 
-<article class="post" id={`post-${post.telegramId}`} data-post={post.telegramId} data-tags={tags.join(' ')}>
+<article class="post" data-post={post.telegramId} data-hash={hash(post.telegramId)} data-tags={tags.join(' ')}>
 	{post.media.length > 0 && <MediaRow media={post.media} telegramId={post.telegramId} lang={lang} eager={eager} />}
 	<div class="post__meta" data-post-meta>
 		{tags.length > 0 && (
