@@ -84,7 +84,7 @@ The page has three parts: the heading "Kello", a line of tag filters, then posts
 
 - Swiss style: Inter, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings and link hover, and appears nowhere else. Selected tags turn `--primary`.
 - Inter is loaded with its optical-size axis (`@fontsource-variable/inter/opsz.css`). Body text gets the text cut automatically, and the heading is pinned to the Display cut with `--opsz-display` (32). The preloaded font file must be the `opsz` one too.
-- Tags, their labels, the heading and UI words (telegram, close) are lowercase; the config schema rejects uppercase labels.
+- Tags, their labels, the heading and UI words (telegram, close, watch in telegram) are lowercase; the config schema rejects uppercase labels.
 - One text size, `--text-base`, for everything except the heading. The page starts `--page-padding-top` (12rem) down.
 - Post text is typeset at build time (`src/lib/typography.ts`, applied in `getPosts()`). A hyphen or en dash between spaces becomes an em dash. Emoji from Telegram stay.
 - Secondary and tertiary greys are deliberately faint (`#b8b8b8` and `#e2e2e2` on light). That's below WCAG text contrast, which is accepted for the quiet parts: unselected tags, the Telegram link and the language link.
