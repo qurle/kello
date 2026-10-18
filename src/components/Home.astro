@@ -28,7 +28,9 @@ const all = await getPosts()
 // The filter line lists every tag, not just this page's: picking one loads the other pages.
 const tags = filterTags(new Set(all.flatMap((post) => post.tags)))
 const posts = pagePosts(all, page)
-const pages = Array.from({ length: pageCount(all) }, (_, i) => pagePath(lang, i + 1))
+const pages = Array.from({ length: pageCount(all) }, (_, i) =>
+	pagePath(lang, i + 1),
+)
 const next = pages[page]
 const url = (path: string) => new URL(path, config.site.url).href
 const { subtitle } = config.site
@@ -43,9 +45,16 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 		     hold it until filter.ts has loaded every page and filtered. -->
 		<script is:inline>
 			document.documentElement.dataset.js = ''
-			if (/[?&]tags=/.test(location.search)) document.documentElement.dataset.filtering = ''
+			if (/[?&]tags=/.test(location.search))
+				document.documentElement.dataset.filtering = ''
 		</script>
-		<link rel="preload" href={mustica} as="font" type="font/woff2" crossorigin />
+		<link
+			rel="preload"
+			href={mustica}
+			as="font"
+			type="font/woff2"
+			crossorigin
+		/>
 		<link
 			rel="preload"
 			href={lang === 'ru' ? interCyrillic : interLatin}
@@ -59,7 +68,11 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 		<link rel="canonical" href={url(pagePath(lang, page))} />
 		<link rel="alternate" hreflang="en" href={url(pagePath('en', page))} />
 		<link rel="alternate" hreflang="ru" href={url(pagePath('ru', page))} />
-		<link rel="alternate" hreflang="x-default" href={url(pagePath('en', page))} />
+		<link
+			rel="alternate"
+			hreflang="x-default"
+			href={url(pagePath('en', page))}
+		/>
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 	</head>
@@ -69,15 +82,22 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 				<div class="heading">
 					<h1 class="title">
 						<a href={t.path}
-							>{config.site.title.toLowerCase()}<sup
-								><img class="logo" alt="kello logotype" src="/favicon.svg" /></sup
+							>{config.site.title}<sup
+								><img
+									class="logo"
+									alt="kello logotype"
+									src="/favicon.svg"
+								/></sup
 							></a
 						>
 					</h1>
 					{
 						subtitle && subtitleLine && (
 							<div class="subtitle">
-								{subtitleLine.text} <a href={subtitle.url} target="_blank">{subtitleLine.link}</a>
+								{subtitleLine.text}{' '}
+								<a href={subtitle.url} target="_blank">
+									{subtitleLine.link}
+								</a>
 							</div>
 						)
 					}
@@ -98,7 +118,12 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 					{
 						tags.map((tag) => (
 							<li>
-								<button class="tag" type="button" data-tag={tag} aria-pressed="false">
+								<button
+									class="tag"
+									type="button"
+									data-tag={tag}
+									aria-pressed="false"
+								>
 									{tagLabel(tag, lang)}
 								</button>
 							</li>
@@ -106,14 +131,30 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 					}
 				</ul>
 			</nav>
-			<main class="feed" data-feed data-page={page} data-pages={JSON.stringify(pages)}>
+			<main
+				class="feed"
+				data-feed
+				data-page={page}
+				data-pages={JSON.stringify(pages)}
+			>
 				{
 					posts.map((post, index) => (
-						<Post post={post} lang={lang} page={page} eager={page === 1 && index === 0} />
+						<Post
+							post={post}
+							lang={lang}
+							page={page}
+							eager={page === 1 && index === 0}
+						/>
 					))
 				}
 			</main>
-			{next && <a class="more" href={next} rel="next" data-more>{t.more}</a>}
+			{
+				next && (
+					<a class="more" href={next} rel="next" data-more>
+						{t.more}
+					</a>
+				)
+			}
 			<script is:inline set:html={feedScript} />
 		</div>
 		<Viewer lang={lang} />
@@ -127,99 +168,99 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 </html>
 
 <style lang="sass">
-// Page frame: heading, language link, filter line, feed.
+	// Page frame: heading, language link, filter line, feed.
 
-.page
-    box-sizing: content-box
-    max-width: var(--container-width)
-    margin-inline: auto
-    padding: var(--page-padding-top) var(--gutter) var(--space-2xl)
+	.page
+		box-sizing: content-box
+		max-width: var(--container-width)
+		margin-inline: auto
+		padding: var(--page-padding-top) var(--gutter) var(--space-2xl)
 
-    // Wide screens: the page spans the window and posts move across it (Post.astro).
-    @media (min-width: 64rem)
-        max-width: none
-        padding-inline: max(var(--page-padding-wide), var(--gutter))
+	    // Wide screens: the page spans the window and posts move across it (Post.astro).
+		@media (min-width: 64rem)
+			max-width: none
+			padding-inline: max(var(--page-padding-wide), var(--gutter))
 
-.masthead
-    display: flex
-    justify-content: space-between
-    align-items: end
-    gap: var(--space-md)
+	.masthead
+		display: flex
+		justify-content: space-between
+		align-items: end
+		gap: var(--space-md)
 
-    .heading
-        width: fit-content
+		.heading
+			width: fit-content
 
-    .title
-        margin-inline-start: var(--display-indent)
-        font-family: var(--font-display)
-        font-size: var(--text-display)
-        font-weight: var(--weight-display)
-        line-height: var(--leading-tight)
-        letter-spacing: var(--tracking-display)
+		.title
+			margin-inline-start: var(--display-indent)
+			font-family: var(--font-display)
+			font-size: var(--text-display)
+			font-weight: var(--weight-display)
+			line-height: var(--leading-tight)
+			letter-spacing: var(--tracking-display)
 
-    .subtitle
-        color: var(--secondary)
+		.subtitle
+			color: var(--secondary)
 
-        a
-            text-decoration: underline
-            text-underline-offset: 3px
+			a
+				text-decoration: underline
+				text-underline-offset: 3px
 
-            &:hover
-                color: var(--primary)
+				&:hover
+					color: var(--primary)
 
-    .lang
-        color: var(--secondary)
+		.lang
+			color: var(--secondary)
 
-    .logo
-        display: inline
-        transition: transform var(--duration-base) var(--ease)
-        will-change: transform
+		.logo
+			display: inline
+			transition: transform var(--duration-base) var(--ease)
+			will-change: transform
 
-    a:hover .logo
-        transform: rotate(15deg)
+		a:hover .logo
+			transform: rotate(15deg)
 
-.filter
-    margin-top: var(--space-lg)
+	.filter
+		margin-top: var(--space-lg)
 
-    .list
-        display: flex
-        flex-wrap: wrap
-        gap: var(--space-2xs) var(--space-sm)
+		.list
+			display: flex
+			flex-wrap: wrap
+			gap: var(--space-2xs) var(--space-sm)
 
-    @media (min-width: 48rem)
-        display: grid
-        grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr))
-        column-gap: var(--space-md)
-        margin-top: var(--space-xl)
+		@media (min-width: 48rem)
+			display: grid
+			grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr))
+			column-gap: var(--space-md)
+			margin-top: var(--space-xl)
 
-        .list
-            grid-column: calc(var(--index-columns) + 1) / -1
-            gap: var(--space-2xs) var(--space-md)
+			.list
+				grid-column: calc(var(--index-columns) + 1) / -1
+				gap: var(--space-2xs) var(--space-md)
 
-    // The tag line sits on the feed's grid, from the column after the index columns to the edge.
-    @media (min-width: 64rem)
-        grid-template-columns: repeat(var(--scatter-columns), minmax(0, 1fr))
-        column-gap: var(--scatter-gap)
+	    // The tag line sits on the feed's grid, from the column after the index columns to the edge.
+		@media (min-width: 64rem)
+			grid-template-columns: repeat(var(--scatter-columns), minmax(0, 1fr))
+			column-gap: var(--scatter-gap)
 
-.feed
-    margin-top: var(--space-2xl)
+	.feed
+		margin-top: var(--space-2xl)
 
-    // A shared ?tags= link: hidden until every page is in and filtered (filter.ts).
-    :global(html[data-filtering]) &
-        visibility: hidden
+	    // A shared ?tags= link: hidden until every page is in and filtered (filter.ts).
+		:global(html[data-filtering]) &
+			visibility: hidden
 
-    // Wide screens: feed.js places each post and sets data-scatter. The feed stays hidden until then.
-    @media (min-width: 64rem)
-        :global(html[data-js]) &:not([data-scatter])
-            visibility: hidden
+	    // Wide screens: feed.js places each post and sets data-scatter. The feed stays hidden until then.
+		@media (min-width: 64rem)
+			:global(html[data-js]) &:not([data-scatter])
+				visibility: hidden
 
-    &[data-scatter]
-        position: relative
+		&[data-scatter]
+			position: relative
 
-// The next page: a plain link without JS, and with it the point where pages.ts loads the next one.
-.more
-    display: block
-    width: fit-content
-    margin-top: var(--post-gap)
-    color: var(--secondary)
+	// The next page: a plain link without JS, and with it the point where pages.ts loads the next one.
+	.more
+		display: block
+		width: fit-content
+		margin-top: var(--post-gap)
+		color: var(--secondary)
 </style>
