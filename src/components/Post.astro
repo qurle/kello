@@ -136,9 +136,9 @@ const tags = sortTags(post.tags)
 	.telegram
 		color: var(--secondary)
 
-	// The Telegram link shows in the viewer only, so a feed post without a source has no links line. A post
-	// that can't open the viewer (no media) keeps it
-	:global([data-feed]) .post:has([data-open])
+	// The Telegram link shows in the viewer only, so a feed post without a source has no links line. Media
+	// that opens in Telegram ("watch in telegram") stands in for it; a post with neither keeps it
+	:global([data-feed]) .post:has([data-open], [data-unavailable])
 		.telegram,
 		.links:not(:has(.source))
 			display: none
