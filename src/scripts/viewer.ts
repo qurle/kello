@@ -20,8 +20,8 @@ let opener: HTMLElement | null = null;
 function slideFor(item: HTMLElement) {
 	const media = item.querySelector('picture, video')!.cloneNode(true) as HTMLElement;
 	const sized = media.querySelector('img') ?? media;
-	const width = Number(sized.getAttribute('width')) || 3;
-	const height = Number(sized.getAttribute('height')) || 2;
+	const width = Number(sized.getAttribute('width')) || 16;
+	const height = Number(sized.getAttribute('height')) || 9;
 
 	media.querySelectorAll('source, img').forEach((element) => element.setAttribute('sizes', 'min(64rem, 100vw)'));
 	media.querySelector('img')?.setAttribute('loading', 'eager');

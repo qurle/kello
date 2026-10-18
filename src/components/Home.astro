@@ -1,6 +1,7 @@
 ---
-// Inter with its optical-size axis: text cuts at body size, the Display cut for the heading.
-import '@fontsource-variable/inter/opsz.css';
+// Inter, variable weight, bundled from fontsource. Mustica Pro for the heading is in fonts.sass.
+import '@fontsource-variable/inter/wght.css';
+import '../styles/fonts.sass';
 import '../styles/variables.sass';
 import '../styles/base.sass';
 import '../styles/page.sass';
@@ -13,8 +14,9 @@ import { strings, type Lang } from '../lib/i18n';
 import { filterTags, tagLabel } from '../lib/tags';
 import Post from './Post.astro';
 import feedScript from '../scripts/inline/feed.js?raw';
-import interLatin from '@fontsource-variable/inter/files/inter-latin-opsz-normal.woff2?url';
-import interCyrillic from '@fontsource-variable/inter/files/inter-cyrillic-opsz-normal.woff2?url';
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import interCyrillic from '@fontsource-variable/inter/files/inter-cyrillic-wght-normal.woff2?url';
+import mustica from '../assets/fonts/mustica-pro-semibold.woff2?url';
 
 interface Props {
 	lang: Lang;
@@ -34,6 +36,7 @@ const url = (path: string) => new URL(path, config.site.url).href;
 		<meta charset="utf-8" />
 		<!-- Lets CSS hold the wide feed back until the inline script below the feed has placed it. -->
 		<script is:inline>document.documentElement.dataset.js = '';</script>
+		<link rel="preload" href={mustica} as="font" type="font/woff2" crossorigin />
 		<link rel="preload" href={lang === 'ru' ? interCyrillic : interLatin} as="font" type="font/woff2" crossorigin />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{config.site.title}</title>
@@ -74,6 +77,7 @@ const url = (path: string) => new URL(path, config.site.url).href;
 			import '../scripts/filter';
 			import '../scripts/media';
 			import '../scripts/viewer';
+			import '../scripts/settle';
 		</script>
 	</body>
 </html>
