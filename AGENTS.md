@@ -94,8 +94,8 @@ Setup, once:
 | `src/styles/variables.sass` | Design tokens as CSS custom properties. |
 | `src/styles/fonts.sass` | `@font-face` rule for the heading font. |
 | `src/assets/fonts/` | The Mustica Pro heading subset. |
-| `src/styles/*.sass` | Base, page, post, media row and viewer styles, all reading the tokens. |
-| `src/components/` | `Home.astro` is the page, shared by `/` and `/ru` through `lang` and `page` props; it renders `Post.astro`, which renders `MediaRow.astro` and `Picture.astro`. |
+| `src/styles/base.sass` | Reset, element defaults and the `.tag` button shared by the filter line and posts. Everything else is styled in its component. |
+| `src/components/` | `Home.astro` is the page, shared by `/` and `/ru` through `lang` and `page` props; it renders `Post.astro`, which renders `MediaRow.astro` and `Picture.astro`, and `Viewer.astro`, the media dialog. Each holds its own styles. |
 | `src/pages/` | `index.astro` and `ru/index.astro` are the first page; `page/[page].astro` and `ru/page/[page].astro` the rest. |
 | `src/lib/pages.ts` | Feed pages: which posts are on a page, and page paths. |
 | `src/lib/i18n.ts` | The UI string dictionary. |
@@ -128,7 +128,7 @@ The page has three parts: the heading "Kello", a line of tag filters, then posts
   - The layout re-runs on filter, resize, font load and when another page's posts come in. The heading font and the Inter file for the page's language are preloaded, so the first layout usually has the right metrics. Without JS, and below 64rem, the feed is a single centred column.
 - Media loading state: an image slot shows its image, and a video slot its poster, as an ordered dither (fine dots) until it arrives.
   - The source is a 16px-wide preview made at build time (`src/lib/preview.ts`, about 100 bytes of inline WebP).
-  - In CSS (`media.sass`), the preview is scaled up smoothly, greyed and halved in brightness, and a 4×4 Bayer threshold map at half strength is added with `mix-blend-mode: plus-lighter`. `contrast(64)` then turns each point black or white, which is an ordered dither of the image.
+  - In CSS (`MediaRow.astro`), the preview is scaled up smoothly, greyed and halved in brightness, and a 4×4 Bayer threshold map at half strength is added with `mix-blend-mode: plus-lighter`. `contrast(64)` then turns each point black or white, which is an ordered dither of the image.
   - The threshold map steps through offsets in a loop, so the dots crawl. The loop is ambient and never delays the image: the image's `load` event clears `data-loading`, and the image steps in over `--duration-base`. Images already in the cache are cleared before the first paint.
   - Without JS, nothing is hidden. Tune with the `--dither-*` tokens.
 - The feed comes in pages of `site.pageSize` posts (24): `/`, `/page/2/`… and `/ru`, `/ru/page/2/`…, all static.
@@ -144,7 +144,7 @@ The page has three parts: the heading "Kello", a line of tag filters, then posts
   - While it's open, the URL carries `?post=<id>` and, from the second item on, `&media=<n>`. Loading such a link opens the viewer there. `src/scripts/url.ts` owns the query string for both the filter and the viewer.
 - Videos play muted and looped while they are in view and pause when they leave it. With `prefers-reduced-motion`, they show the poster instead. In the feed the poster is a lazy `<picture>` under the video, not its `poster` attribute, which would load every poster at once and at one size; the viewer copies it into `poster`.
 - Image `sizes` follow the layout: a third of the window less the page padding from 64rem, 40rem in the single column.
-- Posts settle as they come in (`post.sass`): a post enters at the bottom of the window tilted by `--settle-angle` (2.5deg), clockwise or counter-clockwise by a hash of its id (`--settle-direction`, set in `Post.astro`), and straightens over the first `--settle-distance` (40vh) of scrolling with `--settle-ease`.
+- Posts settle as they come in (`Post.astro`): a post enters at the bottom of the window tilted by `--settle-angle` (2.5deg), clockwise or counter-clockwise by a hash of its id (`--settle-direction`, set in `Post.astro`), and straightens over the first `--settle-distance` (40vh) of scrolling with `--settle-ease`.
   - It is a scroll-driven animation (`animation-timeline: view()`), so the angle follows the scroll position, both ways, with no script. Browsers without scroll-driven animations (Firefox for now) show posts straight.
   - Only the `rotate` property changes, so it composites and never touches the `inset` and `width` that `feed.js` sets. It works the same in the scattered feed and the single column.
   - With `prefers-reduced-motion`, nothing tilts.
@@ -159,7 +159,11 @@ Image and poster URLs go through `imageSet()` in `src/lib/urls.ts`, which builds
 
 ## Conventions
 
-- Styles are written in indented `.sass` syntax, using CSS features only: no Sass variables, mixins, `@extend` or functions. Read values from the tokens in `variables.sass` instead of hard-coding them.
-- Tabs for indentation in TS and Astro files, two spaces in `.sass`.
+- Styles are written in indented Sass syntax, using CSS features only: no Sass variables, mixins, `@extend` or functions. Nesting is fine; it is CSS now too. Read values from the tokens in `variables.sass` instead of hard-coding them.
+- A component's styles live in its own `<style lang="sass">` block, which Astro scopes to that component. So class names are short and plain (`.meta`, `.title`, `.track`), nested by indentation; no BEM (`block__element--modifier`). A variant is a second class (`.nav.prev`) or a data attribute.
+  - Scoped styles don't reach markup the component doesn't render itself: Telegram's HTML set with `set:html`, `Picture.astro`'s elements inside `MediaRow`, the copies `viewer.ts` puts in the dialog, and state on `<html>` (`data-js`, `data-filtering`). Wrap those selectors in `:global()`.
+  - Only tokens, fonts and `base.sass` are global, imported in `Home.astro`.
+  - Scripts find elements by `data-*` attributes, never by class.
+- Tabs for indentation in TS and Astro markup, four spaces in Sass (in `.sass` files and `<style lang="sass">` blocks, whose rules start at column 0).
 - UI strings are English on `/` and Russian on `/ru`. There are only a handful, kept in one dictionary.
 - Before finishing a change, run `npm run build`, which type-checks the content collection against the schema, and `npx tsc --noEmit`. `tsconfig.json` extends Astro's base with `strictNullChecks` on, which Zod's types need; the rest of `strict` stays off.

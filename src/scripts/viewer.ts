@@ -34,7 +34,7 @@ function slideFor(item: HTMLElement) {
 	}
 
 	const slide = document.createElement('li');
-	slide.className = 'viewer__slide';
+	slide.dataset.slide = '';
 	slide.style.setProperty('--ratio', `${width} / ${height}`);
 	slide.append(media);
 	return slide;
@@ -118,7 +118,7 @@ track.addEventListener('click', (event) => {
 	const target = event.target as Element;
 	// Native video controls keep their clicks.
 	if (target.closest('video[controls]')) return;
-	const slide = target.closest<HTMLElement>('.viewer__slide');
+	const slide = target.closest<HTMLElement>('[data-slide]');
 	if (!slide) return;
 	const index = slides.indexOf(slide);
 	go(index === current ? current + sideAt(slide, event.clientX) : index);
@@ -126,7 +126,7 @@ track.addEventListener('click', (event) => {
 
 track.addEventListener('mousemove', (event) => {
 	const target = event.target as Element;
-	const slide = target.closest<HTMLElement>('.viewer__slide');
+	const slide = target.closest<HTMLElement>('[data-slide]');
 	const side = slide && slides.indexOf(slide) === current && !target.closest('video[controls]') ? sideAt(slide, event.clientX) : 0;
 	track.dataset.side = side < 0 ? 'prev' : side > 0 ? 'next' : '';
 });
@@ -164,7 +164,7 @@ const closeButton = dialog.querySelector<HTMLElement>('[data-viewer-close]')!;
 
 /** Anywhere outside the media and the post's text. */
 const inCloseZone = (target: EventTarget | null) =>
-	target instanceof Element && !target.closest('.viewer__slide, .viewer__meta > *');
+	target instanceof Element && !target.closest('[data-slide], [data-viewer-meta] > *');
 
 dialog.addEventListener('click', (event) => {
 	if (inCloseZone(event.target)) dialog.close();

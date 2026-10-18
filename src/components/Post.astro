@@ -17,26 +17,136 @@ interface Props {
 const { post, lang, page, eager = false } = Astro.props;
 const t = strings[lang];
 const tags = sortTags(post.tags);
-// Which way the post tilts as it comes in (post.sass).
+// Which way the post tilts as it comes in (the settle animation below).
 const settle = `--settle-direction: ${hash(post.telegramId) & 1 ? 1 : -1}`;
 ---
 
 <article class="post" data-post={post.telegramId} data-page={page} data-hash={hash(post.telegramId)} data-tags={tags.join(' ')} style={settle}>
 	{post.media.length > 0 && <MediaRow media={post.media} telegramId={post.telegramId} lang={lang} eager={eager} />}
-	<div class="post__meta" data-post-meta>
+	<div class="meta" data-post-meta>
 		{tags.length > 0 && (
-			<ul class="post__tags">
+			<ul class="tags">
 				{tags.map((tag) => (
 					<li><button class="tag" type="button" data-tag={tag} aria-pressed="false">{tagLabel(tag, lang)}</button></li>
 				))}
 			</ul>
 		)}
-		<div class="post__body">
-			{post.text && <div class="post__text" set:html={post.text[lang]} />}
-			<p class="post__links">
-				{post.link && <a class="post__source" href={post.link}>{domain(post.link)} <span aria-hidden="true">↗</span></a>}
-				<a class="post__telegram" href={telegramUrl(post.telegramId)}>{t.telegram}</a>
+		<div class="body">
+			{post.text && <div class="text" set:html={post.text[lang]} />}
+			<p class="links">
+				{post.link && <a class="source" href={post.link}>{domain(post.link)} <span aria-hidden="true">↗</span></a>}
+				<a class="telegram" href={telegramUrl(post.telegramId)}>{t.telegram}</a>
 			</p>
 		</div>
 	</div>
 </article>
+
+<style lang="sass">
+// A post: media row, then tags, text and links. The viewer shows a copy of the meta, which keeps these styles.
+
+.post + .post
+    margin-top: var(--post-gap)
+
+.meta
+    display: flex
+    flex-direction: column
+    gap: var(--space-sm)
+
+    // After the media row.
+    &:not(:first-child)
+        margin-top: var(--space-md)
+
+    @media (min-width: 48rem)
+        display: grid
+        grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr))
+        column-gap: var(--space-md)
+        align-items: baseline
+
+.tags
+    display: flex
+    flex-wrap: wrap
+    gap: var(--space-2xs) var(--space-sm)
+
+    @media (min-width: 48rem)
+        grid-column: 1 / span var(--index-columns)
+        flex-direction: column
+        gap: 0
+
+.body
+    @media (min-width: 48rem)
+        grid-column: calc(var(--index-columns) + 1) / -1
+
+// Telegram's markup, set as HTML, so its elements are reached with :global().
+.text
+    max-width: var(--text-width)
+    overflow-wrap: break-word
+
+    :global(blockquote)
+        margin: 0
+        padding-inline-start: var(--space-md)
+        color: var(--secondary)
+
+    // Telegram adds a line break after a quote.
+    :global(blockquote + br)
+        display: none
+
+    :global(a)
+        text-decoration-line: underline
+        text-decoration-thickness: var(--underline-width)
+        text-decoration-color: var(--tertiary)
+        text-underline-offset: var(--underline-offset)
+
+    :global(a:hover)
+        text-decoration-color: currentColor
+
+    :global(b),
+    :global(strong)
+        font-weight: var(--weight-display)
+
+.links
+    display: flex
+    flex-wrap: wrap
+    gap: var(--space-2xs) var(--space-md)
+    margin-top: var(--space-sm)
+
+.source
+    color: var(--primary)
+
+.telegram
+    color: var(--tertiary)
+
+    &:hover
+        color: var(--secondary)
+
+// Wide screens: feed.js places each post in the feed (Home.astro) and sets data-scatter.
+:global(.feed[data-scatter]) .post
+    position: absolute
+    margin: 0
+
+    .meta
+        display: flex
+        flex-direction: column
+        gap: var(--space-xs)
+
+    .tags
+        flex-direction: row
+        gap: var(--space-2xs) var(--space-sm)
+
+    .links
+        margin-top: var(--space-xs)
+
+// Settle: a post comes in at the bottom of the window tilted by --settle-angle (clockwise or
+// counter-clockwise, --settle-direction above) and straightens over the first --settle-distance of
+// scrolling, tied to the scroll position. Only `rotate`, so feed.js's layout is untouched. Browsers
+// without scroll-driven animations, and reduced motion, show posts straight.
+@supports (animation-timeline: view())
+    @media (prefers-reduced-motion: no-preference)
+        .post
+            animation: settle var(--settle-ease) both
+            animation-timeline: view()
+            animation-range: cover 0% cover var(--settle-distance)
+
+@keyframes settle
+    from
+        rotate: calc(var(--settle-angle) * var(--settle-direction, 1))
+</style>

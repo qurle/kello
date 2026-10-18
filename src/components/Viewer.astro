@@ -1,0 +1,129 @@
+---
+// Media viewer: a full-screen <dialog> with a post's row edge to edge, items uncropped. viewer.ts fills it
+// with copies of the post's media and meta, so the styles for those reach them with :global().
+import { strings, type Lang } from '../lib/i18n';
+
+interface Props {
+	lang: Lang;
+}
+
+const t = strings[Astro.props.lang];
+---
+
+<dialog class="viewer" aria-label={t.viewer} aria-keyshortcuts="ArrowLeft ArrowRight Escape" data-viewer>
+	<div class="bar">
+		<button class="close" type="button" data-viewer-close>{t.close}</button>
+	</div>
+	<ul class="track" data-viewer-track></ul>
+	<div class="meta" data-viewer-meta></div>
+</dialog>
+
+<style lang="sass">
+.viewer
+    position: fixed
+    inset: 0
+    width: 100%
+    max-width: none
+    height: 100%
+    max-height: none
+    margin: 0
+    padding: 0
+    border: 0
+    background: var(--background)
+    color: var(--primary)
+    overflow-y: auto
+    overscroll-behavior: contain
+    // Slides size against the dialog, which excludes its scrollbar, unlike 100vw.
+    container-type: inline-size
+
+    &::backdrop
+        background: transparent
+
+    &[open]
+        animation: viewer-in var(--duration-base) var(--ease)
+
+    &[data-close-zone]
+        cursor: pointer
+
+@keyframes viewer-in
+    from
+        opacity: 0
+
+.bar,
+.meta
+    box-sizing: content-box
+    max-width: var(--container-width)
+    margin-inline: auto
+    padding-inline: var(--gutter)
+
+.bar
+    display: flex
+    justify-content: flex-end
+    padding-block: var(--space-md)
+
+.close
+    color: var(--secondary)
+    transition: color var(--duration-fast) var(--ease)
+
+    // Also lit over the close zone (viewer.ts).
+    &:hover,
+    &[data-hover]
+        color: var(--primary)
+
+.track
+    // Offset parent of the slides.
+    position: relative
+    display: flex
+    align-items: center
+    gap: var(--media-gap)
+    overflow-x: auto
+    overscroll-behavior-x: contain
+    scroll-snap-type: x mandatory
+    scrollbar-width: none
+    user-select: none
+
+    &::-webkit-scrollbar
+        display: none
+
+    // Widths set in viewer.ts so the first and last slides can reach the middle.
+    &::before,
+    &::after
+        content: ""
+        flex: none
+
+    &::before
+        width: calc(var(--pad-start, 0px) - var(--media-gap))
+
+    &::after
+        width: calc(var(--pad-end, 0px) - var(--media-gap))
+
+    &[data-side="prev"]
+        cursor: w-resize
+
+    &[data-side="next"]
+        cursor: e-resize
+
+    // A slide, made by viewer.ts. Height follows from the item's own ratio.
+    :global([data-slide])
+        flex: none
+        width: min(var(--viewer-media-height) * var(--ratio), var(--viewer-media-max), 100cqw - 2 * var(--gutter))
+        aspect-ratio: var(--ratio)
+        scroll-snap-align: center
+        background: var(--surface)
+        cursor: pointer
+
+    :global([data-slide][data-current])
+        cursor: auto
+
+    :global([data-slide] picture)
+        display: contents
+
+    :global([data-slide] img),
+    :global([data-slide] video)
+        width: 100%
+        height: 100%
+        object-fit: contain
+
+.meta
+    padding-block: var(--space-lg) var(--space-xl)
+</style>

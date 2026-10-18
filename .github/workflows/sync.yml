@@ -56,4 +56,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -q -F "$RUNNER_TEMP/commit-message.txt"
+          # main may have moved during the run.
+          git pull --rebase -q
           git push
