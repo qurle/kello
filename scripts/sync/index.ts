@@ -16,7 +16,7 @@ import { scrape } from './scrape';
 import { readPosts, removePost, writePost } from './store';
 import { TagMapper } from './tags';
 import { GoogleTranslator } from './google';
-import { ChainTranslator, GeminiTranslator, type Translator } from './translate';
+import type { Translator } from './translate';
 import type { PostFile, ScrapedPost } from './types';
 
 // Local runs keep secrets in .env (gitignored); variables already set, as in the workflow, win.
@@ -76,21 +76,7 @@ async function main() {
 		bot: await connectBot(),
 	};
 
-	let translator: Translator | undefined;
-	if (!noTranslate) {
-		const chain: { name: string; translator: Translator }[] = [];
-		for (const provider of config.translation.providers) {
-			if (provider === 'google') chain.push({ name: 'Google Translate', translator: new GoogleTranslator(warn) });
-			if (provider === 'gemini') {
-				const { model, apiKeyEnv, instructions } = config.translation.gemini;
-				const apiKey = process.env[apiKeyEnv];
-				if (apiKey) chain.push({ name: 'Gemini', translator: new GeminiTranslator({ apiKey, model, instructions, warn }) });
-				else console.log(`${apiKeyEnv} is not set, skipping Gemini.`);
-			}
-		}
-		if (chain.length) translator = new ChainTranslator(chain, warn);
-		else warn('No translation provider available; English text stays a copy of the Russian.');
-	}
+	const translator: Translator | undefined = noTranslate ? undefined : new GoogleTranslator(warn);
 
 	const existing = await readPosts();
 	const tags = new TagMapper(config.tags, translator);
@@ -138,9 +124,13 @@ async function main() {
 	}
 	let translated = 0;
 	if (pending.length) {
-		const result = translator
-			? await translator.translate(pending.map((d) => ({ id: d.telegramId, html: d.text!.ru })))
-			: new Map<number, string>();
+		let result = new Map<number, string>();
+		try {
+			if (translator) result = await translator.translate(pending.map((d) => ({ id: d.telegramId, html: d.text!.ru })));
+		} catch (err) {
+			// A failing translator never fails the sync: every pending post is kept as below.
+			warn(`Translation failed: ${(err as Error).message}`);
+		}
 		for (const draft of pending) {
 			const en = result.get(draft.telegramId);
 			const prev = existing.get(draft.telegramId);

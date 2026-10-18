@@ -10,7 +10,7 @@ The site is deployed on Vercel. A GitHub Actions job keeps the content in sync w
 t.me/s/the_kello ──► scripts/sync (GitHub Actions, every 12h + manual)
                          ├─ parse posts from the public web preview
                          ├─ download media, resize with sharp ──► public/media/<id>/
-                         ├─ translate new or changed text (Google Translate, then Gemini)
+                         ├─ translate new or changed text (Google Translate)
                          └─ write src/data/posts/<id>.json, commit, push
                                         │
                                         ▼
@@ -21,12 +21,11 @@ t.me/s/the_kello ──► scripts/sync (GitHub Actions, every 12h + manual)
 - Deletion only covers what the walk saw: on a regular sync, posts newer than the oldest one scanned; with `--full`, everything, including media folders without a post. If more than max(10, 20%) of posts seem to be gone, sync deletes nothing and warns (`--allow-mass-delete` overrides).
 - On a regular sync the oldest post scanned is left untouched, because an album cut by the page boundary could look like a different post.
 - Manual fixes go in an overrides file, never in the generated post JSON. Overrides can replace an English translation, hide a post or change its tags, and sync never writes to them.
-- Translation runs only when the hash of the Russian text changes. Hashtags are never sent to the model; they map through the tag table in `kello.config.ts`.
+- Translation runs only when the hash of the Russian text changes. Hashtags are never sent to the translator; they map through the tag table in `kello.config.ts`.
 - If a hashtag is missing from the config, the translator suggests an English slug, the post still publishes, and the sync commit message names the tag so it can be added to the config by hand. Suggested slugs are kept in `src/data/tag-suggestions.json` so they stay stable between runs.
-- Translation providers are tried in the order of `translation.providers`; posts one provider can't translate go to the next, and a provider that fails outright never fails the sync.
-  - `google` (`scripts/sync/google.ts`) calls the keyless endpoint behind the Google Translate widget, `translate_a/t?client=gtx&format=html`. It needs no account, so it works for a Russia-registered owner. Hrefs are swapped for indices before sending, and link text without Cyrillic (brand names, @mentions) plus `<code>` is marked `translate="no"`. Requests hold up to 4,000 characters and go out one per second. The whole archive is about 22,000 characters.
-  - `gemini` runs only when `GEMINI_API_KEY` is set. It batches 15 posts per request, sends one request per 6.5 s for the free tier, and has thinking turned off.
-- A translation that changes links or the tag sequence is rejected. If no provider manages a post, it keeps its previous English (or the Russian) and a stale `sourceHash`, so the next sync retries it.
+- Translation goes through a small `Translator` interface (`scripts/sync/translate.ts`), so another provider can be added later. A translator that fails outright never fails the sync.
+  - The one provider today, `GoogleTranslator` (`scripts/sync/google.ts`), calls the keyless endpoint behind the Google Translate widget, `translate_a/t?client=gtx&format=html`. It needs no account, so it works for a Russia-registered owner. Hrefs are swapped for indices before sending, and link text without Cyrillic (brand names, @mentions) plus `<code>` is marked `translate="no"`. Requests hold up to 4,000 characters and go out one per second. The whole archive is about 22,000 characters.
+- A translation that changes links or the tag sequence is rejected. If translation fails for a post, it keeps its previous English (or the Russian) and a stale `sourceHash`, so the next sync retries it.
 - Media files are reused when the album item at the same position has the same message id and its files exist, so a re-sync only downloads what is new. A regular re-sync with nothing new takes a few seconds.
 
 ## Commands
@@ -40,7 +39,7 @@ npm run check-bot                # check the full-size photo bot (see Full-size 
 npx astro sync                   # validate src/data/posts/*.json against the schema
 ```
 
-The workflow `.github/workflows/sync.yml` runs `npm run sync` every 12 hours and on demand (with a `full` checkbox), then commits `src/data` and `public/media` if anything changed. It needs `contents: write`, which the workflow requests itself. The `GEMINI_API_KEY` repository secret is optional.
+The workflow `.github/workflows/sync.yml` runs `npm run sync` every 12 hours and on demand (with a `full` checkbox), then commits `src/data` and `public/media` if anything changed. It needs `contents: write`, which the workflow requests itself.
 
 ## Full-size photos
 
@@ -74,15 +73,14 @@ Setup, once:
 - Service messages ("Channel created") are skipped, so the site has one post fewer than the channel's message count suggests.
 - Text keeps `b`, `i`, `u`, `s`, `a`, `code`, `blockquote` and `br`. Custom emoji become their plain character, and hashtags outside the leading line become plain text.
 - Albums use one message id per item, so post ids are not consecutive.
-- The Google Translate endpoint is undocumented and keyless, so Google can rate-limit or close it without notice. Sync then warns, keeps the existing English, and hands posts to Gemini if a key is set.
-- The Gemini API refuses requests from Russia and from Russia-registered Google accounts. Sync works from GitHub runners; running it locally needs a VPN.
+- The Google Translate endpoint is undocumented and keyless, so Google can rate-limit or close it without notice. Sync then warns, keeps the existing English, and retries on the next run.
 - Media lives in git. Deleting a post does not shrink the repository history.
 
 ## Files
 
 | Path | What it is |
 | --- | --- |
-| `kello.config.ts` | Channel, translation, media sizes and the tag table. Documented inline. |
+| `kello.config.ts` | Channel, media sizes and the tag table. Documented inline. |
 | `src/lib/config.ts` | Zod schema and `defineConfig` for the config. |
 | `src/content.config.ts` | Schema of a post JSON file. |
 | `src/data/posts/*.json` | Generated by sync, one file per post. Do not edit by hand. |
@@ -90,7 +88,7 @@ Setup, once:
 | `src/data/tag-suggestions.json` | Generated: slugs the translator suggested for hashtags missing from the config. Exists only when there are some. |
 | `src/lib/posts.ts` | `getPosts()`: the posts collection with overrides applied, hidden posts dropped, newest first. Use it instead of `getCollection('posts')`. |
 | `src/lib/media.ts` | `imageSources()`: which image files exist for a media entry, with real widths for `srcset`. |
-| `scripts/sync/` | `npm run sync`: `scrape.ts` and `html.ts` parse the web preview, `media.ts` and `mp4.ts` download and resize, `tags.ts` maps hashtags, `translate.ts` has the provider chain and Gemini, `google.ts` the Google Translate provider, `store.ts` reads and writes post JSON, `index.ts` runs it all. |
+| `scripts/sync/` | `npm run sync`: `scrape.ts` and `html.ts` parse the web preview, `media.ts` and `mp4.ts` download and resize, `tags.ts` maps hashtags, `translate.ts` has the `Translator` interface and the markup check, `google.ts` the Google Translate provider, `store.ts` reads and writes post JSON, `index.ts` runs it all. |
 | `.github/workflows/sync.yml` | Scheduled sync: every 12 hours and on demand. |
 | `src/styles/variables.sass` | Design tokens as CSS custom properties. |
 | `src/styles/*.sass` | Base, page, post, media row and viewer styles, all reading the tokens. |
