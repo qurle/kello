@@ -94,7 +94,7 @@ Setup, once:
 | `src/styles/variables.sass` | Design tokens as CSS custom properties. |
 | `src/styles/fonts.sass` | `@font-face` rule for the heading font. |
 | `src/assets/fonts/` | The Mustica Pro heading subset. |
-| `src/styles/base.sass` | Reset, element defaults and the `.tag` button shared by the filter line and posts. Everything else is styled in its component. |
+| `src/styles/base.sass` | Reset, element defaults, the `.tag` button shared by the filter line and posts, and the loading dither shared by feed slots and viewer slides. Everything else is styled in its component. |
 | `src/components/` | `Home.astro` is the page, shared by `/` and `/ru` through `lang` and `page` props; it renders `Post.astro`, which renders `MediaRow.astro` and `Picture.astro`, and `Viewer.astro`, the media dialog. Each holds its own styles. |
 | `src/pages/` | `index.astro` and `ru/index.astro` are the first page; `page/[page].astro` and `ru/page/[page].astro` the rest. |
 | `src/lib/pages.ts` | Feed pages: which posts are on a page, and page paths. |
@@ -126,9 +126,9 @@ The page has three parts: the heading "kello" with its subtitle (`site.subtitle`
   - Each post goes in a start column picked by a hash of its id (`data-hash`), from the columns that let it sit within `--scatter-jitter` of the highest free spot. It then drops by a further hashed amount up to `--scatter-jitter`. So posts share vertical space without touching, and positions stay stable between visits.
   - No post sits above the one before it, so the feed still reads newest first, top to bottom.
   - The layout re-runs on filter, resize, font load and when another page's posts come in. The heading font and the Inter file for the page's language are preloaded, so the first layout usually has the right metrics. Without JS, and below 64rem, the feed is a single centred column.
-- Media loading state: an image slot shows its image, and a video slot its poster, as an ordered dither (fine dots) until it arrives.
+- Media loading state: an image slot shows its image, and a video slot its poster, as a colour ordered dither (fine dots) until it arrives. Viewer slides do the same: `viewer.ts` copies the slot's `--preview` and adds the dither until the full-size picture, or the video's poster or first frame, arrives.
   - The source is a 16px-wide preview made at build time (`src/lib/preview.ts`, about 100 bytes of inline WebP).
-  - In CSS (`MediaRow.astro`), the preview is scaled up smoothly, greyed and halved in brightness, and a 4×4 Bayer threshold map at half strength is added with `mix-blend-mode: plus-lighter`. `contrast(64)` then turns each point black or white, which is an ordered dither of the image.
+  - In CSS (`base.sass`, shared by the feed and the viewer), the preview is scaled up smoothly and halved in brightness, and a 4×4 Bayer threshold map at half strength is added with `mix-blend-mode: plus-lighter`. `contrast(64)` then turns each channel of each point fully on or off, which is an ordered dither of the image in 8 colours (black, white, red, green, blue, cyan, magenta, yellow). `--dither-strength` (0.5) fades it toward the background, so the colours stay soft.
   - The threshold map steps through offsets in a loop, so the dots crawl. The loop is ambient and never delays the image: the image's `load` event clears `data-loading`, and the image steps in over `--duration-base`. Images already in the cache are cleared before the first paint.
   - Without JS, nothing is hidden. Tune with the `--dither-*` tokens.
 - The feed comes in pages of `site.pageSize` posts (24): `/`, `/page/2/`… and `/ru`, `/ru/page/2/`…, all static.
@@ -168,7 +168,7 @@ Image and poster URLs go through `imageSet()` in `src/lib/urls.ts`, which builds
 - Styles are written in indented Sass syntax, using CSS features only: no Sass variables, mixins, `@extend` or functions. Nesting is fine; it is CSS now too. Read values from the tokens in `variables.sass` instead of hard-coding them.
 - A component's styles live in its own `<style lang="sass">` block, which Astro scopes to that component. So class names are short and plain (`.meta`, `.title`, `.track`), nested by indentation; no BEM (`block__element--modifier`). A variant is a second class (`.nav.prev`) or a data attribute.
   - Scoped styles don't reach markup the component doesn't render itself: Telegram's HTML set with `set:html`, `Picture.astro`'s elements inside `MediaRow`, the copies `viewer.ts` puts in the dialog, and state on `<html>` (`data-js`, `data-filtering`). Wrap those selectors in `:global()`.
-  - Only tokens, fonts and `base.sass` are global, imported in `Home.astro`.
+  - Only tokens, fonts and `base.sass` are global, imported in `Home.astro`. A style two components share (the tag button, the loading dither) goes in `base.sass`.
   - Scripts find elements by `data-*` attributes, never by class.
 - Tabs for indentation in TS and Astro markup, four spaces in Sass (in `.sass` files and `<style lang="sass">` blocks, whose rules start at column 0).
 - UI strings are English on `/` and Russian on `/ru`. There are only a handful, kept in one dictionary.

@@ -38,7 +38,37 @@ function slideFor(item: HTMLElement) {
 	slide.dataset.slide = '';
 	slide.style.setProperty('--ratio', `${width} / ${height}`);
 	slide.append(media);
+	dither(slide, item, media);
 	return slide;
+}
+
+/** The feed slot's dithered preview (base.sass) on a slide until its picture, or video poster or frame, arrives. */
+function dither(slide: HTMLElement, item: HTMLElement, media: HTMLElement) {
+	const preview = item.closest<HTMLElement>('[data-slot]')?.style.getPropertyValue('--preview');
+	if (!preview) return;
+	const done = () => slide.removeAttribute('data-loading');
+	slide.dataset.dither = '';
+	slide.dataset.loading = '';
+	slide.style.setProperty('--preview', preview);
+	const mark = document.createElement('span');
+	mark.className = 'dither';
+	mark.ariaHidden = 'true';
+	slide.prepend(mark);
+
+	if (media instanceof HTMLVideoElement) {
+		media.addEventListener('loadeddata', done, { once: true });
+		if (media.poster) {
+			const poster = new Image();
+			poster.addEventListener('load', done, { once: true });
+			poster.src = media.poster;
+		}
+		return;
+	}
+	const img = media.querySelector('img');
+	if (!img) return done();
+	img.addEventListener('load', done, { once: true });
+	img.addEventListener('error', done, { once: true });
+	if (img.complete && img.naturalWidth) done();
 }
 
 const smooth = () => (reducedMotion.matches ? 'auto' : 'smooth');

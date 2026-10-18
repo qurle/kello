@@ -34,7 +34,7 @@ const sizes = single
 <div class="media" data-media-row data-single={single || undefined}>
 	<ul class="track" data-media-track>
 		{media.map((item, index) => (
-			<li class="slot" style={slotStyle(index)} data-slot data-loading={still(item) ? true : undefined}>
+			<li class="slot" style={slotStyle(index)} data-slot data-dither data-loading={still(item) ? true : undefined}>
 				{still(item) && <span class="dither" aria-hidden="true" />}
 				{item.type === 'unavailable' ? (
 					<a class="item unavailable" href={item.messageId ? telegramUrl(item.messageId, true) : telegramUrl(telegramId)}>
@@ -102,9 +102,6 @@ const sizes = single
     scroll-snap-align: start
     background: var(--surface)
 
-    :global(img)
-        transition: opacity var(--duration-base) steps(4, end)
-
     .media[data-single] &
         flex-basis: 100%
 
@@ -117,48 +114,6 @@ const sizes = single
         background: var(--media-tint)
         mix-blend-mode: var(--media-tint-blend)
         pointer-events: none
-
-// Loading state, with JS only: feed.js clears data-loading when the image arrives.
-// Ordered dither: the greyed preview at half brightness (L / 2) plus the Bayer map at half strength
-// (T / 2), added with plus-lighter; a huge contrast() then makes each point white where L + T > 1.
-.dither
-    display: none
-
-:global(html[data-js]) .slot[data-loading]
-    :global(img)
-        opacity: 0
-
-    .dither
-        position: absolute
-        inset: 0
-        display: block
-        overflow: hidden
-        opacity: var(--dither-strength)
-        filter: contrast(64)
-        pointer-events: none
-
-        &::before,
-        &::after
-            content: ""
-            position: absolute
-            inset: 0
-
-        &::before
-            // Past the edges, so the blur doesn't darken them.
-            inset: -8px
-            background: var(--preview, none) center / cover no-repeat
-            filter: grayscale(1) blur(4px) brightness(0.5)
-
-        &::after
-            background: var(--dither) 0 0 / var(--dither-size) repeat
-            opacity: 0.5
-            mix-blend-mode: plus-lighter
-            image-rendering: pixelated
-            animation: dither var(--dither-duration) steps(4) infinite
-
-@keyframes dither
-    to
-        background-position: var(--dither-size) var(--dither-size)
 
 .item
     position: relative

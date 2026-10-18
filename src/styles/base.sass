@@ -1,5 +1,5 @@
-// Reset, element defaults and the tag button, which the filter line and posts share. Everything
-// else is styled in its component.
+// Reset, element defaults, the tag button, which the filter line and posts share, and the loading
+// dither, which feed slots and viewer slides share. Everything else is styled in its component.
 
 *, *::before, *::after
     box-sizing: border-box
@@ -78,6 +78,57 @@ code
     &:disabled
         color: var(--tertiary)
         cursor: default
+
+// Loading media, with JS only: a feed slot (MediaRow.astro) or a viewer slide (viewer.ts) holds a
+// .dither and a --preview, and has data-loading until its picture or video arrives (feed.js, media.ts,
+// viewer.ts). Ordered dither: the greyed preview at half brightness (L / 2) plus the Bayer map at half
+// strength (T / 2), added with plus-lighter; a huge contrast() then makes each point white where L + T > 1.
+.dither
+    display: none
+
+[data-dither]
+    position: relative
+
+    img,
+    video
+        transition: opacity var(--duration-base) steps(4, end)
+
+html[data-js] [data-loading]
+    img,
+    video
+        opacity: 0
+
+    > .dither
+        position: absolute
+        inset: 0
+        display: block
+        overflow: hidden
+        opacity: var(--dither-strength)
+        filter: contrast(64)
+        pointer-events: none
+
+        &::before,
+        &::after
+            content: ""
+            position: absolute
+            inset: 0
+
+        &::before
+            // Past the edges, so the blur doesn't darken them.
+            inset: -8px
+            background: var(--preview, none) center / cover no-repeat
+            filter: blur(4px) brightness(0.5)
+
+        &::after
+            background: var(--dither) 0 0 / var(--dither-size) repeat
+            opacity: 0.5
+            mix-blend-mode: plus-lighter
+            image-rendering: pixelated
+            animation: dither var(--dither-duration) steps(4) infinite
+
+@keyframes dither
+    to
+        background-position: var(--dither-size) var(--dither-size)
 
 @media (prefers-reduced-motion: reduce)
     *, *::before, *::after
