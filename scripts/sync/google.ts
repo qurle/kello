@@ -1,3 +1,4 @@
+import { sleep } from './http';
 import { sameMarkup, type TranslationItem, type Translator } from './translate';
 
 // The keyless endpoint behind Google Translate's web widget. Undocumented: it can change or refuse requests.
@@ -9,7 +10,6 @@ const wordEndpoint = 'https://translate.googleapis.com/translate_a/single?client
 const maxChars = 4000;
 const pause = 1000;
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const cyrillic = /[а-яё]/i;
 
 /** Swaps hrefs for indices, and marks <code> and link text without Cyrillic (names, @mentions) `translate="no"`. */
@@ -67,6 +67,7 @@ export class GoogleTranslator implements Translator {
 				method: body ? 'POST' : 'GET',
 				headers: body ? { 'content-type': 'application/x-www-form-urlencoded;charset=utf-8' } : undefined,
 				body,
+				signal: AbortSignal.timeout(30_000),
 			}).catch((err: Error) => err);
 			if (!(res instanceof Error) && res.ok) return res.json();
 			const reason = res instanceof Error ? res.message : `HTTP ${res.status}`;
