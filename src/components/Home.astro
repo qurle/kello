@@ -12,6 +12,7 @@ import config from '../../kello.config';
 import { getPosts } from '../lib/posts';
 import { strings, type Lang } from '../lib/i18n';
 import { filterTags, tagLabel } from '../lib/tags';
+import { pageCount, pagePath, pagePosts } from '../lib/pages';
 import Post from './Post.astro';
 import feedScript from '../scripts/inline/feed.js?raw';
 import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
@@ -20,13 +21,18 @@ import mustica from '../assets/fonts/mustica-pro-semibold.woff2?url';
 
 interface Props {
 	lang: Lang;
+	/** Which page of the feed this is, from 1. */
+	page?: number;
 }
 
-const { lang } = Astro.props;
+const { lang, page = 1 } = Astro.props;
 const t = strings[lang];
-const other = strings[t.switchTo];
-const posts = await getPosts();
-const tags = filterTags(new Set(posts.flatMap((post) => post.tags)));
+const all = await getPosts();
+// The filter line lists every tag, not just this page's: picking one loads the other pages.
+const tags = filterTags(new Set(all.flatMap((post) => post.tags)));
+const posts = pagePosts(all, page);
+const pages = Array.from({ length: pageCount(all) }, (_, i) => pagePath(lang, i + 1));
+const next = pages[page];
 const url = (path: string) => new URL(path, config.site.url).href;
 ---
 
@@ -35,16 +41,20 @@ const url = (path: string) => new URL(path, config.site.url).href;
 	<head>
 		<meta charset="utf-8" />
 		<!-- Lets CSS hold the wide feed back until feed.js has placed it. -->
-		<script is:inline>document.documentElement.dataset.js = '';</script>
+		<!-- A shared ?tags= link: the feed stays hidden until filter.ts has loaded every page and filtered. -->
+		<script is:inline>
+			document.documentElement.dataset.js = '';
+			if (/[?&]tags=/.test(location.search)) document.documentElement.dataset.filtering = '';
+		</script>
 		<link rel="preload" href={mustica} as="font" type="font/woff2" crossorigin />
 		<link rel="preload" href={lang === 'ru' ? interCyrillic : interLatin} as="font" type="font/woff2" crossorigin />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{config.site.title}</title>
 		<meta name="description" content={t.description} />
-		<link rel="canonical" href={url(t.path)} />
-		<link rel="alternate" hreflang="en" href={url(strings.en.path)} />
-		<link rel="alternate" hreflang="ru" href={url(strings.ru.path)} />
-		<link rel="alternate" hreflang="x-default" href={url(strings.en.path)} />
+		<link rel="canonical" href={url(pagePath(lang, page))} />
+		<link rel="alternate" hreflang="en" href={url(pagePath('en', page))} />
+		<link rel="alternate" hreflang="ru" href={url(pagePath('ru', page))} />
+		<link rel="alternate" hreflang="x-default" href={url(pagePath('en', page))} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 	</head>
@@ -52,7 +62,7 @@ const url = (path: string) => new URL(path, config.site.url).href;
 		<div class="page">
 			<header class="masthead">
 				<h1 class="masthead__title"><a href={t.path}>{config.site.title.toLowerCase()}</a></h1>
-				<a class="masthead__lang" href={other.path} hreflang={t.switchTo} lang={t.switchTo} aria-label={t.switchLabel} data-lang-link>{t.switchTo}</a>
+				<a class="masthead__lang" href={pagePath(t.switchTo, page)} hreflang={t.switchTo} lang={t.switchTo} aria-label={t.switchLabel} data-lang-link>{t.switchTo}</a>
 			</header>
 			<nav class="filter" aria-label={t.filter} data-filter>
 				<ul class="filter__list">
@@ -61,9 +71,10 @@ const url = (path: string) => new URL(path, config.site.url).href;
 					))}
 				</ul>
 			</nav>
-			<main class="feed" data-feed>
-				{posts.map((post, index) => <Post post={post} lang={lang} eager={index === 0} />)}
+			<main class="feed" data-feed data-page={page} data-pages={JSON.stringify(pages)}>
+				{posts.map((post, index) => <Post post={post} lang={lang} page={page} eager={page === 1 && index === 0} />)}
 			</main>
+			{next && <a class="more" href={next} rel="next" data-more>{t.more}</a>}
 			<script is:inline set:html={feedScript} />
 		</div>
 		<dialog class="viewer" aria-label={t.viewer} aria-keyshortcuts="ArrowLeft ArrowRight Escape" data-viewer>
@@ -77,7 +88,7 @@ const url = (path: string) => new URL(path, config.site.url).href;
 			import '../scripts/filter';
 			import '../scripts/media';
 			import '../scripts/viewer';
-			import '../scripts/settle';
+			import '../scripts/pages';
 		</script>
 	</body>
 </html>

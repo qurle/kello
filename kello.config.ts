@@ -5,6 +5,9 @@ export default defineConfig({
 		title: 'Kello',
 		// TODO: the production domain.
 		url: 'https://kello.vercel.app',
+		// Posts per page. The first page is the HTML of / and /ru; the rest load as the feed's end comes
+		// into view, and all of them when a tag is picked.
+		pageSize: 24,
 	},
 
 	channel: {

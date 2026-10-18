@@ -1,5 +1,6 @@
 // Media viewer: a post's whole row as a carousel in a <dialog>. The open post and item live in the URL (?post=&media=).
 
+import { loadAll } from './pages';
 import { getParam, setParams } from './url';
 
 const dialog = document.querySelector<HTMLDialogElement>('[data-viewer]')!;
@@ -12,9 +13,9 @@ let current = 0;
 let postId = '';
 let opener: HTMLElement | null = null;
 
-/** A copy of a feed item's picture or video. */
+/** A copy of a feed item's video or picture. */
 function slideFor(item: HTMLElement) {
-	const media = item.querySelector('picture, video')!.cloneNode(true) as HTMLElement;
+	const media = (item.querySelector('video') ?? item.querySelector('picture'))!.cloneNode(true) as HTMLElement;
 	const sized = media.querySelector('img') ?? media;
 	const width = Number(sized.getAttribute('width')) || 16;
 	const height = Number(sized.getAttribute('height')) || 9;
@@ -23,6 +24,9 @@ function slideFor(item: HTMLElement) {
 	media.querySelector('img')?.setAttribute('loading', 'eager');
 	if (media instanceof HTMLVideoElement) {
 		media.removeAttribute('data-autoplay');
+		// The feed shows the poster as a picture under the video; here it is the video's own poster.
+		const poster = item.querySelector('img');
+		if (poster) media.poster = poster.currentSrc || poster.src;
 		media.preload = 'metadata';
 		media.muted = true;
 		// Reduced motion: no autoplay, the person presses play.
@@ -190,10 +194,14 @@ document.addEventListener('kello:filter', () => {
 	if (dialog.open) dialog.close();
 });
 
-// A shared link opens its post.
+// A shared link opens its post, loading the other pages if it isn't on this one.
 const shared = getParam('post');
-const sharedPost = shared ? document.querySelector<HTMLElement>(`[data-post="${CSS.escape(shared)}"]`) : null;
-if (sharedPost) {
-	if (sharedPost.querySelector('[data-open]')) open(sharedPost, Number(getParam('media') ?? 1) - 1, null);
-	else sharedPost.scrollIntoView();
+if (shared) {
+	const find = () => document.querySelector<HTMLElement>(`[data-feed] > [data-post="${CSS.escape(shared)}"]`);
+	const show = (post: HTMLElement | null) => {
+		if (post?.querySelector('[data-open]')) open(post, (Number(getParam('media')) || 1) - 1, null);
+		else post?.scrollIntoView();
+	};
+	if (find()) show(find());
+	else loadAll().then(() => show(find()));
 }

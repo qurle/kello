@@ -13,6 +13,7 @@ export const strings = {
 		close: 'close',
 		previous: 'previous',
 		next: 'next',
+		more: 'more',
 	},
 	ru: {
 		description: 'заметки о дизайне, интерфейсах и инструментах из телеграм-канала the_kello.',
@@ -27,6 +28,7 @@ export const strings = {
 		close: 'закрыть',
 		previous: 'назад',
 		next: 'вперёд',
+		more: 'ещё',
 	},
 } as const;
 

@@ -34,6 +34,17 @@
 .feed
   margin-top: var(--space-2xl)
 
+// A shared ?tags= link: hidden until every page is in and filtered (filter.ts).
+html[data-filtering] .feed
+  visibility: hidden
+
+// The next page: a plain link without JS, and with it the point where pages.ts loads the next one.
+.more
+  display: block
+  width: fit-content
+  margin-top: var(--post-gap)
+  color: var(--secondary)
+
 @media (min-width: 48rem)
   .filter
     display: grid

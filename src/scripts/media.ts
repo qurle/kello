@@ -1,14 +1,15 @@
-// Media rows: chevrons, and videos that play only while in view.
+// Media rows: chevrons, and videos that play only while in view. Posts from other pages
+// (`kello:posts`) get the same.
 
 export {};
 
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 
-for (const row of document.querySelectorAll<HTMLElement>('[data-media-row]')) {
+function setUpRow(row: HTMLElement) {
 	const track = row.querySelector<HTMLElement>('[data-media-track]')!;
 	const prev = row.querySelector<HTMLButtonElement>('[data-media-prev]');
 	const next = row.querySelector<HTMLButtonElement>('[data-media-next]');
-	if (!prev || !next) continue;
+	if (!prev || !next) return;
 
 	const update = () => {
 		const end = track.scrollWidth - track.clientWidth;
@@ -28,7 +29,6 @@ for (const row of document.querySelectorAll<HTMLElement>('[data-media-row]')) {
 	new ResizeObserver(update).observe(track);
 }
 
-const videos = [...document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]')];
 
 const observer = new IntersectionObserver(
 	(entries) => {
@@ -41,10 +41,22 @@ const observer = new IntersectionObserver(
 	{ threshold: 0.5 },
 );
 
-const observe = () => {
+const videos: HTMLVideoElement[] = [];
+
+function setUp(scope: ParentNode) {
+	scope.querySelectorAll<HTMLElement>('[data-media-row]').forEach(setUpRow);
+	for (const video of scope.querySelectorAll<HTMLVideoElement>('video[data-autoplay]')) {
+		videos.push(video);
+		observer.observe(video);
+	}
+}
+
+// Observing again reports every video's state, which plays or pauses it under the new setting.
+reducedMotion.addEventListener('change', () => {
 	observer.disconnect();
 	videos.forEach((video) => observer.observe(video));
-};
-
-reducedMotion.addEventListener('change', observe);
-observe();
+});
+document.addEventListener('kello:posts', (event) => {
+	for (const post of (event as CustomEvent<HTMLElement[]>).detail) setUp(post);
+});
+setUp(document);

@@ -9,15 +9,19 @@ import MediaRow from './MediaRow.astro';
 interface Props {
 	post: Post;
 	lang: Lang;
+	/** The feed page it is on, so posts fetched from other pages go in order (pages.ts). */
+	page: number;
 	eager?: boolean;
 }
 
-const { post, lang, eager = false } = Astro.props;
+const { post, lang, page, eager = false } = Astro.props;
 const t = strings[lang];
 const tags = sortTags(post.tags);
+// Which way the post tilts as it comes in (post.sass).
+const settle = `--settle-direction: ${hash(post.telegramId) & 1 ? 1 : -1}`;
 ---
 
-<article class="post" data-post={post.telegramId} data-hash={hash(post.telegramId)} data-tags={tags.join(' ')}>
+<article class="post" data-post={post.telegramId} data-page={page} data-hash={hash(post.telegramId)} data-tags={tags.join(' ')} style={settle}>
 	{post.media.length > 0 && <MediaRow media={post.media} telegramId={post.telegramId} lang={lang} eager={eager} />}
 	<div class="post__meta" data-post-meta>
 		{tags.length > 0 && (

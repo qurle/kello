@@ -1,7 +1,7 @@
 ---
 import type { Post } from '../lib/posts';
 import { strings, type Lang } from '../lib/i18n';
-import { imageSet, mediaUrl, telegramUrl } from '../lib/urls';
+import { mediaUrl, telegramUrl } from '../lib/urls';
 import { preview } from '../lib/preview';
 import Picture from './Picture.astro';
 
@@ -16,21 +16,23 @@ const { media, telegramId, lang, eager = false } = Astro.props;
 const t = strings[lang];
 const single = media.length === 1;
 
-// Previews shown dithered until the image arrives.
-const previews = await Promise.all(
-	media.map((item) => (item.type === 'image' ? preview(item.file, item.width) : undefined)),
-);
+// Previews shown dithered until the image or video poster arrives.
+const still = (item: Props['media'][number]) => (item.type === 'image' ? item.file : item.type === 'video' ? item.poster : undefined);
+const previews = await Promise.all(media.map((item) => preview(still(item), item.width)));
 const slotStyle = (index: number) => (previews[index] ? `--preview: url(${previews[index]})` : undefined);
 
-// The container is at most 40rem; with several items a slot takes 80% (--media-lead).
-const sizes = single ? '(min-width: 45rem) 40rem, 92vw' : '(min-width: 45rem) 32rem, 74vw';
+// From 64rem a post is a third of the window less 4rem of padding on each side (--scatter-span of
+// --scatter-columns); below, the container is at most 40rem. With several items a slot takes 80% (--media-lead).
+const sizes = single
+	? '(min-width: 64rem) calc((100vw - 8rem) / 3), (min-width: 45rem) 40rem, 92vw'
+	: '(min-width: 64rem) calc((100vw - 8rem) / 3.75), (min-width: 45rem) 32rem, 74vw';
 ---
 
 <div class="media" data-media-row data-single={single || undefined}>
 	<ul class="media__track" data-media-track>
 		{media.map((item, index) => (
-			<li class="media__slot" style={slotStyle(index)} data-loading={item.type === 'image' || undefined}>
-				{item.type === 'image' && <span class="media__dither" aria-hidden="true" />}
+			<li class="media__slot" style={slotStyle(index)} data-loading={still(item) ? true : undefined}>
+				{still(item) && <span class="media__dither" aria-hidden="true" />}
 				{item.type === 'unavailable' ? (
 					<a class="media__item media__item--unavailable" href={item.messageId ? telegramUrl(item.messageId, true) : telegramUrl(telegramId)}>
 						{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />}
@@ -41,17 +43,20 @@ const sizes = single ? '(min-width: 45rem) 40rem, 92vw' : '(min-width: 45rem) 32
 						{item.type === 'image' ? (
 							<Picture file={item.file} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />
 						) : (
-							<video
-								src={mediaUrl(item.file)}
-								poster={item.poster && imageSet(item.poster, item.width).src}
-								width={item.width}
-								height={item.height}
-								muted
-								loop
-								playsinline
-								preload={item.poster ? 'none' : 'metadata'}
-								data-autoplay
-							/>
+							<>
+								{/* The poster is a lazy picture under the video rather than its poster attribute, which loads eagerly and at one size. */}
+								{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />}
+								<video
+									src={mediaUrl(item.file)}
+									width={item.width}
+									height={item.height}
+									muted
+									loop
+									playsinline
+									preload={item.poster ? 'none' : 'metadata'}
+									data-autoplay
+								/>
+							</>
 						)}
 					</button>
 				)}
