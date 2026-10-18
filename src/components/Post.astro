@@ -1,6 +1,6 @@
 ---
 import type { Post } from '../lib/posts'
-import { strings, type Lang } from '../lib/i18n'
+import { original, ui, type Lang } from '../lib/i18n'
 import { domain, telegramUrl } from '../lib/urls'
 import { hash } from '../lib/hash'
 import { sortTags, tagLabel } from '../lib/tags'
@@ -15,7 +15,7 @@ interface Props {
 }
 
 const { post, lang, page, eager = false } = Astro.props
-const t = strings[lang]
+const t = ui(lang)
 const tags = sortTags(post.tags)
 ---
 
@@ -42,7 +42,7 @@ const tags = sortTags(post.tags)
 			)
 		}
 		<div class="body">
-			{post.text && <div class="text" set:html={post.text[lang]} />}
+			{post.text && <div class="text" set:html={post.text[lang] ?? post.text[original]} />}
 			<p class="links">
 				{
 					post.link && (

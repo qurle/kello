@@ -53,7 +53,7 @@ export const slugify = (s: string) =>
 export class TagMapper {
 	private known = new Map<string, string>()
 	private suggestions: Record<string, string> = {}
-	/** Hashtags missing from the config met in this run, RU → EN slug */
+	/** Hashtags missing from the config met in this run, hashtag → slug */
 	readonly unknown = new Map<string, string>()
 	/** Slugs from the translator; only these are saved, so `--no-translate` doesn't pin a transliteration */
 	private suggested = new Map<string, string>()
@@ -63,8 +63,8 @@ export class TagMapper {
 		private translator: Translator | undefined,
 	) {
 		for (const t of tags) {
-			this.known.set(t.ru.toLowerCase(), t.en)
-			for (const alias of t.aliases ?? []) this.known.set(alias.toLowerCase(), t.en)
+			this.known.set(t.hashtag.toLowerCase(), t.slug)
+			for (const alias of t.aliases ?? []) this.known.set(alias.toLowerCase(), t.slug)
 		}
 	}
 
@@ -76,36 +76,36 @@ export class TagMapper {
 		}
 	}
 
-	/** Maps RU hashtags to EN slugs in order, without duplicates */
+	/** Maps hashtags to slugs in order, without duplicates */
 	async map(raw: string[]): Promise<string[]> {
 		const out: string[] = []
-		for (const ru of raw) {
-			const en = this.known.get(ru) ?? (await this.suggest(ru))
-			if (!out.includes(en)) out.push(en)
+		for (const hashtag of raw) {
+			const slug = this.known.get(hashtag) ?? (await this.suggest(hashtag))
+			if (!out.includes(slug)) out.push(slug)
 		}
 		return out
 	}
 
-	private async suggest(ru: string): Promise<string> {
-		let en = this.unknown.get(ru) ?? this.suggestions[ru]
-		if (!en && this.translator) {
+	private async suggest(hashtag: string): Promise<string> {
+		let slug = this.unknown.get(hashtag) ?? this.suggestions[hashtag]
+		if (!slug && this.translator) {
 			try {
-				en = slugify(await this.translator.tagSlug(ru))
-				this.suggested.set(ru, en)
+				slug = slugify(await this.translator.tagSlug(hashtag))
+				this.suggested.set(hashtag, slug)
 			} catch (err) {
-				console.warn(`Could not get a slug for #${ru}: ${(err as Error).message}`)
+				console.warn(`Could not get a slug for #${hashtag}: ${(err as Error).message}`)
 			}
 		}
-		en ??= slugify(ru)
-		this.unknown.set(ru, en)
-		return en
+		slug ??= slugify(hashtag)
+		this.unknown.set(hashtag, slug)
+		return slug
 	}
 
 	/** Saves suggestions for tags still missing from the config */
 	async save() {
 		const next = Object.fromEntries(
 			Object.entries({ ...this.suggestions, ...Object.fromEntries(this.suggested) })
-				.filter(([ru]) => !this.known.has(ru))
+				.filter(([hashtag]) => !this.known.has(hashtag))
 				.sort(([a], [b]) => a.localeCompare(b)),
 		)
 		const before = JSON.stringify(this.suggestions)

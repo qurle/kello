@@ -1,6 +1,6 @@
 // npm run sync [-- --full] [-- --no-translate] [-- --allow-mass-delete] [-- --message <file>]
 //   --full               walk the whole channel and delete what is gone from it
-//   --no-translate       English = Russian, without `sourceHash`, so a later sync translates
+//   --no-translate       the translation = the original, without `sourceHash`, so a later sync translates
 //   --allow-mass-delete  delete even if implausibly many posts vanished
 //   --message <file>     write a commit message summarising the run
 import './env'
@@ -22,6 +22,7 @@ const full = args.includes('--full')
 const noTranslate = args.includes('--no-translate')
 const allowMassDelete = args.includes('--allow-mass-delete')
 const messageFile = args.includes('--message') ? args[args.indexOf('--message') + 1] : undefined
+const { enable: translating, from, to } = config.translate
 
 const warnings: string[] = []
 const warn = (msg: string) => {
@@ -71,7 +72,8 @@ async function main() {
 		bot: await connectBot(),
 	}
 
-	const translator: Translator | undefined = noTranslate ? undefined : new GoogleTranslator(warn)
+	const translator: Translator | undefined =
+		translating && !noTranslate ? new GoogleTranslator(from, to, warn) : undefined
 
 	const existing = await readPosts()
 	const tags = new TagMapper(config.tags, translator)
@@ -98,7 +100,7 @@ async function main() {
 				telegramId: post.telegramId,
 				date: post.date,
 				tags: await tags.map(post.rawTags),
-				text: post.html ? { ru: post.html, en: '' } : undefined,
+				text: post.html ? { [from]: post.html } : undefined,
 				link: post.link,
 				media,
 			})
@@ -107,14 +109,14 @@ async function main() {
 		}
 	})
 
-	// Reuse translations whose source is unchanged, translate the rest
+	// Reuse translations whose source is unchanged, translate the rest. Off, posts keep the original only
 	const pending: PostFile[] = []
-	for (const draft of drafts.values()) {
+	for (const draft of translating ? drafts.values() : []) {
 		if (!draft.text) continue
 		const prev = existing.get(draft.telegramId)
-		const hash = sha256(draft.text.ru)
-		if (prev?.sourceHash === hash && prev.text?.en) {
-			draft.text.en = prev.text.en
+		const hash = sha256(draft.text[from])
+		if (prev?.sourceHash === hash && prev.text?.[to]) {
+			draft.text[to] = prev.text[to]
 			draft.sourceHash = hash
 		} else {
 			pending.push(draft)
@@ -124,21 +126,22 @@ async function main() {
 	if (pending.length) {
 		let result = new Map<number, string>()
 		try {
-			if (translator) result = await translator.translate(pending.map((d) => ({ id: d.telegramId, html: d.text!.ru })))
+			if (translator)
+				result = await translator.translate(pending.map((d) => ({ id: d.telegramId, html: d.text![from] })))
 		} catch (err) {
 			// A failing translator never fails the sync
 			warn(`Translation failed: ${(err as Error).message}`)
 		}
 		for (const draft of pending) {
-			const en = result.get(draft.telegramId)
+			const translation = result.get(draft.telegramId)
 			const prev = existing.get(draft.telegramId)
-			if (en) {
-				draft.text!.en = en
-				draft.sourceHash = sha256(draft.text!.ru)
+			if (translation) {
+				draft.text![to] = translation
+				draft.sourceHash = sha256(draft.text![from])
 				translated++
 			} else {
-				// Keep the old English, else the Russian; the stale hash makes the next sync retry
-				draft.text!.en = (!noTranslate && prev?.text?.en) || draft.text!.ru
+				// Keep the old translation, else the original; the stale hash makes the next sync retry
+				draft.text![to] = (!noTranslate && prev?.text?.[to]) || draft.text![from]
 				draft.sourceHash = noTranslate ? undefined : prev?.sourceHash
 			}
 		}

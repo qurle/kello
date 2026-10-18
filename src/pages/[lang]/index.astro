@@ -1,0 +1,9 @@
+---
+// The original language's home, with translation on
+import Home from '../../components/Home.astro'
+import { languages } from '../../lib/i18n'
+
+export const getStaticPaths = () => languages.slice(1).map((lang) => ({ params: { lang } }))
+---
+
+<Home lang={Astro.params.lang} />

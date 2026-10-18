@@ -1,12 +1,12 @@
 ---
 // Full-screen media viewer. viewer.ts fills it with copies of a post's media and meta, styled with :global()
-import { strings, type Lang } from '../lib/i18n'
+import { ui, type Lang } from '../lib/i18n'
 
 interface Props {
 	lang: Lang
 }
 
-const t = strings[Astro.props.lang]
+const t = ui(Astro.props.lang)
 ---
 
 <dialog class="viewer" tabindex="-1" aria-label={t.viewer} aria-keyshortcuts="ArrowLeft ArrowRight Escape" data-viewer>

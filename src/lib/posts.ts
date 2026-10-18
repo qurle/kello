@@ -14,7 +14,7 @@ export function applyOverrides(posts: Post[], overrides: Overrides = defaultOver
 			{
 				...post,
 				tags: o.tags ?? post.tags,
-				text: post.text && o.text?.en !== undefined ? { ...post.text, en: o.text.en } : post.text,
+				text: post.text && o.text ? { ...post.text, ...o.text } : post.text,
 			},
 		]
 	})
@@ -24,6 +24,10 @@ export function applyOverrides(posts: Post[], overrides: Overrides = defaultOver
 export async function getPosts(): Promise<Post[]> {
 	const posts = (await getCollection('posts')).map((entry) => entry.data)
 	return applyOverrides(posts)
-		.map((post) => (post.text ? { ...post, text: { ru: typeset(post.text.ru), en: typeset(post.text.en) } } : post))
+		.map((post) =>
+			post.text
+				? { ...post, text: Object.fromEntries(Object.entries(post.text).map(([lang, html]) => [lang, typeset(html)])) }
+				: post,
+		)
 		.sort((a, b) => b.date.getTime() - a.date.getTime())
 }

@@ -3,30 +3,41 @@ import { sameMarkup, type TranslationItem, type Translator } from './translate'
 
 // The keyless endpoint behind Google Translate's web widget. Undocumented: it can change or refuse requests.
 // `format=html` keeps tags in place and takes several `q` per request, answered in order
-const endpoint = 'https://translate.googleapis.com/translate_a/t?client=gtx&sl=ru&tl=en&format=html'
-const wordEndpoint = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=ru&tl=en&dt=t&q='
+const endpoint = 'https://translate.googleapis.com/translate_a/t?client=gtx&format=html'
+const wordEndpoint = 'https://translate.googleapis.com/translate_a/single?client=gtx&dt=t'
 
 /** Characters per request, under the endpoint's limit */
 const maxChars = 4000
 const pause = 1000
 
-const cyrillic = /[а-яё]/i
+/** A letter in another script than Latin, like Cyrillic */
+const nonLatin = /(?!\p{Script=Latin})\p{L}/u
+const plain = (html: string) => html.replace(/<[^>]*>/g, '')
 
-/** Swaps hrefs for indices, and marks <code> and link text without Cyrillic (names, @mentions) `translate="no"` */
+/**
+ * Link text that stays as it is: @mentions and URLs, and in a post written in another script, anything in
+ * Latin letters (names, brands)
+ */
+function keep(inner: string, post: string) {
+	const text = plain(inner).trim()
+	return /^@|^https?:\/\/|^[\w-]+\.[a-z]{2,}\b/i.test(text) || (nonLatin.test(plain(post)) && !nonLatin.test(text))
+}
+
+/** Swaps hrefs for indices, and marks <code> and link text to keep `translate="no"` */
 function protect(html: string) {
 	const hrefs: string[] = []
 	const text = html
 		.replace(/<a href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/g, (_, href: string, inner: string) => {
 			const i = hrefs.push(href) - 1
-			return `<a i="${i}"${cyrillic.test(inner) ? '' : ' translate="no"'}>${inner}</a>`
+			return `<a i="${i}"${keep(inner, html) ? ' translate="no"' : ''}>${inner}</a>`
 		})
 		.replace(/<code>/g, '<code translate="no">')
 	return { text, hrefs }
 }
 
 /** Puts hrefs back and drops the spaces Google adds around tags */
-function restore(en: string, hrefs: string[]) {
-	return en
+function restore(translated: string, hrefs: string[]) {
+	return translated
 		.replace(/<a\b[^>]*?\bi="?(\d+)"?[^>]*>/g, (_, i: string) => `<a href="${hrefs[Number(i)] ?? ''}">`)
 		.replace(/<code[^>]*>/g, '<code>')
 		.replace(/(<\/(?:a|b|i|u|s|code)>)\s+(?=[,.;:!?)»])/g, '$1')
@@ -56,7 +67,15 @@ function batches<T extends { text: string }>(items: T[]) {
 export class GoogleTranslator implements Translator {
 	private lastCall = 0
 
-	constructor(private warn: (msg: string) => void) {}
+	private languages: string
+
+	constructor(
+		from: string,
+		to: string,
+		private warn: (msg: string) => void,
+	) {
+		this.languages = `&sl=${from}&tl=${to}`
+	}
 
 	/** Spaces requests out; retries rate limits and server errors */
 	private async request(url: string, body?: string): Promise<unknown> {
@@ -80,11 +99,14 @@ export class GoogleTranslator implements Translator {
 
 	async translate(items: TranslationItem[]): Promise<Map<number, string>> {
 		const out = new Map<number, string>()
-		const prepared = items.map((item) => ({ id: item.id, ru: item.html, ...protect(item.html) }))
+		const prepared = items.map((item) => ({ id: item.id, source: item.html, ...protect(item.html) }))
 		for (const batch of batches(prepared)) {
 			let result: unknown
 			try {
-				result = await this.request(endpoint, batch.map((b) => `q=${encodeURIComponent(b.text)}`).join('&'))
+				result = await this.request(
+					endpoint + this.languages,
+					batch.map((b) => `q=${encodeURIComponent(b.text)}`).join('&'),
+				)
 			} catch (err) {
 				// Blocked or down: the rest are retried next sync
 				this.warn((err as Error).message)
@@ -93,9 +115,9 @@ export class GoogleTranslator implements Translator {
 			const texts = Array.isArray(result) ? result : []
 			batch.forEach((item, n) => {
 				const raw = texts[n]
-				const en = typeof raw === 'string' ? raw : Array.isArray(raw) ? String(raw[0]) : ''
-				const html = en && restore(en, item.hrefs)
-				if (html && sameMarkup(item.ru, html)) out.set(item.id, html)
+				const translated = typeof raw === 'string' ? raw : Array.isArray(raw) ? String(raw[0]) : ''
+				const html = translated && restore(translated, item.hrefs)
+				if (html && sameMarkup(item.source, html)) out.set(item.id, html)
 				else this.warn(`post ${item.id}: Google Translate changed links or tags`)
 			})
 			console.log(`Translated ${out.size}/${items.length}`)
@@ -103,8 +125,10 @@ export class GoogleTranslator implements Translator {
 		return out
 	}
 
-	async tagSlug(ru: string): Promise<string> {
-		const result = (await this.request(wordEndpoint + encodeURIComponent(ru))) as [[string][]]
+	async tagSlug(hashtag: string): Promise<string> {
+		const result = (await this.request(`${wordEndpoint}${this.languages}&q=${encodeURIComponent(hashtag)}`)) as [
+			[string][],
+		]
 		return result[0].map((s) => s[0]).join('')
 	}
 }

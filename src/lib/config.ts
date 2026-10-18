@@ -1,11 +1,11 @@
 import { z } from 'astro/zod'
 
 const tag = z.object({
-	/** Hashtag without `#` */
-	ru: z.string(),
+	/** Hashtag without `#`, as in the channel; also the label on the original-language site */
+	hashtag: z.string(),
 	/** URL slug, used in `?tags=` */
-	en: z.string().regex(/^[a-z0-9-]+$/),
-	/** Label on the English site; defaults to `en` */
+	slug: z.string().regex(/^[a-z0-9-]+$/),
+	/** Label on the translated site; defaults to `slug` */
 	label: z
 		.string()
 		.refine((label) => label === label.toLowerCase(), 'Tag labels are lowercase')
@@ -17,6 +17,7 @@ const tag = z.object({
 })
 
 const subtitleLine = z.object({ text: z.string(), link: z.string() })
+const language = z.string().regex(/^[a-z]{2,3}$/, 'A language code, like `en` or `ru`')
 
 export const configSchema = z.object({
 	site: z.object({
@@ -24,9 +25,9 @@ export const configSchema = z.object({
 		url: z.string().url(),
 		subtitle: z
 			.object({
-				en: subtitleLine,
-				ru: subtitleLine.optional(),
 				url: z.string().url(),
+				/** By language code */
+				lines: z.record(z.string(), subtitleLine),
 			})
 			.optional(),
 		pageSize: z.number().int().positive(),
@@ -42,6 +43,16 @@ export const configSchema = z.object({
 			dumpChatEnv: z.string(),
 		}),
 	}),
+	translate: z
+		.object({
+			/** Off: the site is the channel's language only, at `/` */
+			enable: z.boolean(),
+			/** The channel's language */
+			from: language,
+			/** The language at `/`; the original goes to `/<from>` */
+			to: language,
+		})
+		.refine(({ from, to }) => from !== to, 'translate.from and translate.to differ'),
 	media: z.object({
 		/** Folder under `public/` */
 		dir: z.string(),

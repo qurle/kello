@@ -1,6 +1,6 @@
 ---
 import type { Post } from '../lib/posts'
-import { strings, type Lang } from '../lib/i18n'
+import { ui, type Lang } from '../lib/i18n'
 import { mediaUrl, telegramUrl } from '../lib/urls'
 import { preview } from '../lib/preview'
 import Picture from './Picture.astro'
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const { media, telegramId, lang, eager = false } = Astro.props
-const t = strings[lang]
+const t = ui(lang)
 const single = media.length === 1
 type Item = Props['media'][number]
 
