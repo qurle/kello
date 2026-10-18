@@ -16,10 +16,20 @@ const tag = z.object({
 	hidden: z.boolean().default(false),
 });
 
+const subtitleLine = z.object({ text: z.string(), link: z.string() });
+
 export const configSchema = z.object({
 	site: z.object({
 		title: z.string(),
 		url: z.string().url(),
+		subtitle: z
+			.object({
+				en: subtitleLine,
+				ru: subtitleLine.optional(),
+				url: z.string().url(),
+			})
+			.optional(),
+		pageSize: z.number().int().positive(),
 	}),
 	channel: z.object({
 		/** Public channel username, as in `t.me/s/<username>`. */

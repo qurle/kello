@@ -1,5 +1,6 @@
 // Media viewer: a post's whole row as a carousel in a <dialog>. The open post and item live in the URL (?post=&media=).
 
+import { loadAll } from './pages';
 import { getParam, setParams } from './url';
 
 const dialog = document.querySelector<HTMLDialogElement>('[data-viewer]')!;
@@ -12,9 +13,9 @@ let current = 0;
 let postId = '';
 let opener: HTMLElement | null = null;
 
-/** A copy of a feed item's picture or video. */
+/** A copy of a feed item's video or picture. */
 function slideFor(item: HTMLElement) {
-	const media = item.querySelector('picture, video')!.cloneNode(true) as HTMLElement;
+	const media = (item.querySelector('video') ?? item.querySelector('picture'))!.cloneNode(true) as HTMLElement;
 	const sized = media.querySelector('img') ?? media;
 	const width = Number(sized.getAttribute('width')) || 16;
 	const height = Number(sized.getAttribute('height')) || 9;
@@ -23,6 +24,9 @@ function slideFor(item: HTMLElement) {
 	media.querySelector('img')?.setAttribute('loading', 'eager');
 	if (media instanceof HTMLVideoElement) {
 		media.removeAttribute('data-autoplay');
+		// The feed shows the poster as a picture under the video; here it is the video's own poster.
+		const poster = item.querySelector('img');
+		if (poster) media.poster = poster.currentSrc || poster.src;
 		media.preload = 'metadata';
 		media.muted = true;
 		// Reduced motion: no autoplay, the person presses play.
@@ -30,7 +34,7 @@ function slideFor(item: HTMLElement) {
 	}
 
 	const slide = document.createElement('li');
-	slide.className = 'viewer__slide';
+	slide.dataset.slide = '';
 	slide.style.setProperty('--ratio', `${width} / ${height}`);
 	slide.append(media);
 	return slide;
@@ -114,7 +118,7 @@ track.addEventListener('click', (event) => {
 	const target = event.target as Element;
 	// Native video controls keep their clicks.
 	if (target.closest('video[controls]')) return;
-	const slide = target.closest<HTMLElement>('.viewer__slide');
+	const slide = target.closest<HTMLElement>('[data-slide]');
 	if (!slide) return;
 	const index = slides.indexOf(slide);
 	go(index === current ? current + sideAt(slide, event.clientX) : index);
@@ -122,7 +126,7 @@ track.addEventListener('click', (event) => {
 
 track.addEventListener('mousemove', (event) => {
 	const target = event.target as Element;
-	const slide = target.closest<HTMLElement>('.viewer__slide');
+	const slide = target.closest<HTMLElement>('[data-slide]');
 	const side = slide && slides.indexOf(slide) === current && !target.closest('video[controls]') ? sideAt(slide, event.clientX) : 0;
 	track.dataset.side = side < 0 ? 'prev' : side > 0 ? 'next' : '';
 });
@@ -160,7 +164,7 @@ const closeButton = dialog.querySelector<HTMLElement>('[data-viewer-close]')!;
 
 /** Anywhere outside the media and the post's text. */
 const inCloseZone = (target: EventTarget | null) =>
-	target instanceof Element && !target.closest('.viewer__slide, .viewer__meta > *');
+	target instanceof Element && !target.closest('[data-slide], [data-viewer-meta] > *');
 
 dialog.addEventListener('click', (event) => {
 	if (inCloseZone(event.target)) dialog.close();
@@ -190,10 +194,14 @@ document.addEventListener('kello:filter', () => {
 	if (dialog.open) dialog.close();
 });
 
-// A shared link opens its post.
+// A shared link opens its post, loading the other pages if it isn't on this one.
 const shared = getParam('post');
-const sharedPost = shared ? document.querySelector<HTMLElement>(`[data-post="${CSS.escape(shared)}"]`) : null;
-if (sharedPost) {
-	if (sharedPost.querySelector('[data-open]')) open(sharedPost, (Number(getParam('media')) || 1) - 1, null);
-	else sharedPost.scrollIntoView();
+if (shared) {
+	const find = () => document.querySelector<HTMLElement>(`[data-feed] > [data-post="${CSS.escape(shared)}"]`);
+	const show = (post: HTMLElement | null) => {
+		if (post?.querySelector('[data-open]')) open(post, (Number(getParam('media')) || 1) - 1, null);
+		else post?.scrollIntoView();
+	};
+	if (find()) show(find());
+	else loadAll().then(() => show(find()));
 }

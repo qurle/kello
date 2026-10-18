@@ -1,21 +1,25 @@
 // Inlined after the feed (Home.astro) so it runs before first paint; plain JS because Astro defers <script> modules.
-// Marks loading images for the dither, and scatters the feed on wide screens.
+// Marks loading images for the dither, and scatters the feed on wide screens. Posts from other pages
+// (pages.ts, `kello:posts`) get the same.
 (() => {
 	const root = document.documentElement;
 	const feed = document.querySelector('[data-feed]');
 	if (!feed) return;
 
-	for (const img of feed.querySelectorAll('[data-loading] img')) {
-		const slot = img.closest('[data-loading]');
-		const done = () => slot.removeAttribute('data-loading');
-		if (img.complete) done();
-		else {
-			img.addEventListener('load', done, { once: true });
-			img.addEventListener('error', done, { once: true });
+	const watch = (scope) => {
+		for (const img of scope.querySelectorAll('[data-loading] img')) {
+			const slot = img.closest('[data-loading]');
+			const done = () => slot.removeAttribute('data-loading');
+			if (img.complete) done();
+			else {
+				img.addEventListener('load', done, { once: true });
+				img.addEventListener('error', done, { once: true });
+			}
 		}
-	}
+	};
+	watch(feed);
 
-	const posts = [...feed.querySelectorAll('[data-post]')];
+	let posts = [...feed.querySelectorAll('[data-post]')];
 	const wide = matchMedia('(min-width: 64rem)');
 
 	/** A custom property in px, whatever unit the token uses. */
@@ -94,6 +98,12 @@
 
 	wide.addEventListener('change', safe);
 	document.addEventListener('kello:filter', safe);
+	document.addEventListener('kello:posts', ({ detail }) => {
+		for (const post of detail) watch(post);
+		posts = [...feed.querySelectorAll('[data-post]')];
+		// After every listener, so the filter has hidden what it hides.
+		queueMicrotask(safe);
+	});
 	document.fonts.ready.then(safe);
 	// Only the width matters: the height is ours.
 	let lastWidth = feed.clientWidth;

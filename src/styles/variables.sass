@@ -1,98 +1,105 @@
 // Design tokens: plain CSS custom properties.
 
 :root
-  color-scheme: light dark
+    color-scheme: light dark
 
-  // Colour
-  --background: #fdfdfd
-  --surface: #f3f3f3
-  --primary: #171717
-  --secondary: #b8b8b8
-  --tertiary: #e2e2e2
-  --accent: #3733d2
-  --overlay: rgb(253 253 253 / 0.96)
+    // Colour
+    --background: #fdfdfd
+    --surface: #f3f3f3
+    --primary: #171717
+    --secondary: #b8b8b8
+    --tertiary: #e2e2e2
+    --accent: #3733d2
+    --overlay: rgb(253 253 253 / 0.96)
 
-  // Type
-  --font-sans: "Inter Variable", "Inter", system-ui, sans-serif
-  // The heading only.
-  --font-display: "Mustica Pro", var(--font-sans)
-  --font-feature: "cv11", "ss03"
-  --font-mono: ui-monospace, "SF Mono", Menlo, monospace
-  // The one text size besides the heading.
-  --text-base: 1.0625rem
-  --text-display: clamp(3.5rem, 11vw, 9rem)
-  --leading-tight: 1
-  --leading-base: 1.45
-  --tracking-display: -0.02em
-  --tracking-base: -0.011em
-  // Aligns the heading with the text edge.
-  --display-indent: -0.06em
-  --text-code: 0.88em
-  --underline-width: 1px
-  --underline-offset: 0.18em
-  --weight-display: 600
+    // Type
+    --font-sans: "Inter Variable", "Inter", system-ui, sans-serif
+    // The heading only.
+    --font-display: "Mustica Pro", var(--font-sans)
+    --font-feature: "cv11", "ss03"
+    --font-mono: ui-monospace, "SF Mono", Menlo, monospace
+    // The one text size besides the heading.
+    --text-base: 1.0625rem
+    --text-display: clamp(3.5rem, 11vw, 9rem)
+    --leading-tight: 1
+    --leading-base: 1.45
+    --tracking-display: -0.02em
+    --tracking-base: -0.011em
+    // Aligns the heading with the text edge.
+    --display-indent: -0.06em
+    --text-code: 0.88em
+    --underline-width: 1px
+    --underline-offset: 0.18em
+    --weight-display: 600
 
-  // Space
-  --space-2xs: 0.25rem
-  --space-xs: 0.5rem
-  --space-sm: 0.75rem
-  --space-md: 1.25rem
-  --space-lg: 2rem
-  --space-xl: 3.5rem
-  --space-2xl: 6rem
+    // Space
+    --space-2xs: 0.25rem
+    --space-xs: 0.5rem
+    --space-sm: 0.75rem
+    --space-md: 1.25rem
+    --space-lg: 2rem
+    --space-xl: 3.5rem
+    --space-2xl: 6rem
 
-  // Layout
-  --container-width: 40rem
-  --page-padding-top: 12rem
-  // Side padding on wide screens, where the feed scatters.
-  --page-padding-wide: 4rem
-  // Scattered feed from 64rem (inline/feed.js): a post spans --scatter-span of --scatter-columns, and may drop by --scatter-jitter.
-  --scatter-columns: 12
-  --scatter-span: 4
-  --scatter-gap: var(--space-lg)
-  --scatter-row-gap: var(--space-xl)
-  --scatter-jitter: 8rem
-  --text-width: 34rem
-  --gutter: clamp(1rem, 4vw, 2.5rem)
-  --grid-columns: 12
-  --post-gap: clamp(4rem, 10vw, 8rem)
-  // Columns the post tags take, from 48rem up.
-  --index-columns: 3
+    // Layout
+    --container-width: 40rem
+    --page-padding-top: 12rem
+    // Side padding on wide screens, where the feed scatters.
+    --page-padding-wide: 4rem
+    // Scattered feed from 64rem (inline/feed.js): a post spans --scatter-span of --scatter-columns, and may drop by --scatter-jitter.
+    --scatter-columns: 12
+    --scatter-span: 4
+    --scatter-gap: var(--space-lg)
+    --scatter-row-gap: var(--space-xl)
+    --scatter-jitter: 8rem
+    --text-width: 34rem
+    --gutter: clamp(1rem, 4vw, 2.5rem)
+    --grid-columns: 12
+    --post-gap: clamp(4rem, 10vw, 8rem)
+    // Columns the post tags take, from 48rem up.
+    --index-columns: 3
 
-  // Media row
-  --media-ratio: 16 / 9
-  --media-lead: 80%
-  --media-gap: 0.5rem
-  --radius: 0
-  --media-nav-size: 2.75rem
-  // Image loading state (media.sass): --dither is a 4×4 Bayer threshold map, one cell is --dither-size / 4.
-  --dither: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' fill='white' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1' fill-opacity='0.031'/%3E%3Crect x='1' y='0' width='1' height='1' fill-opacity='0.531'/%3E%3Crect x='2' y='0' width='1' height='1' fill-opacity='0.156'/%3E%3Crect x='3' y='0' width='1' height='1' fill-opacity='0.656'/%3E%3Crect x='0' y='1' width='1' height='1' fill-opacity='0.781'/%3E%3Crect x='1' y='1' width='1' height='1' fill-opacity='0.281'/%3E%3Crect x='2' y='1' width='1' height='1' fill-opacity='0.906'/%3E%3Crect x='3' y='1' width='1' height='1' fill-opacity='0.406'/%3E%3Crect x='0' y='2' width='1' height='1' fill-opacity='0.219'/%3E%3Crect x='1' y='2' width='1' height='1' fill-opacity='0.719'/%3E%3Crect x='2' y='2' width='1' height='1' fill-opacity='0.094'/%3E%3Crect x='3' y='2' width='1' height='1' fill-opacity='0.594'/%3E%3Crect x='0' y='3' width='1' height='1' fill-opacity='0.969'/%3E%3Crect x='1' y='3' width='1' height='1' fill-opacity='0.469'/%3E%3Crect x='2' y='3' width='1' height='1' fill-opacity='0.844'/%3E%3Crect x='3' y='3' width='1' height='1' fill-opacity='0.344'/%3E%3C/svg%3E")
-  --dither-size: 12px
-  --dither-strength: 0.5
-  --dither-duration: 640ms
-  --viewer-media-height: 76dvh
-  --viewer-media-max: 64rem
+    // Media row
+    --media-ratio: 16 / 9
+    --media-lead: 80%
+    --media-gap: 0.5rem
+    --radius: 0
+    --media-nav-size: 2.75rem
+    // Feed media only, not the viewer: a flat tint blended over each slot, so white images
+    // stand off the background. Darken caps every pixel at the tint.
+    --media-tint: #f7f7f7
+    --media-tint-blend: darken
+    // Image loading state (MediaRow.astro): --dither is a 4×4 Bayer threshold map, one cell is --dither-size / 4.
+    --dither: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' fill='white' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1' fill-opacity='0.031'/%3E%3Crect x='1' y='0' width='1' height='1' fill-opacity='0.531'/%3E%3Crect x='2' y='0' width='1' height='1' fill-opacity='0.156'/%3E%3Crect x='3' y='0' width='1' height='1' fill-opacity='0.656'/%3E%3Crect x='0' y='1' width='1' height='1' fill-opacity='0.781'/%3E%3Crect x='1' y='1' width='1' height='1' fill-opacity='0.281'/%3E%3Crect x='2' y='1' width='1' height='1' fill-opacity='0.906'/%3E%3Crect x='3' y='1' width='1' height='1' fill-opacity='0.406'/%3E%3Crect x='0' y='2' width='1' height='1' fill-opacity='0.219'/%3E%3Crect x='1' y='2' width='1' height='1' fill-opacity='0.719'/%3E%3Crect x='2' y='2' width='1' height='1' fill-opacity='0.094'/%3E%3Crect x='3' y='2' width='1' height='1' fill-opacity='0.594'/%3E%3Crect x='0' y='3' width='1' height='1' fill-opacity='0.969'/%3E%3Crect x='1' y='3' width='1' height='1' fill-opacity='0.469'/%3E%3Crect x='2' y='3' width='1' height='1' fill-opacity='0.844'/%3E%3Crect x='3' y='3' width='1' height='1' fill-opacity='0.344'/%3E%3C/svg%3E")
+    --dither-size: 12px
+    --dither-strength: 0.5
+    --dither-duration: 640ms
+    --viewer-media-height: 76dvh
+    --viewer-media-max: 64rem
 
-  // Focus
-  --focus-width: 2px
-  --focus-offset: 3px
+    // Focus
+    --focus-width: 2px
+    --focus-offset: 3px
 
-  // Motion
-  --ease: cubic-bezier(0.2, 0, 0, 1)
-  --duration-fast: 120ms
-  --duration-base: 220ms
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1)
-  // Post settle on scroll (settle.ts).
-  --settle-angle: 1.5deg
-  --settle-duration: 360ms
-  --settle-ease: var(--ease-out)
+    // Motion
+    --ease: cubic-bezier(0.2, 0, 0, 1)
+    --duration-fast: 120ms
+    --duration-base: 220ms
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1)
+    // A post coming in at the bottom of the window straightens from this tilt over this much scrolling (Post.astro).
+    --settle-angle: 2.5deg
+    --settle-distance: 40vh
+    --settle-ease: cubic-bezier(0.3, 0.5, 0.5, 1)
 
 @media (prefers-color-scheme: dark)
-  :root
-    --background: #111111
-    --surface: #1c1c1c
-    --primary: #ececec
-    --secondary: #5a5a5a
-    --tertiary: #2e2e2e
-    --accent: #8582ff
-    --overlay: rgb(17 17 17 / 0.96)
+    :root
+        --background: #111111
+        --surface: #1c1c1c
+        --primary: #ececec
+        --secondary: #5a5a5a
+        --tertiary: #2e2e2e
+        --accent: #8582ff
+        --overlay: rgb(17 17 17 / 0.96)
+        // Lighten lifts every pixel to at least the tint, so black images stand off the dark background.
+        --media-tint: #191919
+        --media-tint-blend: lighten

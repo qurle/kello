@@ -1,4 +1,4 @@
-// Build-time previews for the loading state: images shrunk to 16px and inlined as WebP data URLs (media.sass dithers them).
+// Build-time previews for the loading state: images shrunk to 16px and inlined as WebP data URLs (MediaRow.astro dithers them).
 import path from 'node:path';
 import sharp from 'sharp';
 import config from '../../kello.config';

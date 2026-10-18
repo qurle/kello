@@ -94,19 +94,21 @@ Setup, once:
 | `src/styles/variables.sass` | Design tokens as CSS custom properties. |
 | `src/styles/fonts.sass` | `@font-face` rule for the heading font. |
 | `src/assets/fonts/` | The Mustica Pro heading subset. |
-| `src/styles/*.sass` | Base, page, post, media row and viewer styles, all reading the tokens. |
-| `src/components/` | `Home.astro` is the page, shared by `/` and `/ru` through a `lang` prop; it renders `Post.astro`, which renders `MediaRow.astro` and `Picture.astro`. |
+| `src/styles/base.sass` | Reset, element defaults and the `.tag` button shared by the filter line and posts. Everything else is styled in its component. |
+| `src/components/` | `Home.astro` is the page, shared by `/` and `/ru` through `lang` and `page` props; it renders `Post.astro`, which renders `MediaRow.astro` and `Picture.astro`, and `Viewer.astro`, the media dialog. Each holds its own styles. |
+| `src/pages/` | `index.astro` and `ru/index.astro` are the first page; `page/[page].astro` and `ru/page/[page].astro` the rest. |
+| `src/lib/pages.ts` | Feed pages: which posts are on a page, and page paths. |
 | `src/lib/i18n.ts` | The UI string dictionary. |
-| `src/lib/hash.ts` | `hash()`: a stable integer from a post id. Post.astro writes it to `data-hash`; the feed scatter and settle scripts read it. |
+| `src/lib/hash.ts` | `hash()`: a stable integer from a post id. Post.astro writes it to `data-hash` for the feed scatter, and uses it to pick the settle direction. |
 | `src/lib/preview.ts` | Build-time 16px previews for the loading dither. |
 | `src/lib/tags.ts` | Tag labels, order and the filter line's tags. |
 | `src/lib/urls.ts` | Media, `srcset` and Telegram URLs, and the source link domain. |
-| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, post settle on scroll, and `url.ts` for the shared query string. `inline/feed.js` is the exception, inlined in Home.astro: scattered feed and loading state. |
+| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, `pages.ts` for loading the other feed pages, and `url.ts` for the shared query string. `inline/feed.js` is the exception, inlined in Home.astro: scattered feed and loading state. |
 | `public/media/` | Generated images (WebP, or AVIF too if `media.formats` lists it, at each stored width) and videos. |
 
 ## Design
 
-The page has three parts: the heading "Kello", a line of tag filters, then posts. Nothing else goes in the header or footer, except the language link (`ru` on `/`, `en` on `/ru`).
+The page has three parts: the heading "kello" with its subtitle (`site.subtitle` in `kello.config.ts`), a line of tag filters, then posts. Nothing else goes in the header or footer, except the language link (`ru` on `/`, `en` on `/ru`, to the same page number) and the "more" link to the next page after the feed.
 
 - Swiss style: Inter for text, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings and link hover, and appears nowhere else. Selected tags turn `--primary`.
 - Fonts are self-hosted: Vite copies them into `/_astro/` at build time, and nothing loads from another host.
@@ -123,35 +125,46 @@ The page has three parts: the heading "Kello", a line of tag filters, then posts
   - The tag line uses the same grid. It runs from the column after `--index-columns` to the right edge of the page, so it starts where posts can start.
   - Each post goes in a start column picked by a hash of its id (`data-hash`), from the columns that let it sit within `--scatter-jitter` of the highest free spot. It then drops by a further hashed amount up to `--scatter-jitter`. So posts share vertical space without touching, and positions stay stable between visits.
   - No post sits above the one before it, so the feed still reads newest first, top to bottom.
-  - The layout re-runs on filter, resize and font load. The heading font and the Inter file for the page's language are preloaded, so the first layout usually has the right metrics. Without JS, and below 64rem, the feed is a single centred column.
-- Media loading state: an image slot shows its image as an ordered dither (fine dots) until the image arrives.
+  - The layout re-runs on filter, resize, font load and when another page's posts come in. The heading font and the Inter file for the page's language are preloaded, so the first layout usually has the right metrics. Without JS, and below 64rem, the feed is a single centred column.
+- Media loading state: an image slot shows its image, and a video slot its poster, as an ordered dither (fine dots) until it arrives.
   - The source is a 16px-wide preview made at build time (`src/lib/preview.ts`, about 100 bytes of inline WebP).
-  - In CSS (`media.sass`), the preview is scaled up smoothly, greyed and halved in brightness, and a 4×4 Bayer threshold map at half strength is added with `mix-blend-mode: plus-lighter`. `contrast(64)` then turns each point black or white, which is an ordered dither of the image.
+  - In CSS (`MediaRow.astro`), the preview is scaled up smoothly, greyed and halved in brightness, and a 4×4 Bayer threshold map at half strength is added with `mix-blend-mode: plus-lighter`. `contrast(64)` then turns each point black or white, which is an ordered dither of the image.
   - The threshold map steps through offsets in a loop, so the dots crawl. The loop is ambient and never delays the image: the image's `load` event clears `data-loading`, and the image steps in over `--duration-base`. Images already in the cache are cleared before the first paint.
-  - Without JS, nothing is hidden. Videos show their poster with no dither. Tune with the `--dither-*` tokens.
+  - Without JS, nothing is hidden. Tune with the `--dither-*` tokens.
+- The feed comes in pages of `site.pageSize` posts (24): `/`, `/page/2/`… and `/ru`, `/ru/page/2/`…, all static.
+  - Each page's HTML holds only its own posts, which keeps the first load to about 24 posts' worth of DOM and images. The filter line still lists every tag.
+  - With JS, `src/scripts/pages.ts` fetches the next page's HTML once the "more" link is two windows away, and puts its posts at the end of the feed. Without JS the link goes to the next page.
+  - Picking a tag, or opening a `?tags=` or `?post=` link, first loads every page, so the filter and the viewer see the whole feed. A `?tags=` link keeps the feed hidden until then (`data-filtering`).
+  - Posts from another page announce themselves with a `kello:posts` event; `feed.js`, the filter and the media rows set them up on it.
 - Selected tags combine with AND. Once a tag is selected, any tag that would leave zero posts is dimmed and can't be clicked. The selection is stored in the URL as `?tags=ui,code`.
 - The media row: a single item spans the full container width. With more than one, the first item takes 80% of the width, followed by a 0.5rem gap and the rest, all in one horizontally scrolling row at a fixed 16:9 (`--media-ratio`) with `object-fit: cover`. On hover, previous and next chevrons appear; on touch screens the row swipes with scroll snapping.
+- Feed media sit under a flat tint so they separate from the background: `--media-tint` (#f7f7f7) with `darken` on light, which caps white at the tint, and #191919 with `lighten` on dark. It is a `::after` on each slot, so the viewer, which copies only the picture or video, shows media untinted.
 - Clicking an item opens a `<dialog>`. It shows the post's whole row as a carousel the full width of the dialog, with the clicked item centred, and the post's text, tags and links below.
   - Each item is uncropped at its own ratio. Its width is the smallest of `--viewer-media-height` × ratio, `--viewer-media-max` (64rem) and the dialog width minus gutters; the height follows from the ratio.
   - Clicking the current item's left or right half moves to the previous or next item, as do the arrow keys and swipes. Clicking a neighbour goes to it. Esc, the close button, or a click anywhere outside the media and the post's text block (the top bar, the gaps, the margins) closes the dialog. While a mouse is over such a spot, the close button shows its hover state.
   - While it's open, the URL carries `?post=<id>` and, from the second item on, `&media=<n>`. Loading such a link opens the viewer there. `src/scripts/url.ts` owns the query string for both the filter and the viewer.
-- Videos play muted and looped while they are in view and pause when they leave it. With `prefers-reduced-motion`, they show the poster instead.
-- Posts settle as you scroll (`src/scripts/settle.ts`): each post below the fold waits tilted by `--settle-angle` (1.5deg), clockwise or counter-clockwise by a hash of its id, and straightens over `--settle-duration` with `--settle-ease` once scrolling brings it in from below, past the bottom 15% of the window or when scrolling stops with it peeking in. Once per post.
+- Videos play muted and looped while they are in view and pause when they leave it. With `prefers-reduced-motion`, they show the poster instead. In the feed the poster is a lazy `<picture>` under the video, not its `poster` attribute, which would load every poster at once and at one size; the viewer copies it into `poster`.
+- Image `sizes` follow the layout: a third of the window less the page padding from 64rem, 40rem in the single column.
+- Posts settle as they come in (`Post.astro`): a post enters at the bottom of the window tilted by `--settle-angle` (2.5deg), clockwise or counter-clockwise by a hash of its id (`--settle-direction`, set in `Post.astro`), and straightens over the first `--settle-distance` (40vh) of scrolling with `--settle-ease`.
+  - It is a scroll-driven animation (`animation-timeline: view()`), so the angle follows the scroll position, both ways, with no script. Browsers without scroll-driven animations (Firefox for now) show posts straight.
   - Only the `rotate` property changes, so it composites and never touches the `inset` and `width` that `feed.js` sets. It works the same in the scattered feed and the single column.
-  - Anything other than scrolling down that brings a waiting post into view straightens it with no motion: the first load, scroll restoration, a filter, a resize or font swap, scrolling back up to a post that was skipped.
-  - Without JS nothing tilts. With `prefers-reduced-motion`, nothing is marked and the CSS drops the tilt.
+  - With `prefers-reduced-motion`, nothing tilts.
 - Post meta: the source link is shown as its domain (`psiquantum.com ↗`) and is the primary link. The Telegram link is quieter. Both are styled as text links, not buttons.
 - No uppercase labels, eyebrows, counters, decorative dividers or rounded cards.
 - Grid: 12 columns from 48rem up. Post tags take the first `--index-columns`; the filter line and post text start after them. Below 48rem everything stacks.
 - Tags no post uses are left out of the filter line.
 
-Tokens added with the UI, beyond the ones above: `--font-mono`, `--text-code`, `--display-indent` (optical correction for the heading), `--underline-width`, `--underline-offset`, `--index-columns`, `--media-nav-size` (chevron square), `--viewer-media-height`, `--viewer-media-max`, `--focus-width`, `--focus-offset`, `--ease-out`, `--settle-angle`, `--settle-duration`, `--settle-ease`. The 48rem breakpoint and the `sizes` attributes in `MediaRow.astro` are written out, since media queries and HTML can't read custom properties.
+Tokens added with the UI, beyond the ones above: `--font-mono`, `--text-code`, `--display-indent` (optical correction for the heading), `--underline-width`, `--underline-offset`, `--index-columns`, `--media-nav-size` (chevron square), `--media-tint`, `--media-tint-blend`, `--viewer-media-height`, `--viewer-media-max`, `--focus-width`, `--focus-offset`, `--ease-out`, `--settle-angle`, `--settle-distance`, `--settle-ease`. The 48rem breakpoint and the `sizes` attributes in `MediaRow.astro` are written out, since media queries and HTML can't read custom properties.
 
 Image and poster URLs go through `imageSet()` in `src/lib/urls.ts`, which builds `srcset` from `imageSources()` so only files that exist are referenced.
 
 ## Conventions
 
-- Styles are written in indented `.sass` syntax, using CSS features only: no Sass variables, mixins, `@extend` or functions. Read values from the tokens in `variables.sass` instead of hard-coding them.
-- Tabs for indentation in TS and Astro files, two spaces in `.sass`.
+- Styles are written in indented Sass syntax, using CSS features only: no Sass variables, mixins, `@extend` or functions. Nesting is fine; it is CSS now too. Read values from the tokens in `variables.sass` instead of hard-coding them.
+- A component's styles live in its own `<style lang="sass">` block, which Astro scopes to that component. So class names are short and plain (`.meta`, `.title`, `.track`), nested by indentation; no BEM (`block__element--modifier`). A variant is a second class (`.nav.prev`) or a data attribute.
+  - Scoped styles don't reach markup the component doesn't render itself: Telegram's HTML set with `set:html`, `Picture.astro`'s elements inside `MediaRow`, the copies `viewer.ts` puts in the dialog, and state on `<html>` (`data-js`, `data-filtering`). Wrap those selectors in `:global()`.
+  - Only tokens, fonts and `base.sass` are global, imported in `Home.astro`.
+  - Scripts find elements by `data-*` attributes, never by class.
+- Tabs for indentation in TS and Astro markup, four spaces in Sass (in `.sass` files and `<style lang="sass">` blocks, whose rules start at column 0).
 - UI strings are English on `/` and Russian on `/ru`. There are only a handful, kept in one dictionary.
 - Before finishing a change, run `npm run build`, which type-checks the content collection against the schema, and `npx tsc --noEmit`. `tsconfig.json` extends Astro's base with `strictNullChecks` on, which Zod's types need; the rest of `strict` stays off.

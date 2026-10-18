@@ -1,7 +1,7 @@
 ---
 import type { Post } from '../lib/posts';
 import { strings, type Lang } from '../lib/i18n';
-import { imageSet, mediaUrl, telegramUrl } from '../lib/urls';
+import { mediaUrl, telegramUrl } from '../lib/urls';
 import { preview } from '../lib/preview';
 import Picture from './Picture.astro';
 
@@ -16,42 +16,47 @@ const { media, telegramId, lang, eager = false } = Astro.props;
 const t = strings[lang];
 const single = media.length === 1;
 
-// Previews shown dithered until the image arrives.
-const previews = await Promise.all(
-	media.map((item) => (item.type === 'image' ? preview(item.file, item.width) : undefined)),
-);
+// Previews shown dithered until the image or video poster arrives.
+const still = (item: Props['media'][number]) => (item.type === 'image' ? item.file : item.type === 'video' ? item.poster : undefined);
+const previews = await Promise.all(media.map((item) => preview(still(item), item.width)));
 const slotStyle = (index: number) => (previews[index] ? `--preview: url(${previews[index]})` : undefined);
 
-// The container is at most 40rem; with several items a slot takes 80% (--media-lead).
-const sizes = single ? '(min-width: 45rem) 40rem, 92vw' : '(min-width: 45rem) 32rem, 74vw';
+// From 64rem a post is a third of the window less 4rem of padding on each side (--scatter-span of
+// --scatter-columns); below, the container is at most 40rem. With several items a slot takes 80% (--media-lead).
+const sizes = single
+	? '(min-width: 64rem) calc((100vw - 8rem) / 3), (min-width: 45rem) 40rem, 92vw'
+	: '(min-width: 64rem) calc((100vw - 8rem) / 3.75), (min-width: 45rem) 32rem, 74vw';
 ---
 
 <div class="media" data-media-row data-single={single || undefined}>
-	<ul class="media__track" data-media-track>
+	<ul class="track" data-media-track>
 		{media.map((item, index) => (
-			<li class="media__slot" style={slotStyle(index)} data-loading={item.type === 'image' || undefined}>
-				{item.type === 'image' && <span class="media__dither" aria-hidden="true" />}
+			<li class="slot" style={slotStyle(index)} data-loading={still(item) ? true : undefined}>
+				{still(item) && <span class="dither" aria-hidden="true" />}
 				{item.type === 'unavailable' ? (
-					<a class="media__item media__item--unavailable" href={item.messageId ? telegramUrl(item.messageId, true) : telegramUrl(telegramId)}>
+					<a class="item unavailable" href={item.messageId ? telegramUrl(item.messageId, true) : telegramUrl(telegramId)}>
 						{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />}
-						<span class="media__label">{t.unavailable} <span aria-hidden="true">↗</span></span>
+						<span class="label">{t.unavailable} <span aria-hidden="true">↗</span></span>
 					</a>
 				) : (
-					<button class="media__item" type="button" data-open aria-label={`${t.open} ${index + 1}/${media.length}`}>
+					<button class="item" type="button" data-open aria-label={`${t.open} ${index + 1}/${media.length}`}>
 						{item.type === 'image' ? (
 							<Picture file={item.file} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />
 						) : (
-							<video
-								src={mediaUrl(item.file)}
-								poster={item.poster && imageSet(item.poster, item.width).src}
-								width={item.width}
-								height={item.height}
-								muted
-								loop
-								playsinline
-								preload={item.poster ? 'none' : 'metadata'}
-								data-autoplay
-							/>
+							<>
+								{/* The poster is a lazy picture under the video rather than its poster attribute, which loads eagerly and at one size. */}
+								{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />}
+								<video
+									src={mediaUrl(item.file)}
+									width={item.width}
+									height={item.height}
+									muted
+									loop
+									playsinline
+									preload={item.poster ? 'none' : 'metadata'}
+									data-autoplay
+								/>
+							</>
 						)}
 					</button>
 				)}
@@ -60,12 +65,163 @@ const sizes = single ? '(min-width: 45rem) 40rem, 92vw' : '(min-width: 45rem) 32
 	</ul>
 	{!single && (
 		<>
-			<button class="media__nav media__nav--prev" type="button" tabindex="-1" aria-label={t.previous} data-media-prev data-off>
+			<button class="nav prev" type="button" tabindex="-1" aria-label={t.previous} data-media-prev data-off>
 				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
 			</button>
-			<button class="media__nav media__nav--next" type="button" tabindex="-1" aria-label={t.next} data-media-next>
+			<button class="nav next" type="button" tabindex="-1" aria-label={t.next} data-media-next>
 				<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
 			</button>
 		</>
 	)}
 </div>
+
+<style lang="sass">
+// The media row. Picture.astro's elements are reached with :global().
+
+.media
+    position: relative
+
+.track
+    display: flex
+    gap: var(--media-gap)
+    overflow-x: auto
+    overscroll-behavior-x: contain
+    scroll-snap-type: x mandatory
+    scrollbar-width: none
+
+    &::-webkit-scrollbar
+        display: none
+
+.slot
+    position: relative
+    flex: 0 0 var(--media-lead)
+    aspect-ratio: var(--media-ratio)
+    scroll-snap-align: start
+    background: var(--surface)
+
+    :global(img)
+        transition: opacity var(--duration-base) steps(4, end)
+
+    .media[data-single] &
+        flex-basis: 100%
+
+    // The tint (--media-tint), over the media and the loading dither. The viewer copies only the
+    // picture or video, so it shows them untinted.
+    &::after
+        content: ""
+        position: absolute
+        inset: 0
+        background: var(--media-tint)
+        mix-blend-mode: var(--media-tint-blend)
+        pointer-events: none
+
+// Loading state, with JS only: feed.js clears data-loading when the image arrives.
+// Ordered dither: the greyed preview at half brightness (L / 2) plus the Bayer map at half strength
+// (T / 2), added with plus-lighter; a huge contrast() then makes each point white where L + T > 1.
+.dither
+    display: none
+
+:global(html[data-js]) .slot[data-loading]
+    :global(img)
+        opacity: 0
+
+    .dither
+        position: absolute
+        inset: 0
+        display: block
+        overflow: hidden
+        opacity: var(--dither-strength)
+        filter: contrast(64)
+        pointer-events: none
+
+        &::before,
+        &::after
+            content: ""
+            position: absolute
+            inset: 0
+
+        &::before
+            // Past the edges, so the blur doesn't darken them.
+            inset: -8px
+            background: var(--preview, none) center / cover no-repeat
+            filter: grayscale(1) blur(4px) brightness(0.5)
+
+        &::after
+            background: var(--dither) 0 0 / var(--dither-size) repeat
+            opacity: 0.5
+            mix-blend-mode: plus-lighter
+            image-rendering: pixelated
+            animation: dither var(--dither-duration) steps(4) infinite
+
+@keyframes dither
+    to
+        background-position: var(--dither-size) var(--dither-size)
+
+.item
+    position: relative
+    display: block
+    width: 100%
+    height: 100%
+    cursor: zoom-in
+
+    &:focus-visible
+        outline-offset: calc(var(--focus-width) * -1)
+
+    :global(picture)
+        display: contents
+
+    :global(img),
+    video
+        width: 100%
+        height: 100%
+        object-fit: cover
+
+    // Over its poster picture, which shows until the first frame.
+    video
+        position: absolute
+        inset: 0
+
+    &.unavailable
+        color: var(--secondary)
+        cursor: pointer
+
+.label
+    position: absolute
+    inset-inline-start: 0
+    inset-block-end: 0
+    padding: var(--space-xs) var(--space-sm)
+    background: var(--overlay)
+
+.nav
+    position: absolute
+    top: 50%
+    display: grid
+    place-items: center
+    width: var(--media-nav-size)
+    height: var(--media-nav-size)
+    translate: 0 -50%
+    background: var(--overlay)
+    color: var(--primary)
+    opacity: 0
+    visibility: hidden
+    transition: opacity var(--duration-base) var(--ease), visibility var(--duration-base)
+
+    svg
+        width: 50%
+        height: 50%
+        fill: none
+        stroke: currentColor
+        stroke-width: 1.5
+
+    &.prev
+        inset-inline-start: var(--space-xs)
+
+    &.next
+        inset-inline-end: var(--space-xs)
+
+    // Chevrons for a mouse only.
+    @media (hover: hover) and (pointer: fine)
+        .media:hover &:not([data-off])
+            opacity: 1
+            visibility: visible
+</style>

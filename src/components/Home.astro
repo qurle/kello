@@ -4,15 +4,13 @@ import '@fontsource-variable/inter/wght.css'
 import '../styles/fonts.sass'
 import '../styles/variables.sass'
 import '../styles/base.sass'
-import '../styles/page.sass'
-import '../styles/post.sass'
-import '../styles/media.sass'
-import '../styles/viewer.sass'
 import config from '../../kello.config'
 import { getPosts } from '../lib/posts'
 import { strings, type Lang } from '../lib/i18n'
 import { filterTags, tagLabel } from '../lib/tags'
+import { pageCount, pagePath, pagePosts } from '../lib/pages'
 import Post from './Post.astro'
+import Viewer from './Viewer.astro'
 import feedScript from '../scripts/inline/feed.js?raw'
 import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url'
 import interCyrillic from '@fontsource-variable/inter/files/inter-cyrillic-wght-normal.woff2?url'
@@ -20,31 +18,34 @@ import mustica from '../assets/fonts/mustica-pro-semibold.woff2?url'
 
 interface Props {
 	lang: Lang
+	/** Which page of the feed this is, from 1. */
+	page?: number
 }
 
-const { lang } = Astro.props
+const { lang, page = 1 } = Astro.props
 const t = strings[lang]
-const other = strings[t.switchTo]
-const posts = await getPosts()
-const tags = filterTags(new Set(posts.flatMap((post) => post.tags)))
+const all = await getPosts()
+// The filter line lists every tag, not just this page's: picking one loads the other pages.
+const tags = filterTags(new Set(all.flatMap((post) => post.tags)))
+const posts = pagePosts(all, page)
+const pages = Array.from({ length: pageCount(all) }, (_, i) => pagePath(lang, i + 1))
+const next = pages[page]
 const url = (path: string) => new URL(path, config.site.url).href
+const { subtitle } = config.site
+const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 ---
 
 <!doctype html>
 <html lang={lang}>
 	<head>
 		<meta charset="utf-8" />
-		<!-- Lets CSS hold the wide feed back until feed.js has placed it. -->
+		<!-- Lets CSS hold the wide feed back until feed.js has placed it, and a shared ?tags= link
+		     hold it until filter.ts has loaded every page and filtered. -->
 		<script is:inline>
 			document.documentElement.dataset.js = ''
+			if (/[?&]tags=/.test(location.search)) document.documentElement.dataset.filtering = ''
 		</script>
-		<link
-			rel="preload"
-			href={mustica}
-			as="font"
-			type="font/woff2"
-			crossorigin
-		/>
+		<link rel="preload" href={mustica} as="font" type="font/woff2" crossorigin />
 		<link
 			rel="preload"
 			href={lang === 'ru' ? interCyrillic : interLatin}
@@ -55,14 +56,10 @@ const url = (path: string) => new URL(path, config.site.url).href
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{config.site.title}</title>
 		<meta name="description" content={t.description} />
-		<link rel="canonical" href={url(t.path)} />
-		<link rel="alternate" hreflang="en" href={url(strings.en.path)} />
-		<link rel="alternate" hreflang="ru" href={url(strings.ru.path)} />
-		<link
-			rel="alternate"
-			hreflang="x-default"
-			href={url(strings.en.path)}
-		/>
+		<link rel="canonical" href={url(pagePath(lang, page))} />
+		<link rel="alternate" hreflang="en" href={url(pagePath('en', page))} />
+		<link rel="alternate" hreflang="ru" href={url(pagePath('ru', page))} />
+		<link rel="alternate" hreflang="x-default" href={url(pagePath('en', page))} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 	</head>
@@ -73,25 +70,22 @@ const url = (path: string) => new URL(path, config.site.url).href
 					<h1 class="title">
 						<a href={t.path}
 							>{config.site.title.toLowerCase()}<sup
-								><img
-									class="logo"
-									alt="kello logotype"
-									src="/favicon.svg"
-								/></sup
+								><img class="logo" alt="kello logotype" src="/favicon.svg" /></sup
 							></a
 						>
 					</h1>
-					<div class="subtitle">
-						knowledge + inspo collected <a
-							href="qurle.net"
-							target="_blank">by qurle</a
-						>
-					</div>
+					{
+						subtitle && subtitleLine && (
+							<div class="subtitle">
+								{subtitleLine.text} <a href={subtitle.url} target="_blank">{subtitleLine.link}</a>
+							</div>
+						)
+					}
 				</div>
 				<span>
 					<a
 						class="lang"
-						href={other.path}
+						href={pagePath(t.switchTo, page)}
 						hreflang={t.switchTo}
 						lang={t.switchTo}
 						aria-label={t.switchLabel}
@@ -104,12 +98,7 @@ const url = (path: string) => new URL(path, config.site.url).href
 					{
 						tags.map((tag) => (
 							<li>
-								<button
-									class="tag"
-									type="button"
-									data-tag={tag}
-									aria-pressed="false"
-								>
+								<button class="tag" type="button" data-tag={tag} aria-pressed="false">
 									{tagLabel(tag, lang)}
 								</button>
 							</li>
@@ -117,34 +106,120 @@ const url = (path: string) => new URL(path, config.site.url).href
 					}
 				</ul>
 			</nav>
-			<main class="feed" data-feed>
+			<main class="feed" data-feed data-page={page} data-pages={JSON.stringify(pages)}>
 				{
 					posts.map((post, index) => (
-						<Post post={post} lang={lang} eager={index === 0} />
+						<Post post={post} lang={lang} page={page} eager={page === 1 && index === 0} />
 					))
 				}
 			</main>
+			{next && <a class="more" href={next} rel="next" data-more>{t.more}</a>}
 			<script is:inline set:html={feedScript} />
 		</div>
-		<dialog
-			class="viewer"
-			aria-label={t.viewer}
-			aria-keyshortcuts="ArrowLeft ArrowRight Escape"
-			data-viewer
-		>
-			<div class="viewer__bar">
-				<button class="viewer__close" type="button" data-viewer-close
-					>{t.close}</button
-				>
-			</div>
-			<ul class="viewer__track" data-viewer-track></ul>
-			<div class="viewer__meta" data-viewer-meta></div>
-		</dialog>
+		<Viewer lang={lang} />
 		<script>
 			import '../scripts/filter'
 			import '../scripts/media'
 			import '../scripts/viewer'
-			import '../scripts/settle'
+			import '../scripts/pages'
 		</script>
 	</body>
 </html>
+
+<style lang="sass">
+// Page frame: heading, language link, filter line, feed.
+
+.page
+    box-sizing: content-box
+    max-width: var(--container-width)
+    margin-inline: auto
+    padding: var(--page-padding-top) var(--gutter) var(--space-2xl)
+
+    // Wide screens: the page spans the window and posts move across it (Post.astro).
+    @media (min-width: 64rem)
+        max-width: none
+        padding-inline: max(var(--page-padding-wide), var(--gutter))
+
+.masthead
+    display: flex
+    justify-content: space-between
+    align-items: end
+    gap: var(--space-md)
+
+    .heading
+        width: fit-content
+
+    .title
+        margin-inline-start: var(--display-indent)
+        font-family: var(--font-display)
+        font-size: var(--text-display)
+        font-weight: var(--weight-display)
+        line-height: var(--leading-tight)
+        letter-spacing: var(--tracking-display)
+
+    .subtitle
+        color: var(--secondary)
+
+        a
+            text-decoration: underline
+            text-underline-offset: 3px
+
+            &:hover
+                color: var(--primary)
+
+    .lang
+        color: var(--secondary)
+
+    .logo
+        display: inline
+        transition: transform var(--duration-base) var(--ease)
+        will-change: transform
+
+    a:hover .logo
+        transform: rotate(15deg)
+
+.filter
+    margin-top: var(--space-lg)
+
+    .list
+        display: flex
+        flex-wrap: wrap
+        gap: var(--space-2xs) var(--space-sm)
+
+    @media (min-width: 48rem)
+        display: grid
+        grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr))
+        column-gap: var(--space-md)
+        margin-top: var(--space-xl)
+
+        .list
+            grid-column: calc(var(--index-columns) + 1) / -1
+            gap: var(--space-2xs) var(--space-md)
+
+    // The tag line sits on the feed's grid, from the column after the index columns to the edge.
+    @media (min-width: 64rem)
+        grid-template-columns: repeat(var(--scatter-columns), minmax(0, 1fr))
+        column-gap: var(--scatter-gap)
+
+.feed
+    margin-top: var(--space-2xl)
+
+    // A shared ?tags= link: hidden until every page is in and filtered (filter.ts).
+    :global(html[data-filtering]) &
+        visibility: hidden
+
+    // Wide screens: feed.js places each post and sets data-scatter. The feed stays hidden until then.
+    @media (min-width: 64rem)
+        :global(html[data-js]) &:not([data-scatter])
+            visibility: hidden
+
+    &[data-scatter]
+        position: relative
+
+// The next page: a plain link without JS, and with it the point where pages.ts loads the next one.
+.more
+    display: block
+    width: fit-content
+    margin-top: var(--post-gap)
+    color: var(--secondary)
+</style>
