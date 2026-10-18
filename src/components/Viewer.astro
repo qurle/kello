@@ -103,7 +103,8 @@ const t = strings[Astro.props.lang];
     &[data-side="next"]
         cursor: e-resize
 
-    // A slide, made by viewer.ts. Height follows from the item's own ratio.
+    // A slide, made by viewer.ts. Height follows from the item's own ratio. While its media load it
+    // shows the loading dither (base.sass).
     :global([data-slide])
         flex: none
         width: min(var(--viewer-media-height) * var(--ratio), var(--viewer-media-max), 100cqw - 2 * var(--gutter))

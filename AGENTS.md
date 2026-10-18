@@ -94,7 +94,7 @@ Setup, once:
 | `src/styles/variables.sass` | Design tokens as CSS custom properties. |
 | `src/styles/fonts.sass` | `@font-face` rule for the heading font. |
 | `src/assets/fonts/` | The Mustica Pro heading subset. |
-| `src/styles/base.sass` | Reset, element defaults and the `.tag` button shared by the filter line and posts. Everything else is styled in its component. |
+| `src/styles/base.sass` | Reset, element defaults, the `.tag` button shared by the filter line and posts, and the loading dither shared by feed slots and viewer slides. Everything else is styled in its component. |
 | `src/components/` | `Home.astro` is the page, shared by `/` and `/ru` through `lang` and `page` props; it renders `Post.astro`, which renders `MediaRow.astro` and `Picture.astro`, and `Viewer.astro`, the media dialog. Each holds its own styles. |
 | `src/pages/` | `index.astro` and `ru/index.astro` are the first page; `page/[page].astro` and `ru/page/[page].astro` the rest. |
 | `src/lib/pages.ts` | Feed pages: which posts are on a page, and page paths. |
@@ -103,14 +103,16 @@ Setup, once:
 | `src/lib/preview.ts` | Build-time 16px previews for the loading dither. |
 | `src/lib/tags.ts` | Tag labels, order and the filter line's tags. |
 | `src/lib/urls.ts` | Media, `srcset` and Telegram URLs, and the source link domain. |
-| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, `pages.ts` for loading the other feed pages, and `url.ts` for the shared query string. `inline/feed.js` is the exception, inlined in Home.astro: scattered feed and loading state. |
+| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, `pages.ts` for loading the other feed pages, `theme.ts` for the theme switch, and `url.ts` for the shared query string. `inline/feed.js` is the exception, inlined in Home.astro: scattered feed and loading state. |
 | `public/media/` | Generated images (WebP, or AVIF too if `media.formats` lists it, at each stored width) and videos. |
 
 ## Design
 
-The page has three parts: the heading "kello" with its subtitle (`site.subtitle` in `kello.config.ts`), a line of tag filters, then posts. Nothing else goes in the header or footer, except the language link (`ru` on `/`, `en` on `/ru`, to the same page number) and the "more" link to the next page after the feed.
+The page has three parts: the heading "kello" with its subtitle (`site.subtitle` in `kello.config.ts`), a line of tag filters, then posts. Nothing else goes in the header or footer, except two switches at the right of the heading and the "more" link to the next page after the feed.
+  - The switches are the theme (`auto`, `light`, `dark`; Russian on `/ru`) and the language (`en` on `/`, `ru` on `/ru`, linking to the other language's same page number). Each shows its current state, not the one it switches to. They sit `--space-xs` apart.
+  - The heading takes the free space in the header row (`--space-md` gaps), and the switches wrap below it when there isn't room.
 
-- Swiss style: Inter for text, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings and link hover, and appears nowhere else. Selected tags turn `--primary`.
+- Swiss style: Inter for text, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings and link hover (the source link included), and appears nowhere else. Focus rings show for keyboard navigation only: `:focus` has no outline, `:focus-visible` has the ring (`base.sass`). Selected tags turn `--primary`.
 - Fonts are self-hosted: Vite copies them into `/_astro/` at build time, and nothing loads from another host.
   - Inter sets all text through `--font-sans`. It comes from the `@fontsource-variable/inter` package (`wght.css`: variable weight, no optical-size axis), whose `unicode-range` subsets mean a page downloads only the Latin and, on `/ru`, Cyrillic files.
   - The heading "kello" is Mustica Pro SemiBold through `--font-display`, used nowhere else. Its file is in `src/assets/fonts` with an `@font-face` rule in `src/styles/fonts.sass`. It is a WOFF2 subset of the owner's OTF (basic Latin, Latin-1 punctuation, general punctuation, basic Cyrillic; about 28 KB) made with `pyftsubset`, keeping only the `kern`, `liga` and `case` features. To change the character set, re-run `pyftsubset` on the OTF, which is not in the repo.
@@ -118,17 +120,20 @@ The page has three parts: the heading "kello" with its subtitle (`site.subtitle`
 - Tags, their labels, the heading and every UI string in `src/lib/i18n.ts` are lowercase; the config schema rejects uppercase labels.
 - One text size, `--text-base`, for everything except the heading. The page starts `--page-padding-top` (12rem) down.
 - Post text is typeset at build time (`src/lib/typography.ts`, applied in `getPosts()`). A hyphen or en dash between spaces becomes an em dash. Emoji from Telegram stay.
-- Secondary and tertiary greys are deliberately faint (`#b8b8b8` and `#e2e2e2` on light). That's below WCAG text contrast, which is accepted for the quiet parts: unselected tags, the Telegram link and the language link.
-- Colour scheme follows `prefers-color-scheme`. Every colour comes from a token, so dark mode only redefines the tokens.
+- Secondary and tertiary greys are deliberately faint (`#b8b8b8` and `#e2e2e2` on light). That's below WCAG text contrast, which is accepted for the quiet parts: unselected tags, the Telegram link and the switches.
+- Colour scheme follows `prefers-color-scheme`, unless the theme switch picks light or dark. Every colour comes from a token, so dark mode only redefines the tokens.
+  - The switch (`src/scripts/theme.ts`) cycles auto, light, dark. It sets `data-theme` on `<html>` (none for auto) and keeps it in `localStorage`; the inline script in `<head>` applies it before the first paint.
+  - `variables.sass` holds the dark tokens twice: under `prefers-color-scheme: dark` for `:root:not([data-theme="light"])`, and for `:root[data-theme="dark"]`. Keep the two in step.
+  - The button shows the label for the current `data-theme` through CSS, so it's right from the first paint. Without JS it's hidden.
 - From 64rem up, the page spans the window with at least 4rem (`--page-padding-wide`) of padding on each side, and the feed scatters (`src/scripts/inline/feed.js`). That script is plain JS inlined right after the feed, so it runs while the page parses. A `data-js` flag set in `<head>` keeps the wide feed hidden until the script has placed it, so the single column never flashes. If the script throws, it drops the flag and the column shows.
   - Posts become narrow columns, `--scatter-span` of `--scatter-columns` grid columns wide, with tags in a row and body-size text.
   - The tag line uses the same grid. It runs from the column after `--index-columns` to the right edge of the page, so it starts where posts can start.
   - Each post goes in a start column picked by a hash of its id (`data-hash`), from the columns that let it sit within `--scatter-jitter` of the highest free spot. It then drops by a further hashed amount up to `--scatter-jitter`. So posts share vertical space without touching, and positions stay stable between visits.
   - No post sits above the one before it, so the feed still reads newest first, top to bottom.
   - The layout re-runs on filter, resize, font load and when another page's posts come in. The heading font and the Inter file for the page's language are preloaded, so the first layout usually has the right metrics. Without JS, and below 64rem, the feed is a single centred column.
-- Media loading state: an image slot shows its image, and a video slot its poster, as an ordered dither (fine dots) until it arrives.
+- Media loading state: an image slot shows its image, and a video slot its poster, as a colour ordered dither (fine dots) until it arrives. Viewer slides do the same: `viewer.ts` copies the slot's `--preview` and adds the dither until the full-size picture, or the video's poster or first frame, arrives.
   - The source is a 16px-wide preview made at build time (`src/lib/preview.ts`, about 100 bytes of inline WebP).
-  - In CSS (`MediaRow.astro`), the preview is scaled up smoothly, greyed and halved in brightness, and a 4×4 Bayer threshold map at half strength is added with `mix-blend-mode: plus-lighter`. `contrast(64)` then turns each point black or white, which is an ordered dither of the image.
+  - In CSS (`base.sass`, shared by the feed and the viewer), the preview is scaled up smoothly and halved in brightness, and a 4×4 Bayer threshold map at half strength is added with `mix-blend-mode: plus-lighter`. `contrast(64)` then turns each channel of each point fully on or off, which is an ordered dither of the image in 8 colours (black, white, red, green, blue, cyan, magenta, yellow). `--dither-strength` (0.5) fades it toward the background, so the colours stay soft.
   - The threshold map steps through offsets in a loop, so the dots crawl. The loop is ambient and never delays the image: the image's `load` event clears `data-loading`, and the image steps in over `--duration-base`. Images already in the cache are cleared before the first paint.
   - Without JS, nothing is hidden. Tune with the `--dither-*` tokens.
 - The feed comes in pages of `site.pageSize` posts (24): `/`, `/page/2/`… and `/ru`, `/ru/page/2/`…, all static.
@@ -168,7 +173,7 @@ Image and poster URLs go through `imageSet()` in `src/lib/urls.ts`, which builds
 - Styles are written in indented Sass syntax, using CSS features only: no Sass variables, mixins, `@extend` or functions. Nesting is fine; it is CSS now too. Read values from the tokens in `variables.sass` instead of hard-coding them.
 - A component's styles live in its own `<style lang="sass">` block, which Astro scopes to that component. So class names are short and plain (`.meta`, `.title`, `.track`), nested by indentation; no BEM (`block__element--modifier`). A variant is a second class (`.nav.prev`) or a data attribute.
   - Scoped styles don't reach markup the component doesn't render itself: Telegram's HTML set with `set:html`, `Picture.astro`'s elements inside `MediaRow`, the copies `viewer.ts` puts in the dialog, and state on `<html>` (`data-js`, `data-filtering`). Wrap those selectors in `:global()`.
-  - Only tokens, fonts and `base.sass` are global, imported in `Home.astro`.
+  - Only tokens, fonts and `base.sass` are global, imported in `Home.astro`. A style two components share (the tag button, the loading dither) goes in `base.sass`.
   - Scripts find elements by `data-*` attributes, never by class.
 - Tabs for indentation in TS and Astro markup, four spaces in Sass (in `.sass` files and `<style lang="sass">` blocks, whose rules start at column 0).
 - UI strings are English on `/` and Russian on `/ru`. There are only a handful, kept in one dictionary.

@@ -69,7 +69,7 @@
     // stand off the background. Darken caps every pixel at the tint.
     --media-tint: #f7f7f7
     --media-tint-blend: darken
-    // Image loading state (MediaRow.astro): --dither is a 4×4 Bayer threshold map, one cell is --dither-size / 4.
+    // Media loading state (base.sass): --dither is a 4×4 Bayer threshold map, one cell is --dither-size / 4.
     --dither: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' fill='white' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1' fill-opacity='0.031'/%3E%3Crect x='1' y='0' width='1' height='1' fill-opacity='0.531'/%3E%3Crect x='2' y='0' width='1' height='1' fill-opacity='0.156'/%3E%3Crect x='3' y='0' width='1' height='1' fill-opacity='0.656'/%3E%3Crect x='0' y='1' width='1' height='1' fill-opacity='0.781'/%3E%3Crect x='1' y='1' width='1' height='1' fill-opacity='0.281'/%3E%3Crect x='2' y='1' width='1' height='1' fill-opacity='0.906'/%3E%3Crect x='3' y='1' width='1' height='1' fill-opacity='0.406'/%3E%3Crect x='0' y='2' width='1' height='1' fill-opacity='0.219'/%3E%3Crect x='1' y='2' width='1' height='1' fill-opacity='0.719'/%3E%3Crect x='2' y='2' width='1' height='1' fill-opacity='0.094'/%3E%3Crect x='3' y='2' width='1' height='1' fill-opacity='0.594'/%3E%3Crect x='0' y='3' width='1' height='1' fill-opacity='0.969'/%3E%3Crect x='1' y='3' width='1' height='1' fill-opacity='0.469'/%3E%3Crect x='2' y='3' width='1' height='1' fill-opacity='0.844'/%3E%3Crect x='3' y='3' width='1' height='1' fill-opacity='0.344'/%3E%3C/svg%3E")
     --dither-size: 12px
     --dither-strength: 0.5
@@ -92,8 +92,10 @@
     --settle-distance: 40vh
     --settle-ease: cubic-bezier(0.3, 0.5, 0.5, 1)
 
+// Dark: the system's dark mode unless the theme switch (Home.astro) says light, or the switch says dark.
+// The two blocks hold the same tokens; keep them in step.
 @media (prefers-color-scheme: dark)
-    :root
+    :root:not([data-theme="light"])
         --background: #111111
         --surface: #1c1c1c
         --primary: #ececec
@@ -104,3 +106,19 @@
         // Lighten lifts every pixel to at least the tint, so black images stand off the dark background.
         --media-tint: #191919
         --media-tint-blend: lighten
+
+:root[data-theme="dark"]
+    color-scheme: dark
+    --background: #111111
+    --surface: #1c1c1c
+    --primary: #ececec
+    --secondary: #5a5a5a
+    --tertiary: #2e2e2e
+    --accent: #8582ff
+    --overlay: rgb(17 17 17 / 0.96)
+    // Lighten lifts every pixel to at least the tint, so black images stand off the dark background.
+    --media-tint: #191919
+    --media-tint-blend: lighten
+
+:root[data-theme="light"]
+    color-scheme: light
