@@ -1,6 +1,6 @@
 import { isTag, isText, type AnyNode, type Element } from 'domhandler';
 
-// Telegram formatting kept on the site. Everything else is unwrapped to its text.
+// Formatting kept on the site; other tags are unwrapped.
 const keep: Record<string, string> = {
 	b: 'b',
 	strong: 'b',
@@ -29,7 +29,7 @@ export const hashtagOf = (el: Element) =>
 
 const isSafeHref = (href: string) => /^(https?:|mailto:|tg:)/i.test(href);
 
-/** Serialises a node list to the HTML subset, dropping attributes other than `href`. */
+/** Serialises nodes to the HTML subset; only `href` survives as an attribute. */
 export function serialize(nodes: AnyNode[]): string {
 	let out = '';
 	for (const node of nodes) {
@@ -43,12 +43,12 @@ export function serialize(nodes: AnyNode[]): string {
 			out += '<br>';
 			continue;
 		}
-		// Hashtags that are not on the leading line stay as plain text: `?q=` links mean nothing off Telegram.
+		// Hashtags off the leading line become plain text.
 		if (isHashtagLink(el)) {
 			out += escapeText(textOf(el));
 			continue;
 		}
-		// Custom emoji: `<i class="emoji" style="background-image:…"><b>❤</b></i>`.
+		// Custom emoji: `<i class="emoji"><b>❤</b></i>`.
 		if (/\bemoji\b/.test(el.attribs.class ?? '') || el.name === 'tg-emoji') {
 			out += escapeText(textOf(el));
 			continue;
@@ -87,8 +87,8 @@ export interface ParsedText {
 }
 
 /**
- * Splits a `.tgme_widget_message_text` element into hashtags, body HTML and the source link.
- * Hashtags are read from `?q=` links, never from text: `textContent` drops `<br>`, gluing `#ui` to the next word.
+ * Splits a message text element into hashtags, body HTML and source link.
+ * Hashtags come from `?q=` links, not text: `textContent` drops `<br>` and glues `#ui` to the next word.
  */
 export function parseText(root: Element | undefined): ParsedText {
 	if (!root) return { tags: [], html: '' };
@@ -99,10 +99,10 @@ export function parseText(root: Element | undefined): ParsedText {
 		else if (isTag(node)) node.children.forEach(collect);
 	});
 
-	// Leading hashtag line: hashtag links, whitespace and the line breaks after them.
+	// Leading hashtag line.
 	while (nodes.length && (isHashtagLink(nodes[0]) || isBlank(nodes[0]))) nodes.shift();
 
-	// Trailing source URL: a bare link at the very end, written out as its own URL.
+	// Trailing source URL: a bare link whose text is the URL.
 	const trimEnd = () => {
 		while (nodes.length && isBlank(nodes[nodes.length - 1])) nodes.pop();
 	};
@@ -118,7 +118,7 @@ export function parseText(root: Element | undefined): ParsedText {
 		}
 	}
 
-	// No bare URL at the end: fall back to the last external link in the text.
+	// Otherwise the last external link.
 	if (!link) {
 		const hrefs: string[] = [];
 		nodes.forEach(function collect(node: AnyNode) {

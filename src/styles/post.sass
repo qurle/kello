@@ -1,4 +1,4 @@
-// A post: media row, then tags, text and links on the grid.
+// A post: media row, then tags, text and links.
 
 .post + .post
   margin-top: var(--post-gap)
@@ -25,7 +25,7 @@
     padding-inline-start: var(--space-md)
     color: var(--secondary)
 
-  // Telegram follows a quote with a line break of its own; the block already ends the line.
+  // Telegram adds a line break after a quote.
   blockquote + br
     display: none
 
@@ -69,9 +69,7 @@
     grid-column: calc(var(--index-columns) + 1) / -1
 
 
-// Scattered feed on wide screens: src/scripts/scatter.ts places each post and sets data-scatter.
-// Posts are narrow there, so tags run in a row above the text.
-// With JS on, wide screens keep the feed hidden until it's placed, so the column never flashes.
+// Wide screens: feed.js places each post and sets data-scatter. The feed stays hidden until then.
 @media (min-width: 64rem)
   html[data-js] .feed:not([data-scatter])
     visibility: hidden
@@ -95,9 +93,7 @@
   .post__links
     margin-top: var(--space-xs)
 
-// Settle: posts below the fold wait at a slight tilt and straighten when scrolling brings them in
-// (src/scripts/settle.ts sets data-settle and data-settling). Only `rotate`, so it never touches the
-// layout feed.js owns. Without JS nothing tilts.
+// Settle (settle.ts): only `rotate`, so feed.js's layout is untouched.
 .post[data-settle]
   rotate: var(--settle-angle)
 

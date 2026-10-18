@@ -2,11 +2,9 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-// Media paths are relative to `public/<media.dir>` and have no width or extension:
-// `338/1` resolves to `338/1-960.avif`, `338/1-960.webp` and so on. Which widths exist depends on the
-// original size: use `imageSources()` from src/lib/media.ts. Posters follow the same rule (`338/2-poster`).
+// Image and poster paths have no width or extension (`338/1` is `338/1-800.webp` and so on): see `imageSources()`.
 
-/** Telegram message id of the album item, for links like `t.me/<channel>/<messageId>?single`. */
+/** The album item's own Telegram message id. */
 const messageId = z.number().optional();
 
 const image = z.object({
@@ -15,7 +13,7 @@ const image = z.object({
 	file: z.string(),
 	width: z.number(),
 	height: z.number(),
-	/** Telegram's largest copy, fetched through the bot; otherwise the web preview's (800px at most). */
+	/** Telegram's largest copy, fetched through the bot. */
 	full: z.boolean().optional(),
 });
 
@@ -29,7 +27,7 @@ const video = z.object({
 	height: z.number(),
 });
 
-// Too large for the web preview or above `media.maxVideoMB`: shown as a poster linking to Telegram.
+// Not in the preview, or over `media.maxVideoMB`: a poster linking to Telegram.
 const unavailable = z.object({
 	type: z.literal('unavailable'),
 	messageId,
@@ -39,24 +37,24 @@ const unavailable = z.object({
 });
 
 const text = z.object({
-	/** Telegram HTML subset (b, i, u, s, a, code, blockquote, br), hashtags and source link removed. */
+	/** HTML subset without hashtags and source link. */
 	ru: z.string(),
 	en: z.string(),
 });
 
-// Written by `npm run sync`, one file per post: src/data/posts/<telegramId>.json
+// Written by `npm run sync`: src/data/posts/<telegramId>.json
 const posts = defineCollection({
 	loader: glob({ pattern: '**/[^_]*.json', base: './src/data/posts' }),
 	schema: z.object({
 		/** First message id; albums take one id per item. */
 		telegramId: z.number(),
 		date: z.coerce.date(),
-		/** English slugs from kello.config.ts. */
+		/** English slugs. */
 		tags: z.array(z.string()),
 		text: text.optional(),
-		/** Hash of `text.ru` at translation time; a mismatch triggers re-translation. */
+		/** Hash of `text.ru` when translated; a mismatch re-translates. */
 		sourceHash: z.string().optional(),
-		/** Main external link of the post. */
+		/** The post's source link. */
 		link: z.string().url().optional(),
 		media: z.array(z.discriminatedUnion('type', [image, video, unavailable])).default([]),
 	}),

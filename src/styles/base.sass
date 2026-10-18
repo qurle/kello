@@ -1,4 +1,4 @@
-// Reset and element defaults. Every value comes from variables.sass.
+// Reset and element defaults.
 
 *, *::before, *::after
   box-sizing: border-box
@@ -8,7 +8,7 @@ html
   text-size-adjust: 100%
   scrollbar-gutter: stable
 
-  // Lock page scroll behind the media viewer.
+  // No page scroll behind the viewer.
   &:has(dialog[open])
     overflow: hidden
 
@@ -63,7 +63,7 @@ code
   font-family: var(--font-mono)
   font-size: var(--text-code)
 
-// A tag in the filter line or on a post. Text only, the colour carries the state.
+// A tag in the filter line or on a post; colour carries the state.
 .tag
   color: var(--secondary)
   transition: color var(--duration-fast) var(--ease)
@@ -83,4 +83,3 @@ code
   *, *::before, *::after
     animation-duration: 0s !important
     transition-duration: 0s !important
-    scroll-behavior: auto !important

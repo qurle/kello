@@ -1,5 +1,5 @@
 ---
-import type { Post } from '../lib/feed';
+import type { Post } from '../lib/posts';
 import { strings, type Lang } from '../lib/i18n';
 import { imageSet, mediaUrl, telegramUrl } from '../lib/urls';
 import { preview } from '../lib/preview';
@@ -16,14 +16,13 @@ const { media, telegramId, lang, eager = false } = Astro.props;
 const t = strings[lang];
 const single = media.length === 1;
 
-// Tiny previews that image slots show, dithered, until the image arrives.
+// Previews shown dithered until the image arrives.
 const previews = await Promise.all(
 	media.map((item) => (item.type === 'image' ? preview(item.file, item.width) : undefined)),
 );
 const slotStyle = (index: number) => (previews[index] ? `--preview: url(${previews[index]})` : undefined);
 
-// Slot widths: the container is at most 40rem, reached at about 45rem of viewport.
-// One item fills it; with more, each slot takes 80% (--media-lead).
+// The container is at most 40rem; with several items a slot takes 80% (--media-lead).
 const sizes = single ? '(min-width: 45rem) 40rem, 92vw' : '(min-width: 45rem) 32rem, 74vw';
 ---
 

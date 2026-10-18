@@ -1,6 +1,6 @@
 import { spawn, spawnSync } from 'node:child_process';
 
-/** Display size of the first video track, read from its `tkhd` box. Undefined if the file isn't a readable MP4. */
+/** Display size from the first track's `tkhd` box. */
 export function mp4Size(buf: Buffer): { width: number; height: number } | undefined {
 	const walk = (start: number, end: number): { width: number; height: number } | undefined => {
 		let pos = start;
@@ -21,13 +21,13 @@ export function mp4Size(buf: Buffer): { width: number; height: number } | undefi
 			} else if (type === 'tkhd') {
 				const body = pos + header;
 				const version = buf.readUInt8(body);
-				// version 1 has 64-bit times: matrix starts at 52, size at 88; version 0: 40 and 76.
+				// Version 1 has 64-bit times: matrix at 52, size at 88; version 0: 40 and 76.
 				const matrix = body + (version === 1 ? 52 : 40);
 				const dims = body + (version === 1 ? 88 : 76);
 				const width = Math.round(buf.readUInt32BE(dims) / 65536);
 				const height = Math.round(buf.readUInt32BE(dims + 4) / 65536);
 				if (width && height) {
-					// A 90° rotation matrix has a = 0; the picture is shown with sides swapped.
+					// A 90° rotation matrix has a = 0: sides swapped.
 					const rotated = buf.readInt32BE(matrix) === 0;
 					return rotated ? { width: height, height: width } : { width, height };
 				}

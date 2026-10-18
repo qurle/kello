@@ -14,7 +14,7 @@ export interface MediaOptions {
 	/** WebP quality, 1–100. */
 	quality: number;
 	maxVideoMB: number;
-	/** Fetches full-size photos and preview-less videos when the bot is set up; see bot.ts. */
+	/** Full-size photos and videos the preview lacks, see bot.ts. */
 	bot?: TelegramBot;
 }
 
@@ -31,7 +31,7 @@ const exists = (file: string) =>
 		() => false,
 	);
 
-/** Writes through a temp file so an interrupted sync never leaves a half-written file that looks done. */
+/** Writes through a temp file so an interrupted sync leaves no half-written file. */
 async function writeAtomic(file: string, data: Buffer) {
 	await fs.mkdir(path.dirname(file), { recursive: true });
 	const tmp = `${file}.tmp`;
@@ -71,10 +71,7 @@ async function sizeOf(source: Buffer) {
 	return { width: (rotated ? meta.height : meta.width)!, height: (rotated ? meta.width : meta.height)! };
 }
 
-/**
- * Writes `<base>-<w>.<format>` for the widths `storedWidths(namedWidth)` picks, each resized to at most
- * the source width. `namedWidth` is the image's own width, or the video's for a poster.
- */
+/** Writes `<base>-<w>.<format>` for each width `storedWidths(namedWidth)` picks; a poster is named by its video's width. */
 async function writeImage(source: Buffer, base: string, namedWidth: number, opts: MediaOptions) {
 	const { width } = await sizeOf(source);
 	for (const w of storedWidths(namedWidth, opts.widths)) {
@@ -85,7 +82,7 @@ async function writeImage(source: Buffer, base: string, namedWidth: number, opts
 	}
 }
 
-/** Files under `public/<media.dir>` that an entry needs. */
+/** Files an entry needs, relative to the media root. */
 export function filesOf(entry: MediaEntry, opts: MediaOptions): string[] {
 	const images = (base: string, width: number) => imageSources(base, width, opts).map((s) => s.file);
 	if (entry.type === 'image') return images(entry.file, entry.width);
@@ -102,14 +99,6 @@ const sameItem = (prev: MediaEntry | undefined, item: ScrapedMedia) =>
 	prev?.messageId === item.messageId &&
 	(item.type === 'image' ? prev.type === 'image' : prev.type === 'video' || prev.type === 'unavailable');
 
-/** A poster made from Telegram's small thumbnail before ffmpeg was around: worth redoing from the video. */
-async function hasThumbPoster(entry: MediaEntry & { type: 'video' }, opts: MediaOptions) {
-	if (!entry.poster || !hasFfmpeg()) return false;
-	const first = imageSources(entry.poster, entry.width, opts)[0];
-	const { width = 0 } = await sharp(path.join(opts.root, first.file)).metadata();
-	return width < first.width * 0.9;
-}
-
 async function syncVideo(post: ScrapedPost, item: ScrapedMedia & { type: 'video' }, n: number, opts: MediaOptions, warn: Warn): Promise<MediaEntry> {
 	const base = `${post.telegramId}/${n}`;
 	const thumb = item.poster ? await download(item.poster).catch(() => undefined) : undefined;
@@ -124,7 +113,7 @@ async function syncVideo(post: ScrapedPost, item: ScrapedMedia & { type: 'video'
 			return undefined;
 		});
 	} else if (opts.bot) {
-		// The preview has no file for this video; the bot can fetch it if it's small enough.
+		// No file in the preview: the bot may fetch it.
 		video = await opts.bot.video(item.messageId, maxBytes);
 	}
 
@@ -153,16 +142,9 @@ async function syncItem(
 	opts: MediaOptions,
 	warn: Warn,
 ): Promise<MediaEntry> {
-	// Files already on disk for the same album item: nothing to download.
 	if (prev && sameItem(prev, item) && (await allExist(filesOf(prev, opts), opts))) {
-		if (prev.type === 'video' && (await hasThumbPoster(prev, opts))) {
-			const frame = await firstFrame(path.join(opts.root, prev.file));
-			await writeImage(frame, `${post.telegramId}/${n}-poster`, prev.width, opts);
-			return { ...prev, poster: `${post.telegramId}/${n}-poster` };
-		}
 		if (prev.type === 'image') return upgradeImage(prev, opts);
-		// An unavailable video is tried again when its source has appeared or now fits under the
-		// limit, or through the bot when it's set up.
+		// An unavailable video is retried once its source appears or fits under the limit, or via the bot.
 		if (!(prev.type === 'unavailable' && item.type === 'video')) return prev;
 		if (item.url) {
 			const length = await fetch(item.url, { method: 'HEAD' })
@@ -181,19 +163,19 @@ async function syncItem(
 	return { type: 'image', messageId: item.messageId, file: base, ...size, ...(full && { full: true }) };
 }
 
-/** Replaces a web-preview photo with Telegram's largest copy, once, when the bot is set up. */
+/** Replaces a preview photo with Telegram's largest copy, once. */
 async function upgradeImage(prev: MediaEntry & { type: 'image' }, opts: MediaOptions): Promise<MediaEntry> {
 	if (prev.full || !opts.bot || !prev.messageId) return prev;
 	const source = await opts.bot.photo(prev.messageId);
 	if (!source) return prev;
 	const size = await sizeOf(source);
-	// Rarely the preview already had the largest copy; marking it full still saves the next sync a forward.
+	// The preview already had the largest copy; marking it full saves a forward next time.
 	if (size.width <= prev.width) return { ...prev, full: true };
 	await writeImage(source, prev.file, size.width, opts);
 	return { ...prev, ...size, full: true };
 }
 
-/** Downloads a post's media in album order, reusing files from the previous sync, and removes stale files. */
+/** Syncs a post's media in album order, reusing files from before and removing stale ones. */
 export async function syncMedia(post: ScrapedPost, previous: MediaEntry[] | undefined, opts: MediaOptions, warn: Warn): Promise<MediaEntry[]> {
 	const entries: MediaEntry[] = [];
 	for (const [i, item] of post.media.entries()) {

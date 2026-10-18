@@ -4,8 +4,7 @@ import type { Translator } from './translate';
 
 type Tag = KelloConfig['tags'][number];
 
-// Slugs the translator suggested for hashtags missing from kello.config.ts, so a tag keeps the same slug between syncs.
-// Generated; once a tag is added to the config, its line here is ignored and dropped on the next sync.
+// Slugs suggested for hashtags missing from the config, kept so they stay stable. Dropped once the config has the tag.
 export const suggestionsFile = 'src/data/tag-suggestions.json';
 
 const translit: Record<string, string> = {
@@ -24,9 +23,9 @@ export const slugify = (s: string) =>
 export class TagMapper {
 	private known = new Map<string, string>();
 	private suggestions: Record<string, string> = {};
-	/** Unknown hashtags met in this run, RU → EN slug. */
+	/** Hashtags missing from the config met in this run, RU → EN slug. */
 	readonly unknown = new Map<string, string>();
-	/** Slugs that came from the model; only these are saved, so a `--no-translate` run doesn't pin a transliteration. */
+	/** Slugs from the translator; only these are saved, so `--no-translate` doesn't pin a transliteration. */
 	private suggested = new Map<string, string>();
 
 	constructor(
@@ -47,7 +46,7 @@ export class TagMapper {
 		}
 	}
 
-	/** Maps RU hashtags to EN slugs, keeping order and dropping duplicates. */
+	/** Maps RU hashtags to EN slugs in order, without duplicates. */
 	async map(raw: string[]): Promise<string[]> {
 		const out: string[] = [];
 		for (const ru of raw) {
@@ -72,17 +71,16 @@ export class TagMapper {
 		return en;
 	}
 
-	/** Keeps suggestions for tags still missing from the config; returns true if the file changed. */
-	async save(): Promise<boolean> {
+	/** Saves suggestions for tags still missing from the config. */
+	async save() {
 		const next = Object.fromEntries(
 			Object.entries({ ...this.suggestions, ...Object.fromEntries(this.suggested) })
 				.filter(([ru]) => !this.known.has(ru))
 				.sort(([a], [b]) => a.localeCompare(b)),
 		);
 		const before = JSON.stringify(this.suggestions);
-		if (JSON.stringify(next) === before) return false;
+		if (JSON.stringify(next) === before) return;
 		if (Object.keys(next).length) await fs.writeFile(suggestionsFile, JSON.stringify(next, null, '\t') + '\n');
 		else await fs.rm(suggestionsFile, { force: true });
-		return true;
 	}
 }

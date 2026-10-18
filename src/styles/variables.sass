@@ -1,5 +1,4 @@
-// Design tokens. Plain CSS custom properties written in indented syntax:
-// no Sass variables, mixins or functions, so every value can change at runtime.
+// Design tokens: plain CSS custom properties.
 
 :root
   color-scheme: light dark
@@ -17,22 +16,20 @@
   --font-sans: "Inter Variable", "Inter", system-ui, sans-serif
   --font-feature: "cv11", "ss03"
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace
-  // One text size for everything but the heading.
+  // The one text size besides the heading.
   --text-base: 1.0625rem
   --text-display: clamp(3.5rem, 11vw, 9rem)
   --leading-tight: 1
   --leading-base: 1.45
   --tracking-display: -0.045em
   --tracking-base: -0.011em
-  // Optical correction so the display heading lines up with the text edge.
+  // Aligns the heading with the text edge.
   --display-indent: -0.06em
   --text-code: 0.88em
   --underline-width: 1px
   --underline-offset: 0.18em
-  --weight-regular: 400
-  --weight-medium: 500
   --weight-display: 600
-  // Inter's optical size for the heading: 32 is the Display cut.
+  // 32 is Inter's Display cut.
   --opsz-display: 32
 
   // Space
@@ -47,10 +44,9 @@
   // Layout
   --container-width: 40rem
   --page-padding-top: 12rem
-  // Side padding of the full-width page on wide screens, where the feed scatters.
+  // Side padding on wide screens, where the feed scatters.
   --page-padding-wide: 4rem
-  // Scattered feed from 64rem (src/scripts/scatter.ts): a post spans --scatter-span of
-  // --scatter-columns, and drops by up to --scatter-jitter below where it would fit.
+  // Scattered feed from 64rem (inline/feed.js): a post spans --scatter-span of --scatter-columns, and may drop by --scatter-jitter.
   --scatter-columns: 12
   --scatter-span: 4
   --scatter-gap: var(--space-lg)
@@ -60,7 +56,7 @@
   --gutter: clamp(1rem, 4vw, 2.5rem)
   --grid-columns: 12
   --post-gap: clamp(4rem, 10vw, 8rem)
-  // Columns the post tags take before the text column, from 48rem up.
+  // Columns the post tags take, from 48rem up.
   --index-columns: 3
 
   // Media row
@@ -69,14 +65,12 @@
   --media-gap: 0.5rem
   --radius: 0
   --media-nav-size: 2.75rem
-  // Loading state of an image slot: the image's tiny preview, ordered-dithered into dots
-  // (media.sass). --dither is a 4×4 Bayer threshold map; one cell is --dither-size / 4.
+  // Image loading state (media.sass): --dither is a 4×4 Bayer threshold map, one cell is --dither-size / 4.
   --dither: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' fill='white' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1' fill-opacity='0.031'/%3E%3Crect x='1' y='0' width='1' height='1' fill-opacity='0.531'/%3E%3Crect x='2' y='0' width='1' height='1' fill-opacity='0.156'/%3E%3Crect x='3' y='0' width='1' height='1' fill-opacity='0.656'/%3E%3Crect x='0' y='1' width='1' height='1' fill-opacity='0.781'/%3E%3Crect x='1' y='1' width='1' height='1' fill-opacity='0.281'/%3E%3Crect x='2' y='1' width='1' height='1' fill-opacity='0.906'/%3E%3Crect x='3' y='1' width='1' height='1' fill-opacity='0.406'/%3E%3Crect x='0' y='2' width='1' height='1' fill-opacity='0.219'/%3E%3Crect x='1' y='2' width='1' height='1' fill-opacity='0.719'/%3E%3Crect x='2' y='2' width='1' height='1' fill-opacity='0.094'/%3E%3Crect x='3' y='2' width='1' height='1' fill-opacity='0.594'/%3E%3Crect x='0' y='3' width='1' height='1' fill-opacity='0.969'/%3E%3Crect x='1' y='3' width='1' height='1' fill-opacity='0.469'/%3E%3Crect x='2' y='3' width='1' height='1' fill-opacity='0.844'/%3E%3Crect x='3' y='3' width='1' height='1' fill-opacity='0.344'/%3E%3C/svg%3E")
   --dither-size: 12px
   --dither-strength: 0.5
   --dither-duration: 640ms
   --viewer-media-height: 76dvh
-  // Widest a single item gets in the viewer.
   --viewer-media-max: 64rem
 
   // Focus
@@ -88,14 +82,10 @@
   --duration-fast: 120ms
   --duration-base: 220ms
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1)
-  // A post that scrolling brings in from below settles from this tilt to straight (src/scripts/settle.ts).
+  // Post settle on scroll (settle.ts).
   --settle-angle: 1.5deg
   --settle-duration: 360ms
   --settle-ease: var(--ease-out)
-
-  // Layers
-  --z-sticky: 10
-  --z-dialog: 100
 
 @media (prefers-color-scheme: dark)
   :root

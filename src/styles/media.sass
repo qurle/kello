@@ -1,4 +1,4 @@
-// The media row: one item spans the container, more scroll sideways at --media-lead each.
+// The media row.
 
 .media
   position: relative
@@ -27,12 +27,9 @@
   .media[data-single] &
     flex-basis: 100%
 
-// Loading state, only with JS, which clears data-loading when the image arrives
-// (src/scripts/inline/feed.js). The dots crawl on their own loop; the image never waits for it.
-//
-// An ordered dither in CSS: the preview, smoothly scaled and greyed, at half brightness (L / 2), plus
-// the Bayer threshold map at half strength (T / 2), added with plus-lighter. A huge contrast() around
-// 0.5 then turns each point white where L + T > 1, black elsewhere: the image as dots.
+// Loading state, with JS only: feed.js clears data-loading when the image arrives.
+// Ordered dither: the greyed preview at half brightness (L / 2) plus the Bayer map at half strength
+// (T / 2), added with plus-lighter; a huge contrast() then makes each point white where L + T > 1.
 .media__dither
   display: none
 
@@ -56,7 +53,7 @@ html[data-js] .media__slot[data-loading]
       inset: 0
 
     &::before
-      // A little past the edges, so the blur doesn't fade them to black.
+      // Past the edges, so the blur doesn't darken them.
       inset: -8px
       background: var(--preview, none) center / cover no-repeat
       filter: grayscale(1) blur(4px) brightness(0.5)
@@ -128,7 +125,7 @@ html[data-js] .media__slot[data-loading]
 .media__nav--next
   inset-inline-end: var(--space-xs)
 
-// Chevrons only for a mouse; touch swipes.
+// Chevrons for a mouse only.
 @media (hover: hover) and (pointer: fine)
   .media:hover .media__nav:not([data-off])
     opacity: 1

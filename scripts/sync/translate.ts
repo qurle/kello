@@ -4,9 +4,9 @@ export interface TranslationItem {
 	html: string;
 }
 
-/** Anything that can turn Russian post HTML into English. Today that's Google Translate (google.ts). */
+/** Turns Russian post HTML into English. */
 export interface Translator {
-	/** Returns English HTML by id. Items that fail are left out of the result. */
+	/** English HTML by id; failed items are left out. */
 	translate(items: TranslationItem[]): Promise<Map<number, string>>;
 	/** Suggests a short English slug for a Russian hashtag. */
 	tagSlug(ru: string): Promise<string>;
@@ -15,6 +15,6 @@ export interface Translator {
 const hrefs = (html: string) => [...html.matchAll(/href="([^"]*)"/g)].map((m) => m[1]).sort();
 const tagSeq = (html: string) => [...html.matchAll(/<\/?([a-z]+)/g)].map((m) => m[1]).join(',');
 
-/** True when the translation kept the markup: same links, same tags in the same order. */
+/** The translation kept the links and the tag sequence. */
 export const sameMarkup = (ru: string, en: string) =>
 	hrefs(ru).join('\n') === hrefs(en).join('\n') && tagSeq(ru) === tagSeq(en);

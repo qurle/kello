@@ -4,13 +4,10 @@ import { imageSources } from './media';
 const base = `/${config.media.dir}/`;
 const fallbackFormat = config.media.formats.at(-1)!;
 
-/** URL of a file under `public/<media.dir>`, such as a video. */
+/** URL of a file under the media folder. */
 export const mediaUrl = (file: string) => base + file;
 
-/**
- * `srcset` per format for a synced image or poster, from the files that exist for its original width.
- * The fallback `src` is the smallest file in the last configured format.
- */
+/** `srcset` per format from the files that exist; `src` is the smallest file in the last format. */
 export function imageSet(file: string, width = config.media.widths[0]) {
 	const sources = imageSources(file, width, config.media);
 	const srcset = (format: string) =>
@@ -23,7 +20,7 @@ export function imageSet(file: string, width = config.media.widths[0]) {
 	return { formats, fallbackFormat, src };
 }
 
-/** Telegram link to a post, or to one album item with `?single`. */
+/** Link to a post, or with `single` to one album item. */
 export const telegramUrl = (id: number, single = false) =>
 	`https://t.me/${config.channel.username}/${id}${single ? '?single' : ''}`;
 

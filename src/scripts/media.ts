@@ -1,4 +1,4 @@
-// Media rows: chevrons for a mouse, and videos that play only while in view.
+// Media rows: chevrons, and videos that play only while in view.
 
 export {};
 
