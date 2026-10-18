@@ -55,14 +55,12 @@ button
     text-align: inherit
     cursor: pointer
 
-// Focus rings for keyboard navigation only. Browsers still show :focus-visible after some presses
-// (a tag button on touch, focus coming back from the viewer), so with JS the ring also needs the last
-// input to have been a key (data-keyboard, set in Home.astro's head). Without JS, :focus-visible decides.
-:focus-visible
+// Focus rings for keyboard navigation only: no outline on plain focus, which some browsers draw on a
+// press, and the ring on :focus-visible.
+:focus
     outline: none
 
-html:not([data-js]) :focus-visible,
-html[data-keyboard] :focus-visible
+:focus-visible
     outline: var(--focus-width) solid var(--accent)
     outline-offset: var(--focus-offset)
 

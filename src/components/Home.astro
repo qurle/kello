@@ -42,15 +42,12 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 	<head>
 		<meta charset="utf-8" />
 		<!-- Lets CSS hold the wide feed back until feed.js has placed it, and a shared ?tags= link
-		     hold it until filter.ts has loaded every page and filtered. Tracks keyboard use for focus
-		     rings, and applies a stored theme before the first paint (theme.ts). -->
+		     hold it until filter.ts has loaded every page and filtered. Applies a stored theme before
+		     the first paint (theme.ts). -->
 		<script is:inline>
 			document.documentElement.dataset.js = ''
 			if (/[?&]tags=/.test(location.search))
 				document.documentElement.dataset.filtering = ''
-			// Focus rings follow the keyboard: a key turns them on, a press turns them off (base.sass).
-			addEventListener('keydown', () => (document.documentElement.dataset.keyboard = ''), true)
-			addEventListener('pointerdown', () => delete document.documentElement.dataset.keyboard, true)
 			try {
 				const theme = localStorage.getItem('theme')
 				if (theme === 'light' || theme === 'dark')
