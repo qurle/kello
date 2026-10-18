@@ -86,11 +86,15 @@ The page has three parts: the heading "Kello", a line of tag filters, then posts
 - Tags and their labels are lowercase; the config schema rejects uppercase labels.
 - Secondary and tertiary greys are deliberately faint (`#b8b8b8` and `#e2e2e2` on light). That's below WCAG text contrast, which is accepted for the quiet parts: unselected tags, the Telegram link and the language link.
 - Colour scheme follows `prefers-color-scheme`. Every colour comes from a token, so dark mode only redefines the tokens.
-- From 64rem up, the page spans the window with at least 4rem (`--page-padding-wide`) of padding on each side, and the feed scatters (`src/scripts/scatter.ts`).
+- From 64rem up, the page spans the window with at least 4rem (`--page-padding-wide`) of padding on each side, and the feed scatters (`src/scripts/inline/feed.js`). That script is plain JS inlined right after the feed, so it runs while the page parses. A `data-js` flag set in `<head>` keeps the wide feed hidden until the script has placed it, so the single column never flashes. If the script throws, it drops the flag and the column shows.
   - Posts become narrow columns, `--scatter-span` of `--scatter-columns` grid columns wide, with tags in a row and body-size text.
   - Each post goes in a start column picked by a hash of its id, from the columns that let it sit within `--scatter-jitter` of the highest free spot. It then drops by a further hashed amount up to `--scatter-jitter`. So posts share vertical space without touching, and positions stay stable between visits.
   - No post sits above the one before it, so the feed still reads newest first, top to bottom.
-  - The layout re-runs on filter, resize and font load. Without JS, and below 64rem, the feed is a single centred column.
+  - The layout re-runs on filter, resize and font load. The Inter file for the page's language is preloaded, so the first layout usually has the right metrics. Without JS, and below 64rem, the feed is a single centred column.
+- Media loading state: each slot shows its image as a 10px-wide mosaic, made at build time (`src/lib/preview.ts`, about 70 bytes of inline WebP) and scaled up with `image-rendering: pixelated`. Image slots also get a 50% Bayer dither in the background colour that crawls in a loop (`--dither-*` tokens).
+  - The loop is ambient and never delays the image: the image's `load` event clears `data-loading`, and the image steps in over `--duration-base`.
+  - Images already in the cache are cleared before the first paint, so they never show the effect.
+  - Without JS there's no dither and images show as they load. Videos get the mosaic behind their poster but no dither.
 - Selected tags combine with AND. Once a tag is selected, any tag that would leave zero posts is dimmed and can't be clicked. The selection is stored in the URL as `?tags=ui,code`.
 - The media row: a single item spans the full container width. With more than one, the first item takes 80% of the width, followed by a 0.5rem gap and the rest, all in one horizontally scrolling row at a fixed ratio with `object-fit: cover`. On hover, previous and next chevrons appear; on touch screens the row swipes with scroll snapping.
 - Clicking an item opens a `<dialog>`. It shows the post's whole row as a carousel the full width of the dialog, with the clicked item centred and the others at `--viewer-dim` opacity, and the post's text, tags and links below.

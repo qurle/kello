@@ -11,6 +11,9 @@ import { getFeed } from '../lib/feed';
 import { strings, type Lang } from '../lib/i18n';
 import { filterTags, tagLabel } from '../lib/tags';
 import Post from './Post.astro';
+import feedScript from '../scripts/inline/feed.js?raw';
+import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import interCyrillic from '@fontsource-variable/inter/files/inter-cyrillic-wght-normal.woff2?url';
 
 interface Props {
 	lang: Lang;
@@ -28,6 +31,9 @@ const url = (path: string) => new URL(path, config.site.url).href;
 <html lang={lang}>
 	<head>
 		<meta charset="utf-8" />
+		<!-- Lets CSS hold the wide feed back until the inline script below the feed has placed it. -->
+		<script is:inline>document.documentElement.dataset.js = '';</script>
+		<link rel="preload" href={lang === 'ru' ? interCyrillic : interLatin} as="font" type="font/woff2" crossorigin />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{config.site.title}</title>
 		<meta name="description" content={t.description} />
@@ -54,6 +60,7 @@ const url = (path: string) => new URL(path, config.site.url).href;
 			<main class="feed" data-feed>
 				{posts.map((post, index) => <Post post={post} lang={lang} eager={index === 0} />)}
 			</main>
+			<script is:inline set:html={feedScript} />
 		</div>
 		<dialog class="viewer" aria-label={t.viewer} aria-keyshortcuts="ArrowLeft ArrowRight Escape" data-viewer>
 			<div class="viewer__bar">
@@ -66,7 +73,6 @@ const url = (path: string) => new URL(path, config.site.url).href;
 			import '../scripts/filter';
 			import '../scripts/media';
 			import '../scripts/viewer';
-			import '../scripts/scatter';
 		</script>
 	</body>
 </html>

@@ -15,13 +15,47 @@
     display: none
 
 .media__slot
+  position: relative
   flex: 0 0 var(--media-lead)
   aspect-ratio: var(--media-ratio)
   scroll-snap-align: start
   background: var(--surface)
 
+  // The image's own colours as a pixel mosaic, on its own layer: image-rendering is inherited and
+  // would pixelate the real image too.
+  &::before
+    content: ""
+    position: absolute
+    inset: 0
+    background: var(--preview, none) center / cover no-repeat
+    image-rendering: pixelated
+
+  img
+    transition: opacity var(--duration-base) steps(4, end)
+
   .media[data-single] &
     flex-basis: 100%
+
+// Only with JS, which clears data-loading when the image arrives (src/scripts/inline/feed.js).
+// The dither loops on its own; the image never waits for it.
+html[data-js] .media__slot[data-loading]
+  img
+    opacity: 0
+
+  &::after
+    content: ""
+    position: absolute
+    inset: 0
+    z-index: 1
+    background: var(--background)
+    opacity: var(--dither-strength)
+    mask: var(--dither) 0 0 / var(--dither-size) repeat
+    pointer-events: none
+    animation: dither var(--dither-duration) steps(4) infinite
+
+@keyframes dither
+  to
+    mask-position: var(--dither-size) var(--dither-size)
 
 .media__item
   position: relative

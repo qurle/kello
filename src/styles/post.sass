@@ -73,6 +73,11 @@
 
 // Scattered feed on wide screens: src/scripts/scatter.ts places each post and sets data-scatter.
 // Posts are narrow there, so tags run in a row above the text and the text drops to body size.
+// With JS on, wide screens keep the feed hidden until it's placed, so the column never flashes.
+@media (min-width: 64rem)
+  html[data-js] .feed:not([data-scatter])
+    visibility: hidden
+
 .feed[data-scatter]
   position: relative
 
