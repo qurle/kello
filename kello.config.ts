@@ -31,7 +31,7 @@ export default defineConfig({
 	tags: [
 		{ ru: 'ui', en: 'ui' }, // 103
 		{ ru: 'вдохновение', en: 'inspiration', aliases: ['вдохнование'] }, // 89
-		{ ru: 'знания', en: 'learning' }, // 62
+		{ ru: 'знания', en: 'knowledge' }, // 62
 		{ ru: 'портфолио', en: 'portfolio' }, // 25
 		{ ru: 'инструменты', en: 'tools', aliases: ['инструементы'] }, // 23
 		{ ru: 'ресурсы', en: 'resources' }, // 22
