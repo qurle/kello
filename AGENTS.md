@@ -145,7 +145,7 @@ The page has three parts: the heading "kello" with its subtitle (`site.subtitle`
   - While it's open, the URL carries `?post=<id>` and, from the second item on, `&media=<n>`. Loading such a link opens the viewer there. `src/scripts/url.ts` owns the query string for both the filter and the viewer.
 - Videos play muted and looped while they are in view and pause when they leave it. With `prefers-reduced-motion`, they show the poster instead. In the feed the poster is a lazy `<picture>` under the video, not its `poster` attribute, which would load every poster at once and at one size; the viewer copies it into `poster`.
 - Image `sizes` follow the layout: a third of the window less the page padding from 64rem, 40rem in the single column.
-- Posts settle as they come in (`Post.astro`): a post enters at the bottom of the window rolled back by `--settle-angle` (15deg) around its bottom edge, seen through `--settle-perspective` (60rem), and stands up over the first `--settle-distance` (40vh) of scrolling with `--settle-ease`.
+- Posts settle as they come in (`Post.astro`): a post enters at the bottom of the window rolled back by `--settle-angle` (30deg) around its bottom edge, seen through `--settle-perspective` (60rem), and stands up over the first `--settle-distance` (40vh) of scrolling with `--settle-ease`.
   - It is a scroll-driven animation (`animation-timeline: view()`), so the angle follows the scroll position, both ways, with no script. Browsers without scroll-driven animations (Firefox for now) show posts straight.
   - Only `transform` changes, so it composites and never touches the `inset` and `width` that `feed.js` sets. It works the same in the scattered feed and the single column.
   - With `prefers-reduced-motion`, nothing tilts.
