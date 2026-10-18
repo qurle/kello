@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Про схемы выбора нужных компонентов. Баннер, тост или алерт? Такие схемы помогут выбрать наверняка.",
-		"en": "Про схемы выбора нужных компонентов. Баннер, тост или алерт? Такие схемы помогут выбрать наверняка."
+		"en": "About the schemes for selecting the necessary components. Banner, toast or alert? Such schemes will help you choose for sure."
 	},
+	"sourceHash": "df8092398aa37e426a11f3ab6a0a90247d1a67c351b0fc629603d4bbb5e6c603",
 	"link": "https://www.smashingmagazine.com/2024/05/decision-trees-ui-components/",
 	"media": [
 		{

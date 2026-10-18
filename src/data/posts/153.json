@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Новая компания void(0) от автора фреймоворка Vue встречает нас красивым техничными сайтом с шурешками. Сайт интересен не только на вид — опенсорсный проект хочет менять Javascript-проекты своим быстрым и масштабируемыем пайплайном.",
-		"en": "Новая компания void(0) от автора фреймоворка Vue встречает нас красивым техничными сайтом с шурешками. Сайт интересен не только на вид — опенсорсный проект хочет менять Javascript-проекты своим быстрым и масштабируемыем пайплайном."
+		"en": "The new company void(0) from the author of the Vue framework welcomes us with a beautiful, technical website with rustles. The site is interesting not only in appearance - the open source project wants to change Javascript projects with its fast and scalable pipeline."
 	},
+	"sourceHash": "99cdaa491e246a158eb22576234e6acf4f2176f48c120bfcbc0eebd71590cf8a",
 	"link": "https://voidzero.dev/",
 	"media": [
 		{

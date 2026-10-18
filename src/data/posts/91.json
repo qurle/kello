@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Униширинные шрифты. Ширина символов разная но она остаётся единой в разных начертаниях.",
-		"en": "Униширинные шрифты. Ширина символов разная но она остаётся единой в разных начертаниях."
+		"en": "Uniwidth fonts. The width of the characters is different, but it remains the same in different styles."
 	},
+	"sourceHash": "a26f8d68ab198ad439b39ff31685c6ac474ddfad3473fd0e4206259039ed2b03",
 	"link": "https://uxdesign.cc/uniwidth-typefaces-for-interface-design-b6e8078dc0f7",
 	"media": [
 		{

@@ -10,8 +10,9 @@
 	],
 	"text": {
 		"ru": "Очень крутые заметки про дизайн и про код.<br>Важные, но иногда неочевидные темы в красивой интерактивной обёртке.",
-		"en": "Очень крутые заметки про дизайн и про код.<br>Важные, но иногда неочевидные темы в красивой интерактивной обёртке."
+		"en": "Very cool notes about design and code.<br>Important, but sometimes unobvious topics in a beautiful interactive package."
 	},
+	"sourceHash": "9cd997a4988f53a2ab286a0ffe8436239dbe535cce6a9153cfb09fd80e531950",
 	"link": "https://garden.bradwoods.io/",
 	"media": [
 		{

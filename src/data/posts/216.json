@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Его кейс про <a href=\"https://vercel.com/\">Vercel</a> хотелось бы вынести отдельно. <br><br>Во-первых, это очень качественное и ёмкое описание, которое покрывает и дизайн-систему, и процессы, и айдентику и спецпроекты. <br><br>Во-вторых, там много ссылок на классных чуваков из этой сильной команды. Как дизайнеров, так и разработчиков.<br><br>В-третьих, это просто аккуратный и эффективный дизайн, поданый напрямую без спецэффектов.",
-		"en": "Его кейс про <a href=\"https://vercel.com/\">Vercel</a> хотелось бы вынести отдельно. <br><br>Во-первых, это очень качественное и ёмкое описание, которое покрывает и дизайн-систему, и процессы, и айдентику и спецпроекты. <br><br>Во-вторых, там много ссылок на классных чуваков из этой сильной команды. Как дизайнеров, так и разработчиков.<br><br>В-третьих, это просто аккуратный и эффективный дизайн, поданый напрямую без спецэффектов."
+		"en": "I would like to present his case about <a href=\"https://vercel.com/\">Vercel</a> separately.<br><br>Firstly, this is a very high-quality and succinct description that covers the design system, processes, identity and special projects.<br><br>Secondly, there are a lot of references to the cool dudes from this strong team. Both designers and developers.<br><br>Third, it is simply a neat and efficient design, delivered directly without special effects."
 	},
+	"sourceHash": "51947d555993ce372eaba1087ec6dd0da43cf22b5a52b7bb2c8f5c4b2468d4b4",
 	"link": "https://glenn.me/vercel",
 	"media": [
 		{

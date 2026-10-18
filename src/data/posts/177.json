@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Снижение фрустрации у пользователей из Антарктиды. Большая статья про работу сайтов и приложений в условиях медленного интернета. Это ещё долго будет актуально для поездов, кораблей, космических аппаратов, бедных стран, путешественников и скорой помощи в деревне.",
-		"en": "Снижение фрустрации у пользователей из Антарктиды. Большая статья про работу сайтов и приложений в условиях медленного интернета. Это ещё долго будет актуально для поездов, кораблей, космических аппаратов, бедных стран, путешественников и скорой помощи в деревне."
+		"en": "Reduced frustration among users from Antarctica. A large article about the operation of sites and applications under slow Internet conditions. This will be relevant for a long time to come for trains, ships, spacecraft, poor countries, travelers and ambulances in the countryside."
 	},
+	"sourceHash": "efb520a375d6fce52d9719eb10e617acaf6f3c54e83e129233e89039f1689545",
 	"link": "https://brr.fyi/posts/engineering-for-slow-internet",
 	"media": [
 		{

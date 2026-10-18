@@ -9,8 +9,9 @@
 	],
 	"text": {
 		"ru": "Автор Making Software пишет про интересные штуки на стыке дизайна и инженерии. Он рассказывает, как работает размытие по гауссу и режимы наложения; что за код написан в SVG, и чем хороши компоненты из Framer.",
-		"en": "Автор Making Software пишет про интересные штуки на стыке дизайна и инженерии. Он рассказывает, как работает размытие по гауссу и режимы наложения; что за код написан в SVG, и чем хороши компоненты из Framer."
+		"en": "The author of Making Software writes about interesting things at the intersection of design and engineering. He explains how Gaussian blur and blending modes work; what kind of code is written in SVG, and what are the benefits of Framer components."
 	},
+	"sourceHash": "1050e521b66f8a572046022097656dabd2d68901f31fbcf0b7c6adb2411bb720",
 	"link": "https://typefully.com/DanHollick",
 	"media": [
 		{

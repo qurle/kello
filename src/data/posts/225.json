@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Playground — сборник контента от коммьюнити Nothing (виджеты, пресеты для камеры, эквалайзеры). <br><br>Внутри есть вайбокодерский сервис для создания своих виджетов.",
-		"en": "Playground — сборник контента от коммьюнити Nothing (виджеты, пресеты для камеры, эквалайзеры). <br><br>Внутри есть вайбокодерский сервис для создания своих виджетов."
+		"en": "Playground is a collection of content from the Nothing community (widgets, camera presets, equalizers).<br><br>Inside there is a vibecoder service for creating your own widgets."
 	},
+	"sourceHash": "5794bf65ae27abe33195b2a9a5c9b44399017fa77b5f7149546507f398fb5d63",
 	"link": "https://playground.nothing.tech/",
 	"media": [
 		{

@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Визуализатор JSON (YAML, CSV) в виде вложенной схемы. Спасает когда структура данных просто ломает мозг.",
-		"en": "Визуализатор JSON (YAML, CSV) в виде вложенной схемы. Спасает когда структура данных просто ломает мозг."
+		"en": "JSON (YAML, CSV) visualizer as a nested diagram. It saves you when the data structure just breaks your brain."
 	},
+	"sourceHash": "47a7b6623b22a519dedf2e7a6f6d209efc5440c88fdc1b9649a7d54cabab1a2b",
 	"link": "https://jsoncrack.com/editor",
 	"media": [
 		{

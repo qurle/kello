@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Микроприложение для записи своих мыслей от <a href=\"https://rauno.me/\">Рауно</a> (да, я его фанат). Простое, красивое, микровзамодействующее.",
-		"en": "Микроприложение для записи своих мыслей от <a href=\"https://rauno.me/\">Рауно</a> (да, я его фанат). Простое, красивое, микровзамодействующее."
+		"en": "A micro-application for recording your thoughts from <a href=\"https://rauno.me/\">Rauno</a> (yes, I&#39;m a fan of his). Simple, beautiful, micro-interaction."
 	},
+	"sourceHash": "6be64766130e056688e51ab26dfa8aaeb90a59490e6a9b323557d3e02f814884",
 	"link": "https://flow.rest/",
 	"media": [
 		{

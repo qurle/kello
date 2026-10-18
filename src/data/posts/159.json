@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Книга шейдеров — красивейший гайд по программированию визуальных эффектов.",
-		"en": "Книга шейдеров — красивейший гайд по программированию визуальных эффектов."
+		"en": "The Shader Book is a beautiful guide to visual effects programming."
 	},
+	"sourceHash": "18aeea84feb837379b7646be0cf052c31dc63781ba456966c7005eeaac0d2183",
 	"link": "https://thebookofshaders.com/?lan=ru",
 	"media": [
 		{

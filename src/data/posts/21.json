@@ -33,7 +33,8 @@
 	],
 	"text": {
 		"ru": "<b>🧭 Навигация <br></b><br>По типу <br>#ресурсы<br>#вдохновение<b><br></b>#инструменты<b><br></b>#знания<br><br>По области <br>#ui<br>#ux<br>#дизинж<br>#код<br>#дизайнсистемы<br>#процессы<br>#типографика<br>#графика<br>#текст<br>#карьера<br>#моушен<br>#пром<br>#портфолио<br>#недизайн<br><br>По формату<br>#плагины<b><br></b>#шрифты<br>#текстуры<b><br></b>#цвета<b><br></b>#фото<br>#иллюстрации<b><br></b>#мокапы<br>#звуки<br>#сборники<br>#авторы",
-		"en": "<b>🧭 Навигация <br></b><br>По типу <br>#ресурсы<br>#вдохновение<b><br></b>#инструменты<b><br></b>#знания<br><br>По области <br>#ui<br>#ux<br>#дизинж<br>#код<br>#дизайнсистемы<br>#процессы<br>#типографика<br>#графика<br>#текст<br>#карьера<br>#моушен<br>#пром<br>#портфолио<br>#недизайн<br><br>По формату<br>#плагины<b><br></b>#шрифты<br>#текстуры<b><br></b>#цвета<b><br></b>#фото<br>#иллюстрации<b><br></b>#мокапы<br>#звуки<br>#сборники<br>#авторы"
+		"en": "<b>🧭 Navigation<br></b><br>By type<br>#resources<br>#inspiration<b><br></b> #tools<b><br></b> #knowledge<br><br>By region<br>#ui<br>#ux<br>#design<br>#code<br>#system design<br>#processes<br>#typography<br>#graphics<br>#text<br>#career<br>#motion<br>#industrial<br>#portfolio<br>#not design<br><br>By format<br>#plugins<b><br></b> #fonts<br>#textures<b><br></b> #colors<b><br></b> #photo<br>#illustrations<b><br></b> #mockups<br>#sounds<br>#collections<br>#authors"
 	},
+	"sourceHash": "acc187be7a16b2b10133c5a0ce312bdf91d16c4d946e15bb11b046de16707ae4",
 	"media": []
 }

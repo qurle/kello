@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Я всегда был уверен, что CSS-свойство will-change было нужно только для оптимизации на медленных компах. Оказалось, что оно помогает браузеру переносить нагрузку на видеокарту, а она уже лучше рендерит первые кадры анимации на любом устройстве.<br><br>Якуб Крехел на своём сайте много пишет на анимацию и показывает примеры (в основном с библиотекой Motion). Советую!",
-		"en": "Я всегда был уверен, что CSS-свойство will-change было нужно только для оптимизации на медленных компах. Оказалось, что оно помогает браузеру переносить нагрузку на видеокарту, а она уже лучше рендерит первые кадры анимации на любом устройстве.<br><br>Якуб Крехел на своём сайте много пишет на анимацию и показывает примеры (в основном с библиотекой Motion). Советую!"
+		"en": "I was always sure that the CSS property will-change was needed only for optimization on slow computers. It turned out that it helps the browser transfer the load to the video card, and it renders the first frames of animation better on any device.<br><br>Jakub Krechel writes a lot on animation on his website and shows examples (mostly with the Motion library). I recommend!"
 	},
+	"sourceHash": "0c3e8bd17cc26acf31dc56d46f8a66f458faf4a2552c859ddc7c83170f521e24",
 	"link": "https://jakub.kr/components/will-change-in-css",
 	"media": [
 		{

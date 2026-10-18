@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Обновился сайт библиотеки для анимации Anime.js.<br>У авторов классно получается совмещать техническую эстетику, наглядность и легковесность.",
-		"en": "Обновился сайт библиотеки для анимации Anime.js.<br>У авторов классно получается совмещать техническую эстетику, наглядность и легковесность."
+		"en": "The Anime.js animation library website has been updated.<br>The authors are great at combining technical aesthetics, clarity and lightness."
 	},
+	"sourceHash": "bc803fef971bff5e20c2d19420451114cea80145d5f6e163d6f374f77e5aa1f9",
 	"link": "http://animejs.com/",
 	"media": [
 		{

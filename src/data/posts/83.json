@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Плавные перетаскиваемые картинки в красивой демке.",
-		"en": "Плавные перетаскиваемые картинки в красивой демке."
+		"en": "Smooth drag-and-drop pictures in a beautiful demo."
 	},
+	"sourceHash": "29e95acd5f4bc94324d9ec1af4fc45d7e233bb44fbc58b4f983160b52a6e0fdc",
 	"link": "https://tympanus.net/Development/ImageDraggingEffects/index.html",
 	"media": [
 		{

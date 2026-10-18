@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Илья Бирман рассказывает об искуственном замедлении интерфейсов «для солидности». Конечно, ничего хорошего в таком паттерне нет.",
-		"en": "Илья Бирман рассказывает об искуственном замедлении интерфейсов «для солидности». Конечно, ничего хорошего в таком паттерне нет."
+		"en": "Ilya Birman talks about artificially slowing down interfaces “for the sake of respectability.” Of course, there is nothing good in such a pattern."
 	},
+	"sourceHash": "f782c294c9c99154250695abd86eb8ee755928aee0d07b20a54d8cf5a181f484",
 	"link": "https://ilyabirman.ru/meanwhile/all/zamedlenie-interfeysa-dlya-solidnosti/",
 	"media": [
 		{

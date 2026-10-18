@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Удобный способ ресайзить много картинок!<br><br>Внутри классные фичи вроде настройки сжатия, экспорта в webp и автоопределения точки фокуса.",
-		"en": "Удобный способ ресайзить много картинок!<br><br>Внутри классные фичи вроде настройки сжатия, экспорта в webp и автоопределения точки фокуса."
+		"en": "A convenient way to resize a lot of pictures!<br><br>Inside there are cool features like setting compression, exporting to webp and auto-detecting the focus point."
 	},
+	"sourceHash": "cb90888d2dffc0146750f913f654437bad789c24fa98744a38cec3faee1ef685",
 	"link": "https://www.birme.net/",
 	"media": [
 		{

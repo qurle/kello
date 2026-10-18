@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "В субпиксельных шрифтах ширина символа может доходить до 1 пикселя, а детали литеры формируются за счёт RGB-компонентов пикселя.<br><br>Не знаю, проходит ли стандарты доступности, но выглядит круто. Глеб, спасибо, что <a href=\"https://x.com/gleb_sexy/status/1823656530446623023/\">показал</a>!",
-		"en": "В субпиксельных шрифтах ширина символа может доходить до 1 пикселя, а детали литеры формируются за счёт RGB-компонентов пикселя.<br><br>Не знаю, проходит ли стандарты доступности, но выглядит круто. Глеб, спасибо, что <a href=\"https://x.com/gleb_sexy/status/1823656530446623023/\">показал</a>!"
+		"en": "In subpixel fonts, the character width can reach up to 1 pixel, and the details of the letter are formed by the RGB components of the pixel.<br><br>I don&#39;t know if it passes accessibility standards, but it looks cool. Gleb, thanks for <a href=\"https://x.com/gleb_sexy/status/1823656530446623023/\">showing me</a>!"
 	},
+	"sourceHash": "e15ead3ec9cbaf47a045979f3517bf83fb7678e7072c50aea7553de87dfb978b",
 	"link": "https://github.com/akirabaes/Pixel-Font?tab=readme-ov-file#subpixel-fonts",
 	"media": [
 		{

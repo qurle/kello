@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Искать работу можно не только на линкедине. На зарубежном Indeed, например, выходит 10 вакансий в секунду.",
-		"en": "Искать работу можно не только на линкедине. На зарубежном Indeed, например, выходит 10 вакансий в секунду."
+		"en": "You can look for work not only on LinkedIn. On foreign Indeed, for example, 10 vacancies are published per second."
 	},
+	"sourceHash": "0531c1a7ff74f7c9b5b8175b5b6a3d8be3e0bb40fc227f9963575f5f758c6db3",
 	"link": "https://www.indeed.com/",
 	"media": [
 		{

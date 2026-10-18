@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Желейный слайдер громкости. Пишется на Typescript, рендерится на видеокарте и оч вкусно выглядит.",
-		"en": "Желейный слайдер громкости. Пишется на Typescript, рендерится на видеокарте и оч вкусно выглядит."
+		"en": "Jelly volume slider. It is written in Typescript, rendered on a video card and looks very tasty."
 	},
+	"sourceHash": "05182bd38ad52fee7170918022b0a7d85bf41367c0f73c861dafb21350630b7f",
 	"link": "https://docs.swmansion.com/TypeGPU/examples/#example=rendering--jelly-slider",
 	"media": [
 		{

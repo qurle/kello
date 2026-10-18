@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Генератор мягких теней из комбинации нескольких drop shadow. <br><br><a href=\"https://shadows.brumm.af/\">https://shadows.brumm.af/</a> (<a href=\"https://www.figma.com/community/plugin/788830704169694737/\">плагин для фигмы</a>)",
-		"en": "Генератор мягких теней из комбинации нескольких drop shadow. <br><br><a href=\"https://shadows.brumm.af/\">https://shadows.brumm.af/</a> (<a href=\"https://www.figma.com/community/plugin/788830704169694737/\">плагин для фигмы</a>)"
+		"en": "Generator of soft shadows from a combination of several drop shadows.<br><br><a href=\"https://shadows.brumm.af/\">https://shadows.brumm.af/</a> ( <a href=\"https://www.figma.com/community/plugin/788830704169694737/\">figma plugin</a>)"
 	},
+	"sourceHash": "73a297c7f728da5c45e4935f8c2fc7744796c13976be1b339df7e3e21b4ec766",
 	"link": "https://www.figma.com/community/plugin/788830704169694737/",
 	"media": [
 		{

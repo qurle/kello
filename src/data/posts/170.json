@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Вдогонку про физику — бесплатная интерактивная книга The Nature Of Code про проектирование естественных систем. Она рассказывает о случайности, силах, колебаниях, частицах, генетических алгоритмах, нейросетях и эволюции.",
-		"en": "Вдогонку про физику — бесплатная интерактивная книга The Nature Of Code про проектирование естественных систем. Она рассказывает о случайности, силах, колебаниях, частицах, генетических алгоритмах, нейросетях и эволюции."
+		"en": "Following up on physics is a free interactive book, The Nature Of Code, about the design of natural systems. She talks about randomness, forces, vibrations, particles, genetic algorithms, neural networks and evolution."
 	},
+	"sourceHash": "3d28f9921a1d81088862e93b304cd9c75f6237973b3bbaa41d816fe9b46a4622",
 	"link": "https://natureofcode.com/",
 	"media": [
 		{

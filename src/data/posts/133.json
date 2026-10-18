@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Fontsource — бесплатная библиотека, которая включает в себя шрифты от Google Fonts и другие опенсорсные проекты.<br><br>Кроме скачивания, каждый шрифт можно локально установить прямо через npm install и импортировать в свой код.",
-		"en": "Fontsource — бесплатная библиотека, которая включает в себя шрифты от Google Fonts и другие опенсорсные проекты.<br><br>Кроме скачивания, каждый шрифт можно локально установить прямо через npm install и импортировать в свой код."
+		"en": "Fontsource is a free library that includes fonts from Google Fonts and other open source projects.<br><br>In addition to downloading, each font can be installed locally directly via npm install and imported into your code."
 	},
+	"sourceHash": "0517df427a46035d59ba9522c396a1a2872edfd481f046bd6b660b1118df4b42",
 	"link": "https://fontsource.org/",
 	"media": [
 		{

@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Приципы дизайн-инженеров Vercel",
-		"en": "Приципы дизайн-инженеров Vercel"
+		"en": "Vercel Design Engineering Principles"
 	},
+	"sourceHash": "7f6d750c52e631e8d2842916703250fdfd1ac2c2e5c00398a44ff9b0c170e616",
 	"link": "https://vercel.com/design/engineer",
 	"media": [
 		{

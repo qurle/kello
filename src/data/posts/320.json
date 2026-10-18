@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "PsiQuantum — компания, которя производит оборудование для квантовых компьютеров. А ещё делает ПО для квантового проектирования. Выглядит красиво, хоть и текста на сайте многовато",
-		"en": "PsiQuantum — компания, которя производит оборудование для квантовых компьютеров. А ещё делает ПО для квантового проектирования. Выглядит красиво, хоть и текста на сайте многовато"
+		"en": "PsiQuantum is a company that produces equipment for quantum computers. He also makes software for quantum design. It looks beautiful, although there is a lot of text on the site"
 	},
+	"sourceHash": "0010e7d15a348f74faa41e4bf3431b8f8ff7c954272a53a066f42fa677cb404d",
 	"link": "https://www.psiquantum.com/",
 	"media": [
 		{

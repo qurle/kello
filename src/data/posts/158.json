@@ -6,8 +6,9 @@
 	],
 	"text": {
 		"ru": "Настраиваемые фичи стандартных клавиатур iOS и Android. Кнопки действий, наборы символов, тулбары и их имитация.",
-		"en": "Настраиваемые фичи стандартных клавиатур iOS и Android. Кнопки действий, наборы символов, тулбары и их имитация."
+		"en": "Customizable features of standard iOS and Android keyboards. Action buttons, character sets, toolbars and their imitation."
 	},
+	"sourceHash": "19e37e92edfc0accb771374fc94c0aedb0be7e4c9851d967743b465c15282192",
 	"link": "https://habr.com/ru/companies/alfa/articles/815817/",
 	"media": [
 		{

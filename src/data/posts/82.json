@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Очень красивый WebGL-кубик. Знаете, очень люблю стекло, отражения, рефракцию и вот это всё.",
-		"en": "Очень красивый WebGL-кубик. Знаете, очень люблю стекло, отражения, рефракцию и вот это всё."
+		"en": "Very nice WebGL cube. You know, I really love glass, reflections, refraction and that’s all."
 	},
+	"sourceHash": "5a4d39b88b5e57c221086a9a5ccf13baf212eba898bf0052e2488e0794d0b1f9",
 	"link": "https://tympanus.net/Tutorials/apple-fifth-avenue/?debug=true",
 	"media": [
 		{

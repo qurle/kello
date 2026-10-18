@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Дэн Холлик рассказывает о шрифте. Буквы, кернинг, хинтинг, а самое интересное — техничка: как работают форматы, какие есть таблицы и метрики, как устроены лигатуры.",
-		"en": "Дэн Холлик рассказывает о шрифте. Буквы, кернинг, хинтинг, а самое интересное — техничка: как работают форматы, какие есть таблицы и метрики, как устроены лигатуры."
+		"en": "Dan Hollick talks about the typeface. Letters, kerning, hinting, and the most interesting thing is the technical stuff: how formats work, what tables and metrics are there, how ligatures are arranged."
 	},
+	"sourceHash": "3ec14ccdadcb8c64425286cc3e97b096676db9be252280fe1cc050fd35c69810",
 	"link": "https://www.makingsoftware.com/chapters/how-to-make-a-font",
 	"media": [
 		{

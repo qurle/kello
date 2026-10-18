@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Сайт с красивыми консольными приложениями (TUI — Text-based User Interface)",
-		"en": "Сайт с красивыми консольными приложениями (TUI — Text-based User Interface)"
+		"en": "A site with beautiful console applications (TUI - Text-based User Interface)"
 	},
+	"sourceHash": "0ae525d45a57f4fbbc955bd5143c66ed8db83b0a4fc41b580706ee37b2e132a0",
 	"link": "https://terminal-apps.dev/",
 	"media": [
 		{

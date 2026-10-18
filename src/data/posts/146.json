@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Всеобъемлющий гайд от Виктора Теплова про дизайн-системы. Какую брать, как сделать свою, какие подходы использовать?<br> <br>Каждый параграф — развилка с выбором с описанными плюсами и минусам.",
-		"en": "Всеобъемлющий гайд от Виктора Теплова про дизайн-системы. Какую брать, как сделать свою, какие подходы использовать?<br> <br>Каждый параграф — развилка с выбором с описанными плюсами и минусам."
+		"en": "A comprehensive guide from Viktor Teplov about design systems. Which one to take, how to make your own, what approaches to use?<br><br>Each paragraph is a fork in the road with a choice with described pros and cons."
 	},
+	"sourceHash": "3d3bc9f2abf1b45262822674c4f108511048c07e74b83f25c7691d980ee0e6b4",
 	"link": "https://habr.com/ru/companies/ozontech/articles/797311/",
 	"media": [
 		{

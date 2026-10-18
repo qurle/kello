@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Опен-сорсный таск-трекер со смешным названием. Ставят себя в одну линейку с Linear, Jira и Notion, и сайт сделали соответствующий.",
-		"en": "Опен-сорсный таск-трекер со смешным названием. Ставят себя в одну линейку с Linear, Jira и Notion, и сайт сделали соответствующий."
+		"en": "An open-source task tracker with a funny name. They put themselves on the same page as Linear, Jira and Notion, and the website was made accordingly."
 	},
+	"sourceHash": "fe3ff68b41b828b5a380ee265f159e8589ebcebaccda81d0daca45389b462a40",
 	"link": "https://huly.io/",
 	"media": [
 		{

@@ -9,8 +9,9 @@
 	],
 	"text": {
 		"ru": "Как вариант — вот такая стилёвая программа для тримминга видосов. Это НАСТОЛЬКО красиво, что я даже не знал, что так можно.",
-		"en": "Как вариант — вот такая стилёвая программа для тримминга видосов. Это НАСТОЛЬКО красиво, что я даже не знал, что так можно."
+		"en": "As an option, here’s a style program for trimming videos. It&#39;s SO beautiful that I didn&#39;t even know it was possible."
 	},
+	"sourceHash": "47242bec4e92d1c331d4e7c2d1e7dce2c1441c1bc00dda859414f7e3e6e8cafc",
 	"link": "https://github.com/ozemin/lazycut",
 	"media": [
 		{

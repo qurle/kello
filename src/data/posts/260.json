@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Статья о кросс-ревью дизайна в Самокате. Весь фидбек делится на категории: нужно исправить, можно улучшить, надо проверить на тесте (<i>вот это интересно!</i>) и всё отлично.",
-		"en": "Статья о кросс-ревью дизайна в Самокате. Весь фидбек делится на категории: нужно исправить, можно улучшить, надо проверить на тесте (<i>вот это интересно!</i>) и всё отлично."
+		"en": "An article about cross-review of design in Samokat. All feedback is divided into categories: it needs to be fixed, it can be improved, it needs to be checked in a test ( <i>this is interesting!</i>) and everything is fine."
 	},
+	"sourceHash": "cb24e2df09d77b4c0859cfc2e07f41dab174d8119d4a5f76db5116eff94b2eaa",
 	"link": "https://dsgners.ru/ecom/18876-kross-revyu-kak-myi-vyistroili-protsess-bez-projarok-i-formalnostey",
 	"media": [
 		{

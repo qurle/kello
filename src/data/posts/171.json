@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Что-то новенькое — инструмент для дизайна хаптиков!<br><br>Идёт вместе с превью-приложением для iOS, возможностью подключения микроконтроллеров с актуаторами, но для Android превьюх нет.",
-		"en": "Что-то новенькое — инструмент для дизайна хаптиков!<br><br>Идёт вместе с превью-приложением для iOS, возможностью подключения микроконтроллеров с актуаторами, но для Android превьюх нет."
+		"en": "Something new - a tool for haptic design!<br><br>It comes with a preview application for iOS, the ability to connect microcontrollers with actuators, but there are no previews for Android."
 	},
+	"sourceHash": "32d8a2e7142c20c1d378f48b9b9dfdd25aa83beb0e02361f295cd4743cc79047",
 	"link": "https://www.hapticlabs.io/",
 	"media": [
 		{

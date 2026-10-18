@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Chrome выкатили CSS Wrapped с динозавром на скейтборде и анонсом CSS-фич, которые интернет так долго ждал. Popover API, авторазмер поля ввода,  скролловые анимации, переходы между страницами — ну ура.",
-		"en": "Chrome выкатили CSS Wrapped с динозавром на скейтборде и анонсом CSS-фич, которые интернет так долго ждал. Popover API, авторазмер поля ввода,  скролловые анимации, переходы между страницами — ну ура."
+		"en": "Chrome rolled out CSS Wrapped with a dinosaur on a skateboard and the announcement of the CSS features that the Internet has been waiting for so long. Popover API, auto-sizing of the input field, scrolling animations, transitions between pages - yay."
 	},
+	"sourceHash": "e998d1a7545f41c6c8258c19a4397d9deec066de9db22706e2fcab89bf02b09d",
 	"link": "https://chrome.dev/css-wrapped-2024/",
 	"media": [
 		{

@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Очень симпатичный превьюер и конструктор анимаций. Можно поиграть с кубик-безье и спринг-функциями, посмотреть на примере позиции, поворота, масштаба и опасити.",
-		"en": "Очень симпатичный превьюер и конструктор анимаций. Можно поиграть с кубик-безье и спринг-функциями, посмотреть на примере позиции, поворота, масштаба и опасити."
+		"en": "A very nice previewer and animation builder. You can play with the bezier cube and spring functions, look at the example of position, rotation, scale and hazard."
 	},
+	"sourceHash": "dc241e87c0195372d524bf2e1dfc1b32c2876bb518a7dffb532d839b5707c7c5",
 	"link": "https://easing.dev/",
 	"media": [
 		{

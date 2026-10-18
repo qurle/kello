@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Симпотный минималистичный личный сайт. <br><br>Если интересовались шифрованием, внутри есть подробная статья о Base32.",
-		"en": "Симпотный минималистичный личный сайт. <br><br>Если интересовались шифрованием, внутри есть подробная статья о Base32."
+		"en": "Nice minimalistic personal website.<br><br>If you were interested in encryption, there is a detailed article about Base32 inside."
 	},
+	"sourceHash": "81f5c98290adc4b26f11b6387292194911a1060f843e2d60b874186342f37e70",
 	"link": "https://ptrchm.com/",
 	"media": [
 		{

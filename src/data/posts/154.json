@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Очень маленький и очень элегантный текстовый сайт Джона Грубера — создателя языка Markdown.",
-		"en": "Очень маленький и очень элегантный текстовый сайт Джона Грубера — создателя языка Markdown."
+		"en": "A very small and very elegant text site by John Gruber, the creator of the Markdown language."
 	},
+	"sourceHash": "1af87637dcb90c7d43b4dc9c37f82314de43fe5798dc8d29b45672789f73aa67",
 	"link": "https://daringfireball.net/",
 	"media": [
 		{

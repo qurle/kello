@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Agent Interaction Guidelines — принципы проектирования и работы ИИ-агентов от Linear.<br><br>Вкратце: мгновенный фидбек, прозрачность, работа с сервисами через стандартный интерфейс, остановимость, а финальная ответственность всегда на человеке.",
-		"en": "Agent Interaction Guidelines — принципы проектирования и работы ИИ-агентов от Linear.<br><br>Вкратце: мгновенный фидбек, прозрачность, работа с сервисами через стандартный интерфейс, остановимость, а финальная ответственность всегда на человеке."
+		"en": "Agent Interaction Guidelines - principles for the design and operation of AI agents from Linear.<br><br>In short: instant feedback, transparency, working with services through a standard interface, unstoppable, and the final responsibility always lies with the person."
 	},
+	"sourceHash": "0aff6109e1adaf5efbf5edbdaa3827b73d62bae5c3b223fb99ec215c10a20eaf",
 	"link": "https://linear.app/developers/aig",
 	"media": [
 		{

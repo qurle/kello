@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Контраст-чекер, который заодно показывает как выглядит комбинация цветов при разных типах дальтонизма, глаукоме, плохом зрении и бликующем экране.",
-		"en": "Контраст-чекер, который заодно показывает как выглядит комбинация цветов при разных типах дальтонизма, глаукоме, плохом зрении и бликующем экране."
+		"en": "Contrast checker, which at the same time shows what the combination of colors looks like for different types of color blindness, glaucoma, poor vision and glare on the screen."
 	},
+	"sourceHash": "6b6b6cb742fd83f4ad6923abd899dc01e53fbb17b9c5cbd000326bd92287d573",
 	"link": "https://www.whocanuse.com/",
 	"media": [
 		{

@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Поисковик-агрегатор для звуковых эффектов. Используйте галочку «High fidelity only» чтобы не напороться на совсем уж странные сэмплы.",
-		"en": "Поисковик-агрегатор для звуковых эффектов. Используйте галочку «High fidelity only» чтобы не напороться на совсем уж странные сэмплы."
+		"en": "Search engine-aggregator for sound effects. Use the “High fidelity only” checkbox to avoid running into very strange samples."
 	},
+	"sourceHash": "bcada8c23b2e8156d665b31994434d5d1fa69c9c8a76359899ffdb443fbea2a3",
 	"link": "https://www.findsounds.com/searchbox.html",
 	"media": [
 		{

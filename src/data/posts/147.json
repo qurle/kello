@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Shopify в рамках своей дизайн-системы подробно рассказывает про принципы дизайна: о цвете, глубине, иконках, визуализации и даже звуках.<br><br>Полезно для общего развития и для понимания, на чём построен интерфейс системы.",
-		"en": "Shopify в рамках своей дизайн-системы подробно рассказывает про принципы дизайна: о цвете, глубине, иконках, визуализации и даже звуках.<br><br>Полезно для общего развития и для понимания, на чём построен интерфейс системы."
+		"en": "Shopify, as part of its design system, talks in detail about design principles: color, depth, icons, visualization and even sounds.<br><br>Useful for general development and for understanding what the system interface is built on."
 	},
+	"sourceHash": "8bb031c69eba1191825851cad3b7ce8998e0eee318711a9946bda1f9f3f78537",
 	"link": "https://polaris.shopify.com/design",
 	"media": [
 		{

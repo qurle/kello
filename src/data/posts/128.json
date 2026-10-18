@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Небольшой интерактивный рассказ, который поможет читать SVG-код (оказывается, это легко). Часть какого-то будущего курса.",
-		"en": "Небольшой интерактивный рассказ, который поможет читать SVG-код (оказывается, это легко). Часть какого-то будущего курса."
+		"en": "A short interactive story that will help you read SVG code (it turns out it&#39;s easy). Part of some future course."
 	},
+	"sourceHash": "742b78cce9405df0d662215f9153abfcddfb7cfb805f743dfa9badf3a50becba",
 	"link": "https://svg.bradwoods.io/lessons/viewbox",
 	"media": [
 		{

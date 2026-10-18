@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Framer научился в генерацию компонентов. Со свойствами и интерактивностью. Когда уже пересаживаемся с фигмы?",
-		"en": "Framer научился в генерацию компонентов. Со свойствами и интерактивностью. Когда уже пересаживаемся с фигмы?"
+		"en": "Framer learned how to generate components. With properties and interactivity. When are we going to transfer from figma?"
 	},
+	"sourceHash": "a690a64567bb8d0d81163d3dcfe755c0f91991e5839b234018c9ff6c645daa70",
 	"link": "https://www.framer.com/workshop/",
 	"media": [
 		{

@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Поиск по цветам. Можно копировать хексы и смотреть исходники.",
-		"en": "Поиск по цветам. Можно копировать хексы и смотреть исходники."
+		"en": "Search by color. You can copy the hexes and look at the sources."
 	},
+	"sourceHash": "13bb1666bbffb5c21ddfc25d8043355ca097ad47fcaf010c4b53c4a5f9b357d5",
 	"link": "https://picular.co/",
 	"media": [
 		{

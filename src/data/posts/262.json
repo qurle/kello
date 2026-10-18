@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Один из классных примеров — про универсальные переходы между иконками через прозрачность, скейл и размытие. И никакого лотти не надо.",
-		"en": "Один из классных примеров — про универсальные переходы между иконками через прозрачность, скейл и размытие. И никакого лотти не надо."
+		"en": "One of the cool examples is about universal transitions between icons through transparency, scaling and blur. And no lottie is needed."
 	},
+	"sourceHash": "2a4f6829a2f4244cfc3a4feabd61d67959b8cbb29b9fad3f9f71878947cda984",
 	"link": "https://jakub.kr/components/animating-icons",
 	"media": [
 		{

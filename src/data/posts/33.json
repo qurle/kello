@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Тонкости подключения шрифтов. Формат, хинтинг, тестирование, лицензии.",
-		"en": "Тонкости подключения шрифтов. Формат, хинтинг, тестирование, лицензии."
+		"en": "Subtleties of connecting fonts. Format, hinting, testing, licenses."
 	},
+	"sourceHash": "58c16230d45fd0947b97fdb2da2e29a23e20a66e26660917858610f6097934f9",
 	"link": "https://habr.com/ru/companies/adv/articles/184864/",
 	"media": [
 		{

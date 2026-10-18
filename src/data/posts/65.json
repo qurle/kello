@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Ежегодные ресерчи с актуальным состоянием главных веб-технологий. Можно открыть для себя отличные инструменты, набирающие популярность и подчернуть фичи на будущее.<br><br><a href=\"https://stateofjs.com/\">State of JS</a> / <a href=\"https://stateofcss.com/\">State of CSS</a> / <a href=\"https://stateofhtml.com/\">State of HTML</a>",
-		"en": "Ежегодные ресерчи с актуальным состоянием главных веб-технологий. Можно открыть для себя отличные инструменты, набирающие популярность и подчернуть фичи на будущее.<br><br><a href=\"https://stateofjs.com/\">State of JS</a> / <a href=\"https://stateofcss.com/\">State of CSS</a> / <a href=\"https://stateofhtml.com/\">State of HTML</a>"
+		"en": "Annual research with the current state of major web technologies. You can discover great tools that are gaining popularity and highlight features for the future.<br><br><a href=\"https://stateofjs.com/\">State of JS</a> / <a href=\"https://stateofcss.com/\">State of CSS</a> / <a href=\"https://stateofhtml.com/\">State of HTML</a>"
 	},
+	"sourceHash": "2f018702b246be2aea535d76f892fd4304d4ddd42928cda299779c32ab055fb3",
 	"link": "https://stateofhtml.com/",
 	"media": [
 		{

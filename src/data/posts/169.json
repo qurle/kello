@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Дейв ДеСандро рассказывает про физичный интерфейс на простых примерах. Модель физики упрощённая — из-за этого математика анимаций становится очень простой. Видео в 720р, зал не слышно, а перед камерой чьи-то затылки, но так ли это важно?",
-		"en": "Дейв ДеСандро рассказывает про физичный интерфейс на простых примерах. Модель физики упрощённая — из-за этого математика анимаций становится очень простой. Видео в 720р, зал не слышно, а перед камерой чьи-то затылки, но так ли это важно?"
+		"en": "Dave DeSandro talks about the physical interface using simple examples. The physics model is simplified - because of this, the mathematics of animations becomes very simple. The video is in 720p, the audience is inaudible, and the backs of someone’s heads are in front of the camera, but is it really that important?"
 	},
+	"sourceHash": "ef40546887f5ea5df521bc2ee936a9dd276bc6c178a57aa7aae9723573b456c5",
 	"link": "https://youtube.com/watch?v=90oMnMFozEE",
 	"media": [
 		{

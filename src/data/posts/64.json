@@ -8,8 +8,9 @@
 	],
 	"text": {
 		"ru": "Лейаут-лаборатория Джена Симмонса — там интересные эксперименты с вёрсткой, в том числе замечены редкие для веба решения: CSS-шейпы, буквицы, вертикальное письмо.",
-		"en": "Лейаут-лаборатория Джена Симмонса — там интересные эксперименты с вёрсткой, в том числе замечены редкие для веба решения: CSS-шейпы, буквицы, вертикальное письмо."
+		"en": "The layout laboratory of Jen Simmons - there are interesting experiments with layout, including solutions that are rare for the web: CSS shapes, drop caps, vertical letters."
 	},
+	"sourceHash": "542f8af565d3ecb97578bd0d304da6533c53314f1430f0fbbb6d6911fe053c29",
 	"link": "https://labs.jensimmons.com/index.html",
 	"media": [
 		{

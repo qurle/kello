@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Анимированные метеоиконки. Залитые и обводочные",
-		"en": "Анимированные метеоиконки. Залитые и обводочные"
+		"en": "Animated weather icons. Filled and stroked"
 	},
+	"sourceHash": "aef29ee940718e0d2c4565080d38e964f5f4d07c55f5ffe8d335f666faefeb2f",
 	"link": "https://bas.dev/work/meteocons",
 	"media": [
 		{

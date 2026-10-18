@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Генератор типографической шкалы",
-		"en": "Генератор типографической шкалы"
+		"en": "Typographic Scale Generator"
 	},
+	"sourceHash": "5f1fb343ba8672539054dab4276c7adb0d022d670470b7bc00e90c1a5c01d0ac",
 	"link": "https://typescale.com/",
 	"media": [
 		{

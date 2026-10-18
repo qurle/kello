@@ -7,8 +7,9 @@
 	],
 	"text": {
 		"ru": "Редакторы, проверяющие английский текст на ошибки. Покажут, где добавить the и где лучше использовать past perfect continuous.<br><br> <a href=\"https://languagetool.org/\">LanguageTool</a> / <a href=\"https://www.deepl.com/write\">DeepL Write</a> / <a href=\"https://hemingwayapp.com/\">Hemingway</a> / <a href=\"https://www.grammarly.com/\">Grammarly</a>",
-		"en": "Редакторы, проверяющие английский текст на ошибки. Покажут, где добавить the и где лучше использовать past perfect continuous.<br><br> <a href=\"https://languagetool.org/\">LanguageTool</a> / <a href=\"https://www.deepl.com/write\">DeepL Write</a> / <a href=\"https://hemingwayapp.com/\">Hemingway</a> / <a href=\"https://www.grammarly.com/\">Grammarly</a>"
+		"en": "Editors checking English text for errors. They will show you where to add the and where it is better to use the past perfect continuous.<br><br><a href=\"https://languagetool.org/\">LanguageTool</a> / <a href=\"https://www.deepl.com/write\">DeepL Write</a> / <a href=\"https://hemingwayapp.com/\">Hemingway</a> / <a href=\"https://www.grammarly.com/\">Grammarly</a>"
 	},
+	"sourceHash": "71585be39c97698e0ccdd9376817834743b194029baa46cede166b457d16f1c6",
 	"link": "https://www.grammarly.com/",
 	"media": [
 		{
