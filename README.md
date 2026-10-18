@@ -1,9 +1,26 @@
-# Kello
+# kello
 
-Astro site mirroring the Telegram channel [the_kello](https://t.me/s/the_kello), in English and Russian (`/ru`). How it works is in [AGENTS.md](AGENTS.md).
+knowledge + inspo collected [by qurle](https://qurle.net)
+
+![kello](public/cover.png)
+
+A static Astro site that mirrors the Telegram channel [the_kello](https://t.me/s/the_kello) in English, with the original Russian at `/ru`. A GitHub Action pulls new posts every 12 hours, and Vercel rebuilds the site. How it works is in [AGENTS.md](AGENTS.md).
 
 ```sh
 npm run dev     # dev server
 npm run build   # production build
 npm run sync    # pull new posts from Telegram
 ```
+
+## Your own channel
+
+Any public channel works: one whose posts open at `t.me/s/<username>`. Translation goes from Russian to English.
+
+1. Fork the repo and run `npm install`.
+2. In `kello.config.ts`, set `site` (title, url, subtitle) and `channel.username`. Replace the `tags` table with your channel's hashtags.
+3. Clear the content: delete `src/data/posts/*.json` and `public/media/*`, and empty the `overrides` object in `src/data/overrides.ts`.
+4. Run `npm run sync -- --full` to fetch the whole channel, then commit and push.
+5. Import the repo on Vercel; the Astro preset needs no settings. The sync workflow then runs every 12 hours. Run it once from the Actions tab to check that it can push.
+6. Optional: full-size photos through a Telegram bot. Setup is in [AGENTS.md](AGENTS.md#full-size-photos).
+
+Swap `public/favicon.svg`, `public/og.png` (1200×630) and the heading font in `src/assets/fonts` for your own.

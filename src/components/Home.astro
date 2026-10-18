@@ -74,6 +74,18 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 			href={url(pagePath('en', page))}
 		/>
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<!-- Link previews: public/og.png, 1200×630. -->
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={config.site.title} />
+		<meta property="og:title" content={config.site.title} />
+		<meta property="og:description" content={t.description} />
+		<meta property="og:url" content={url(pagePath(lang, page))} />
+		<meta property="og:locale" content={lang === 'ru' ? 'ru_RU' : 'en_US'} />
+		<meta property="og:image" content={url('/og.png')} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={config.site.title} />
+		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="generator" content={Astro.generator} />
 	</head>
 	<body>
@@ -168,99 +180,99 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 </html>
 
 <style lang="sass">
-	// Page frame: heading, language link, filter line, feed.
+// Page frame: heading, language link, filter line, feed.
 
-	.page
-		box-sizing: content-box
-		max-width: var(--container-width)
-		margin-inline: auto
-		padding: var(--page-padding-top) var(--gutter) var(--space-2xl)
+.page
+    box-sizing: content-box
+    max-width: var(--container-width)
+    margin-inline: auto
+    padding: var(--page-padding-top) var(--gutter) var(--space-2xl)
 
-	    // Wide screens: the page spans the window and posts move across it (Post.astro).
-		@media (min-width: 64rem)
-			max-width: none
-			padding-inline: max(var(--page-padding-wide), var(--gutter))
+    // Wide screens: the page spans the window and posts move across it (Post.astro).
+    @media (min-width: 64rem)
+        max-width: none
+        padding-inline: max(var(--page-padding-wide), var(--gutter))
 
-	.masthead
-		display: flex
-		justify-content: space-between
-		align-items: end
-		gap: var(--space-md)
+.masthead
+    display: flex
+    justify-content: space-between
+    align-items: end
+    gap: var(--space-md)
 
-		.heading
-			width: fit-content
+    .heading
+        width: fit-content
 
-		.title
-			margin-inline-start: var(--display-indent)
-			font-family: var(--font-display)
-			font-size: var(--text-display)
-			font-weight: var(--weight-display)
-			line-height: var(--leading-tight)
-			letter-spacing: var(--tracking-display)
+    .title
+        margin-inline-start: var(--display-indent)
+        font-family: var(--font-display)
+        font-size: var(--text-display)
+        font-weight: var(--weight-display)
+        line-height: var(--leading-tight)
+        letter-spacing: var(--tracking-display)
 
-		.subtitle
-			color: var(--secondary)
+    .subtitle
+        color: var(--secondary)
 
-			a
-				text-decoration: underline
-				text-underline-offset: 3px
+        a
+            text-decoration: underline
+            text-underline-offset: 3px
 
-				&:hover
-					color: var(--primary)
+            &:hover
+                color: var(--primary)
 
-		.lang
-			color: var(--secondary)
+    .lang
+        color: var(--secondary)
 
-		.logo
-			display: inline
-			transition: transform var(--duration-base) var(--ease)
-			will-change: transform
+    .logo
+        display: inline
+        transition: transform var(--duration-base) var(--ease)
+        will-change: transform
 
-		a:hover .logo
-			transform: rotate(15deg)
+    a:hover .logo
+        transform: rotate(15deg)
 
-	.filter
-		margin-top: var(--space-lg)
+.filter
+    margin-top: var(--space-lg)
 
-		.list
-			display: flex
-			flex-wrap: wrap
-			gap: var(--space-2xs) var(--space-sm)
+    .list
+        display: flex
+        flex-wrap: wrap
+        gap: var(--space-2xs) var(--space-sm)
 
-		@media (min-width: 48rem)
-			display: grid
-			grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr))
-			column-gap: var(--space-md)
-			margin-top: var(--space-xl)
+    @media (min-width: 48rem)
+        display: grid
+        grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr))
+        column-gap: var(--space-md)
+        margin-top: var(--space-xl)
 
-			.list
-				grid-column: calc(var(--index-columns) + 1) / -1
-				gap: var(--space-2xs) var(--space-md)
+        .list
+            grid-column: calc(var(--index-columns) + 1) / -1
+            gap: var(--space-2xs) var(--space-md)
 
-	    // The tag line sits on the feed's grid, from the column after the index columns to the edge.
-		@media (min-width: 64rem)
-			grid-template-columns: repeat(var(--scatter-columns), minmax(0, 1fr))
-			column-gap: var(--scatter-gap)
+    // The tag line sits on the feed's grid, from the column after the index columns to the edge.
+    @media (min-width: 64rem)
+        grid-template-columns: repeat(var(--scatter-columns), minmax(0, 1fr))
+        column-gap: var(--scatter-gap)
 
-	.feed
-		margin-top: var(--space-2xl)
+.feed
+    margin-top: var(--space-2xl)
 
-	    // A shared ?tags= link: hidden until every page is in and filtered (filter.ts).
-		:global(html[data-filtering]) &
-			visibility: hidden
+    // A shared ?tags= link: hidden until every page is in and filtered (filter.ts).
+    :global(html[data-filtering]) &
+        visibility: hidden
 
-	    // Wide screens: feed.js places each post and sets data-scatter. The feed stays hidden until then.
-		@media (min-width: 64rem)
-			:global(html[data-js]) &:not([data-scatter])
-				visibility: hidden
+    // Wide screens: feed.js places each post and sets data-scatter. The feed stays hidden until then.
+    @media (min-width: 64rem)
+        :global(html[data-js]) &:not([data-scatter])
+            visibility: hidden
 
-		&[data-scatter]
-			position: relative
+    &[data-scatter]
+        position: relative
 
-	// The next page: a plain link without JS, and with it the point where pages.ts loads the next one.
-	.more
-		display: block
-		width: fit-content
-		margin-top: var(--post-gap)
-		color: var(--secondary)
+// The next page: a plain link without JS, and with it the point where pages.ts loads the next one.
+.more
+    display: block
+    width: fit-content
+    margin-top: var(--post-gap)
+    color: var(--secondary)
 </style>
