@@ -1,4 +1,6 @@
-// Media rows: chevrons, pictures that load as they near the window, and videos that play only while in
+import { draggable } from './drag'
+
+// Media rows: chevrons, mouse drag, pictures that load as they near the window, and videos that play only while in
 // view. Posts from other pages (`kello:posts`) get the same
 
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)')
@@ -46,6 +48,9 @@ function setUpRow(row: HTMLElement) {
 		prev.toggleAttribute('data-off', track.scrollLeft <= 1)
 		next.toggleAttribute('data-off', track.scrollLeft >= end - 1)
 	}
+
+	// Slots scroll to their start (MediaRow.astro); the track is their offset parent
+	draggable(track, () => [...track.children].map((slot) => (slot as HTMLElement).offsetLeft))
 
 	const step = (direction: number) => {
 		const slot = track.firstElementChild as HTMLElement

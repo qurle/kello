@@ -86,6 +86,8 @@ const sizes = single
     position: relative
 
 .track
+    // Offset parent of the slots, whose positions drag.ts reads
+    position: relative
     display: flex
     gap: var(--media-gap)
     overflow-x: auto
@@ -95,6 +97,13 @@ const sizes = single
 
     &::-webkit-scrollbar
         display: none
+
+    // Mid-drag (drag.ts): the hand closes, and nothing gets selected
+    &[data-dragging]
+        user-select: none
+
+        .item
+            cursor: grabbing
 
 .slot
     position: relative
@@ -143,6 +152,11 @@ const sizes = single
     &.unavailable
         color: var(--secondary)
         cursor: pointer
+
+    // A row of several drags with a mouse (drag.ts); a click without moving still opens the viewer
+    @media (hover: hover) and (pointer: fine)
+        .media:not([data-single]) &
+            cursor: grab
 
 .label
     position: absolute

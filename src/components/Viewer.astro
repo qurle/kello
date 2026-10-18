@@ -101,11 +101,10 @@ const t = strings[Astro.props.lang]
     &::after
         width: calc(var(--pad-end, 0px) - var(--media-gap))
 
-    &[data-side="prev"]
-        cursor: w-resize
-
-    &[data-side="next"]
-        cursor: e-resize
+    // Mid-drag (drag.ts): the hand closes over everything
+    &[data-dragging],
+    &[data-dragging] *
+        cursor: grabbing
 
     // A slide, made by viewer.ts. Height follows from the item's own ratio. While its media load it
     // shows the loading dither (base.sass)
@@ -117,8 +116,10 @@ const t = strings[Astro.props.lang]
         background: var(--surface)
         cursor: pointer
 
-    :global([data-slide][data-current])
-        cursor: auto
+    // Slides drag with a mouse (drag.ts); a click on the current one's halves still steps
+    @media (hover: hover) and (pointer: fine)
+        :global([data-slide])
+            cursor: grab
 
     :global([data-slide] picture)
         display: contents
