@@ -61,7 +61,7 @@ Setup, once:
 3. Create a private channel as the scratch chat and add the bot there as an admin too. It posts and deletes the forwards there.
 4. Find the scratch chat's id, which starts with `-100`. Either open the chat at `web.telegram.org/a/` and read the id after `#`, or post in the chat and read `chat.id` from `https://api.telegram.org/bot<token>/getUpdates`.
 5. Add the repository secrets `TELEGRAM_BOT_TOKEN` and `TELEGRAM_DUMP_CHAT_ID`. The names come from `channel.bot` in `kello.config.ts`.
-6. Check it locally: `TELEGRAM_BOT_TOKEN=… TELEGRAM_DUMP_CHAT_ID=… npm run check-bot`. It fetches one photo and prints its full size.
+6. Check it locally: put both variables in `.env` (gitignored; the sync and `check-bot` load it) and run `npm run check-bot`. It fetches one photo and prints its full size.
 7. Run the sync workflow once with **full** ticked to upgrade every existing photo.
 
 ## Known limits

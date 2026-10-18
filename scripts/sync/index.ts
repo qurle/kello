@@ -19,6 +19,11 @@ import { GoogleTranslator } from './google';
 import { ChainTranslator, GeminiTranslator, type Translator } from './translate';
 import type { PostFile, ScrapedPost } from './types';
 
+// Local runs keep secrets in .env (gitignored); variables already set, as in the workflow, win.
+try {
+	process.loadEnvFile();
+} catch {}
+
 const args = process.argv.slice(2);
 const full = args.includes('--full');
 const noTranslate = args.includes('--no-translate');

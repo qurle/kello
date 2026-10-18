@@ -1,8 +1,8 @@
 // npm run check-bot [-- <message id>]
 //
 // Checks the full-size photo setup end to end: the bot token, access to the channel and the scratch
-// chat, and one photo fetched at Telegram's largest size. Reads the same variables as the sync, e.g.
-//   TELEGRAM_BOT_TOKEN=… TELEGRAM_DUMP_CHAT_ID=-100… npm run check-bot
+// chat, and one photo fetched at Telegram's largest size. Reads the same variables as the sync, from
+// the environment or a `.env` file in the project root.
 // Without a message id it uses the first photo of the newest synced post.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -10,6 +10,11 @@ import sharp from 'sharp';
 import config from '../kello.config';
 import { TelegramBot } from './sync/bot';
 import type { PostFile } from './sync/types';
+
+// Local runs keep secrets in .env (gitignored); variables already set win.
+try {
+	process.loadEnvFile();
+} catch {}
 
 const { tokenEnv, dumpChatEnv } = config.channel.bot;
 const token = process.env[tokenEnv];
