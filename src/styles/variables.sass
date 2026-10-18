@@ -91,6 +91,13 @@
     --settle-perspective: 60rem
     --settle-distance: 40vh
     --settle-ease: cubic-bezier(0.3, 0.5, 0.5, 1)
+    // Mouse drag in media rows and the viewer (drag.ts), read on each press and release, so a component can
+    // override them. Coast: how far a flick carries, as that many ms of its release speed (0 for none).
+    // Settle: about how long the spring takes to land on the slide. Threshold: how far a press moves before
+    // it drags rather than clicks
+    --drag-coast: 200ms
+    --drag-settle: 500ms
+    --drag-threshold: 6px
 
 // Dark: the system's dark mode unless the theme switch (Home.astro) says light, or the switch says dark.
 // The two blocks hold the same tokens; keep them in step
@@ -112,8 +119,8 @@
     --background: #111111
     --surface: #1c1c1c
     --primary: #ececec
-    --secondary: #5a5a5a
-    --tertiary: #2e2e2e
+    --secondary: #666666
+    --tertiary: #3c3c3c
     --accent: #8582ff
     --overlay: rgb(17 17 17 / 0.96)
     // Lighten lifts every pixel to at least the tint, so black images stand off the dark background

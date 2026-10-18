@@ -1,5 +1,6 @@
 // Media viewer: a post's whole row as a carousel in a <dialog>. The open post and item live in the URL (?post=&media=)
 
+import { draggable } from './drag'
 import { reveal } from './media'
 import { loadAll } from './pages'
 import { getParam, setParams } from './url'
@@ -169,13 +170,8 @@ track.addEventListener('click', (event) => {
 	go(index === current ? current + sideAt(slide, event.clientX) : index)
 })
 
-track.addEventListener('mousemove', (event) => {
-	const target = event.target as Element
-	const slide = target.closest<HTMLElement>('[data-slide]')
-	const side =
-		slide && slides.indexOf(slide) === current && !target.closest('video[controls]') ? sideAt(slide, event.clientX) : 0
-	track.dataset.side = side < 0 ? 'prev' : side > 0 ? 'next' : ''
-})
+// Slides scroll to their centre; the scroll handler below makes the one it lands on current
+draggable(track, () => slides.map((slide) => slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2))
 
 // After a swipe or scroll, the slide in the middle becomes current
 let settle = 0
