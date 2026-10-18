@@ -17,12 +17,10 @@
   --font-sans: "Inter Variable", "Inter", system-ui, sans-serif
   --font-feature: "cv11", "ss03"
   --font-mono: ui-monospace, "SF Mono", Menlo, monospace
-  --text-sm: 0.875rem
+  // One text size for everything but the heading.
   --text-base: 1.0625rem
-  --text-lg: 1.375rem
   --text-display: clamp(3.5rem, 11vw, 9rem)
   --leading-tight: 1
-  --leading-snug: 1.3
   --leading-base: 1.45
   --tracking-display: -0.045em
   --tracking-base: -0.011em
@@ -46,6 +44,7 @@
 
   // Layout
   --container-width: 40rem
+  --page-padding-top: 12rem
   // Side padding of the full-width page on wide screens, where the feed scatters.
   --page-padding-wide: 4rem
   // Scattered feed from 64rem (src/scripts/scatter.ts): a post spans --scatter-span of
@@ -77,8 +76,6 @@
   --viewer-media-height: 76dvh
   // Widest a single item gets in the viewer.
   --viewer-media-max: 64rem
-  // Opacity of the items around the current one in the viewer.
-  --viewer-dim: 0.35
 
   // Focus
   --focus-width: 2px

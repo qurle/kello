@@ -28,4 +28,9 @@ export interface PostOverride {
 
 export type Overrides = Record<number, PostOverride>;
 
-export const overrides: Overrides = {};
+export const overrides: Overrides = {
+	// The channel's pinned hashtag index ("🧭 Navigation"): the site has its own tag line.
+	21: { hidden: true },
+	// The emoji carried the meaning, and the site strips emoji (src/lib/typography.ts).
+	35: { text: { en: 'Engravings + color = love' } },
+};

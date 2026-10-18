@@ -18,8 +18,6 @@
 
 .post__text
   max-width: var(--text-width)
-  font-size: var(--text-lg)
-  line-height: var(--leading-snug)
   overflow-wrap: break-word
 
   blockquote
@@ -53,7 +51,7 @@
   color: var(--primary)
 
 .post__telegram
-  color: var(--secondary)
+  color: var(--tertiary)
 
 @media (min-width: 48rem)
   .post__meta
@@ -72,7 +70,7 @@
 
 
 // Scattered feed on wide screens: src/scripts/scatter.ts places each post and sets data-scatter.
-// Posts are narrow there, so tags run in a row above the text and the text drops to body size.
+// Posts are narrow there, so tags run in a row above the text.
 // With JS on, wide screens keep the feed hidden until it's placed, so the column never flashes.
 @media (min-width: 64rem)
   html[data-js] .feed:not([data-scatter])
@@ -94,10 +92,5 @@
     flex-direction: row
     gap: var(--space-2xs) var(--space-sm)
 
-  .post__text
-    font-size: var(--text-base)
-    line-height: var(--leading-base)
-
   .post__links
     margin-top: var(--space-xs)
-    font-size: var(--text-sm)

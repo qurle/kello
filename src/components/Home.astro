@@ -47,7 +47,7 @@ const url = (path: string) => new URL(path, config.site.url).href;
 	<body>
 		<div class="page">
 			<header class="masthead">
-				<h1 class="masthead__title"><a href={t.path}>{config.site.title}</a></h1>
+				<h1 class="masthead__title"><a href={t.path}>{config.site.title.toLowerCase()}</a></h1>
 				<a class="masthead__lang" href={other.path} hreflang={t.switchTo} lang={t.switchTo} aria-label={t.switchLabel} data-lang-link>{t.switchTo}</a>
 			</header>
 			<nav class="filter" aria-label={t.filter} data-filter>

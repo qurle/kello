@@ -1,6 +1,7 @@
 // Media viewer: the post's whole row, uncropped, in a full-width carousel inside a <dialog>.
 // The current item sits in the middle. Clicking its left or right half, the arrow keys or a swipe
-// move between items; clicking a neighbour goes to it. Esc closes and focus goes back to the opener.
+// move between items; clicking a neighbour goes to it. Esc, the close button, or a click anywhere
+// outside the media and the post's text closes it, and focus goes back to the opener.
 // The open post is kept in the URL as ?post=<id>&media=<n> so it can be shared.
 
 import { getParam, setParams } from './url';
@@ -159,10 +160,27 @@ dialog.addEventListener('keydown', (event) => {
 	event.preventDefault();
 });
 
-dialog.querySelector('[data-viewer-close]')!.addEventListener('click', () => dialog.close());
+const closeButton = dialog.querySelector<HTMLElement>('[data-viewer-close]')!;
+
+/** Outside the media and the post's text block: the bar, the gaps, the margins. */
+const inCloseZone = (target: EventTarget | null) =>
+	target instanceof Element && !target.closest('.viewer__slide, .viewer__meta > *');
+
+dialog.addEventListener('click', (event) => {
+	if (inCloseZone(event.target)) dialog.close();
+});
+
+// The close button lights up wherever a click would close, so the empty space reads as a target.
+dialog.addEventListener('pointermove', (event) => {
+	const zone = event.pointerType === 'mouse' && inCloseZone(event.target);
+	closeButton.toggleAttribute('data-hover', zone);
+	dialog.toggleAttribute('data-close-zone', zone);
+});
 
 dialog.addEventListener('close', () => {
 	clearTimeout(settle);
+	closeButton.removeAttribute('data-hover');
+	dialog.removeAttribute('data-close-zone');
 	track.replaceChildren();
 	meta.replaceChildren();
 	slides = [];

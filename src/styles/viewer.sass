@@ -41,12 +41,17 @@
   padding-block: var(--space-md)
 
 .viewer__close
-  font-size: var(--text-lg)
   color: var(--secondary)
   transition: color var(--duration-fast) var(--ease)
 
-  &:hover
+  // Lit whenever a click would close the viewer, not only over the button (viewer.ts).
+  &:hover,
+  &[data-hover]
     color: var(--primary)
+
+// Anywhere outside the media and the post's text closes the viewer.
+.viewer[data-close-zone]
+  cursor: pointer
 
 .viewer__track
   // The offset parent of the slides, so their offsetLeft doesn't move as the track scrolls.
@@ -88,12 +93,9 @@
   aspect-ratio: var(--ratio)
   scroll-snap-align: center
   background: var(--surface)
-  opacity: var(--viewer-dim)
   cursor: pointer
-  transition: opacity var(--duration-base) var(--ease)
 
   &[data-current]
-    opacity: 1
     cursor: auto
 
   picture
