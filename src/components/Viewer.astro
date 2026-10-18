@@ -119,6 +119,10 @@ const t = strings[Astro.props.lang]
         :global([data-slide])
             cursor: grab
 
+    // A single item has nowhere to go: no click or drag
+    :global([data-slide]:only-child)
+        cursor: default
+
     :global([data-slide] picture)
         display: contents
 

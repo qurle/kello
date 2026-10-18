@@ -36,6 +36,8 @@ export function draggable(track: HTMLElement, snaps: () => number[]) {
 	track.addEventListener('pointerdown', (event) => {
 		if (event.pointerType !== 'mouse' || event.button !== 0) return
 		if ((event.target as Element).closest('video[controls]')) return
+		// Nothing to scroll, as with a single slide in the viewer
+		if (track.scrollWidth <= track.clientWidth) return
 		// Snapping stays off, or it would jump to the nearest slide
 		caught = halt()
 		start = { x: event.clientX, left: track.scrollLeft, threshold: token(track, '--drag-threshold', 6) }
