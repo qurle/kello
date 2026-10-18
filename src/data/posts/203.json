@@ -16,57 +16,65 @@
 			"type": "image",
 			"messageId": 203,
 			"file": "203/1",
-			"width": 800,
-			"height": 533
+			"width": 1200,
+			"height": 800,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 204,
 			"file": "203/2",
-			"width": 800,
-			"height": 536
+			"width": 1100,
+			"height": 737,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 205,
 			"file": "203/3",
-			"width": 800,
-			"height": 533
+			"width": 1200,
+			"height": 800,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 206,
 			"file": "203/4",
-			"width": 800,
-			"height": 624
+			"width": 1280,
+			"height": 998,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 207,
 			"file": "203/5",
-			"width": 800,
-			"height": 533
+			"width": 1200,
+			"height": 800,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 208,
 			"file": "203/6",
-			"width": 800,
-			"height": 533
+			"width": 1200,
+			"height": 800,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 209,
 			"file": "203/7",
-			"width": 640,
-			"height": 800
+			"width": 1024,
+			"height": 1280,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 210,
 			"file": "203/8",
-			"width": 800,
-			"height": 534
+			"width": 1280,
+			"height": 854,
+			"full": true
 		}
 	]
 }

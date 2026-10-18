@@ -17,50 +17,57 @@
 			"type": "image",
 			"messageId": 293,
 			"file": "293/1",
-			"width": 800,
-			"height": 569
+			"width": 1200,
+			"height": 853,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 294,
 			"file": "293/2",
-			"width": 800,
-			"height": 527
+			"width": 1199,
+			"height": 790,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 295,
 			"file": "293/3",
 			"width": 680,
-			"height": 680
+			"height": 680,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 296,
 			"file": "293/4",
-			"width": 800,
-			"height": 800
+			"width": 1200,
+			"height": 1200,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 297,
 			"file": "293/5",
-			"width": 643,
-			"height": 800
+			"width": 1029,
+			"height": 1280,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 298,
 			"file": "293/6",
-			"width": 800,
-			"height": 800
+			"width": 1200,
+			"height": 1200,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 299,
 			"file": "293/7",
 			"width": 800,
-			"height": 600
+			"height": 600,
+			"full": true
 		}
 	]
 }

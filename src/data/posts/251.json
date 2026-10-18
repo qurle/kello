@@ -17,64 +17,73 @@
 			"type": "image",
 			"messageId": 251,
 			"file": "251/1",
-			"width": 800,
-			"height": 447
+			"width": 2560,
+			"height": 1431,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 252,
 			"file": "251/2",
-			"width": 800,
-			"height": 450
+			"width": 2560,
+			"height": 1440,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 253,
 			"file": "251/3",
-			"width": 800,
-			"height": 450
+			"width": 2560,
+			"height": 1440,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 254,
 			"file": "251/4",
-			"width": 800,
-			"height": 450
+			"width": 2560,
+			"height": 1440,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 255,
 			"file": "251/5",
-			"width": 800,
-			"height": 450
+			"width": 2560,
+			"height": 1440,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 256,
 			"file": "251/6",
-			"width": 800,
-			"height": 450
+			"width": 2560,
+			"height": 1440,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 257,
 			"file": "251/7",
-			"width": 800,
-			"height": 450
+			"width": 2560,
+			"height": 1440,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 258,
 			"file": "251/8",
-			"width": 800,
-			"height": 450
+			"width": 2560,
+			"height": 1440,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 259,
 			"file": "251/9",
-			"width": 800,
-			"height": 450
+			"width": 2560,
+			"height": 1440,
+			"full": true
 		}
 	]
 }

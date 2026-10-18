@@ -17,29 +17,33 @@
 			"type": "image",
 			"messageId": 307,
 			"file": "307/1",
-			"width": 800,
-			"height": 800
+			"width": 2560,
+			"height": 2560,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 308,
 			"file": "307/2",
-			"width": 369,
-			"height": 800
+			"width": 1181,
+			"height": 2560,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 309,
 			"file": "307/3",
-			"width": 369,
-			"height": 800
+			"width": 1181,
+			"height": 2560,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 310,
 			"file": "307/4",
-			"width": 369,
-			"height": 800
+			"width": 1181,
+			"height": 2560,
+			"full": true
 		}
 	]
 }

@@ -17,22 +17,25 @@
 			"type": "image",
 			"messageId": 320,
 			"file": "320/1",
-			"width": 800,
-			"height": 441
+			"width": 2560,
+			"height": 1412,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 321,
 			"file": "320/2",
-			"width": 800,
-			"height": 440
+			"width": 2560,
+			"height": 1409,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 322,
 			"file": "320/3",
-			"width": 800,
-			"height": 413
+			"width": 2560,
+			"height": 1323,
+			"full": true
 		}
 	]
 }

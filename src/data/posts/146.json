@@ -17,8 +17,9 @@
 			"type": "image",
 			"messageId": 146,
 			"file": "146/1",
-			"width": 800,
-			"height": 450
+			"width": 1280,
+			"height": 720,
+			"full": true
 		}
 	]
 }

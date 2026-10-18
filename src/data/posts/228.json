@@ -18,21 +18,24 @@
 			"messageId": 228,
 			"file": "228/1",
 			"width": 473,
-			"height": 619
+			"height": 619,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 229,
 			"file": "228/2",
-			"width": 800,
-			"height": 649
+			"width": 1280,
+			"height": 1038,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 230,
 			"file": "228/3",
-			"width": 800,
-			"height": 729
+			"width": 1744,
+			"height": 1590,
+			"full": true
 		}
 	]
 }
