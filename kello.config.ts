@@ -19,18 +19,6 @@ export default defineConfig({
 		},
 	},
 
-	translation: {
-		// Google Translate's keyless endpoint first; Gemini picks up what it misses, if GEMINI_API_KEY is set.
-		providers: ['google', 'gemini'],
-		gemini: {
-			// Any model available on the free tier. Check https://ai.google.dev/gemini-api/docs/models
-			model: 'gemini-2.5-flash',
-			apiKeyEnv: 'GEMINI_API_KEY',
-			instructions:
-				'Posts are short notes about design, UI, typography and tools. Keep product names, @mentions and URLs as they are.',
-		},
-	},
-
 	media: {
 		dir: 'media',
 		// Telegram's public pages serve photos at 800px at most, so today each image gets a single 800px file.

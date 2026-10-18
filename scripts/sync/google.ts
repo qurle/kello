@@ -89,7 +89,7 @@ export class GoogleTranslator implements Translator {
 			try {
 				result = await this.request(endpoint, batch.map((b) => `q=${encodeURIComponent(b.text)}`).join('&'));
 			} catch (err) {
-				// Blocked or down: stop here and let the next provider take the rest.
+				// Blocked or down: stop here; the rest keep their English and are retried next sync.
 				this.warn((err as Error).message);
 				break;
 			}
