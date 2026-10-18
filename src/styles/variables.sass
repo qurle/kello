@@ -1,16 +1,17 @@
 // Design tokens: plain CSS custom properties
 
 :root
+    // Colours are light-dark(): color-scheme follows the system, or the theme switch below
     color-scheme: light dark
 
     // Colour
-    --background: #fdfdfd
-    --surface: #f3f3f3
-    --primary: #171717
-    --secondary: #b8b8b8
-    --tertiary: #e2e2e2
-    --accent: #3733d2
-    --overlay: rgb(253 253 253 / 0.96)
+    --background: light-dark(#fdfdfd, #111111)
+    --surface: light-dark(#f3f3f3, #1c1c1c)
+    --primary: light-dark(#171717, #ececec)
+    --secondary: light-dark(#b8b8b8, #666666)
+    --tertiary: light-dark(#e2e2e2, #3c3c3c)
+    --accent: light-dark(#3733d2, #8582ff)
+    --overlay: light-dark(rgb(253 253 253 / 0.96), rgb(17 17 17 / 0.96))
 
     // Type
     --font-sans: "Inter Variable", "Inter", system-ui, sans-serif
@@ -46,7 +47,7 @@
     --page-padding-top: 12rem
     // Side padding on wide screens, where the feed scatters
     --page-padding-wide: 4rem
-    // Scattered feed from 64rem (inline/feed.js): a post spans --scatter-span of --scatter-columns, and may drop by --scatter-jitter
+    // Scattered feed from 64rem (feed.js): a post spans --scatter-span of --scatter-columns, dropping up to --scatter-jitter
     --scatter-columns: 12
     --scatter-span: 4
     --scatter-gap: var(--space-l)
@@ -65,11 +66,11 @@
     --media-gap: 0.5rem
     --radius: 0
     --media-nav-size: 2.75rem
-    // Feed media only, not the viewer: a flat tint blended over each slot, so white images
-    // stand off the background. Darken caps every pixel at the tint
-    --media-tint: #f7f7f7
+    // Feed media only: a flat tint over each slot, so images stand off the background. Darken caps
+    // white at the tint; in dark mode, lighten lifts black to it
+    --media-tint: light-dark(#f7f7f7, #191919)
     --media-tint-blend: darken
-    // Media loading state (base.sass): --dither is a 4×4 Bayer threshold map, one cell is --dither-size / 4
+    // Loading dither (base.sass): a 4×4 Bayer threshold map; a cell is --dither-size / 4
     --dither: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' fill='white' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='1' height='1' fill-opacity='0.031'/%3E%3Crect x='1' y='0' width='1' height='1' fill-opacity='0.531'/%3E%3Crect x='2' y='0' width='1' height='1' fill-opacity='0.156'/%3E%3Crect x='3' y='0' width='1' height='1' fill-opacity='0.656'/%3E%3Crect x='0' y='1' width='1' height='1' fill-opacity='0.781'/%3E%3Crect x='1' y='1' width='1' height='1' fill-opacity='0.281'/%3E%3Crect x='2' y='1' width='1' height='1' fill-opacity='0.906'/%3E%3Crect x='3' y='1' width='1' height='1' fill-opacity='0.406'/%3E%3Crect x='0' y='2' width='1' height='1' fill-opacity='0.219'/%3E%3Crect x='1' y='2' width='1' height='1' fill-opacity='0.719'/%3E%3Crect x='2' y='2' width='1' height='1' fill-opacity='0.094'/%3E%3Crect x='3' y='2' width='1' height='1' fill-opacity='0.594'/%3E%3Crect x='0' y='3' width='1' height='1' fill-opacity='0.969'/%3E%3Crect x='1' y='3' width='1' height='1' fill-opacity='0.469'/%3E%3Crect x='2' y='3' width='1' height='1' fill-opacity='0.844'/%3E%3Crect x='3' y='3' width='1' height='1' fill-opacity='0.344'/%3E%3C/svg%3E")
     --dither-size: 12px
     --dither-strength: 0.5
@@ -86,46 +87,27 @@
     --duration-fast: 120ms
     --duration-base: 220ms
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1)
-    // A post coming in at the bottom of the window straightens from this tilt over this much scrolling (Post.astro)
+    // A post entering at the bottom straightens from this tilt over this much scrolling (Post.astro)
     --settle-angle: 30deg
     --settle-perspective: 30rem
     --settle-distance: 40vh
     --settle-ease: cubic-bezier(0.3, 0.5, 0.5, 1)
-    // Mouse drag in media rows and the viewer (drag.ts), read on each press and release, so a component can
-    // override them. Coast: how far a flick carries, as that many ms of its release speed (0 for none).
-    // Settle: about how long the spring takes to land on the slide. Threshold: how far a press moves before
-    // it drags rather than clicks
+    // Mouse drag (drag.ts), read from the track, so a component can override them. Coast: ms of release
+    // speed a flick carries (0 for none). Settle: about how long the spring takes to land. Threshold: how
+    // far a press moves before it's a drag
     --drag-coast: 200ms
     --drag-settle: 500ms
     --drag-threshold: 6px
 
-// Dark: the system's dark mode unless the theme switch (Home.astro) says light, or the switch says dark.
-// The two blocks hold the same tokens; keep them in step
-@media (prefers-color-scheme: dark)
-    :root:not([data-theme="light"])
-        --background: #111111
-        --surface: #1c1c1c
-        --primary: #ececec
-        --secondary: #5a5a5a
-        --tertiary: #2e2e2e
-        --accent: #8582ff
-        --overlay: rgb(17 17 17 / 0.96)
-        // Lighten lifts every pixel to at least the tint, so black images stand off the dark background
-        --media-tint: #191919
-        --media-tint-blend: lighten
+// Theme switch (Home.astro): light or dark whatever the system says. The blend is the one token
+// light-dark() can't hold
+:root[data-theme="light"]
+    color-scheme: light
 
 :root[data-theme="dark"]
     color-scheme: dark
-    --background: #111111
-    --surface: #1c1c1c
-    --primary: #ececec
-    --secondary: #666666
-    --tertiary: #3c3c3c
-    --accent: #8582ff
-    --overlay: rgb(17 17 17 / 0.96)
-    // Lighten lifts every pixel to at least the tint, so black images stand off the dark background
-    --media-tint: #191919
     --media-tint-blend: lighten
 
-:root[data-theme="light"]
-    color-scheme: light
+@media (prefers-color-scheme: dark)
+    :root:not([data-theme="light"])
+        --media-tint-blend: lighten

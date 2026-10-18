@@ -1,5 +1,4 @@
-// Reset, element defaults, the tag button, which the filter line and posts share, and the loading
-// dither, which feed slots and viewer slides share. Everything else is styled in its component
+// Reset, element defaults, and what components share: the tag button and the loading dither
 
 *, *::before, *::after
     box-sizing: border-box
@@ -55,8 +54,7 @@ button
     text-align: inherit
     cursor: pointer
 
-// Focus rings for keyboard navigation only: no outline on plain focus, which some browsers draw on a
-// press, and the ring on :focus-visible
+// Rings for keyboard focus only; some browsers outline plain focus on a press
 :focus
     outline: none
 
@@ -68,7 +66,7 @@ code
     font-family: var(--font-mono)
     font-size: var(--text-code)
 
-// A tag in the filter line or on a post; colour carries the state
+// A tag in the filter line or on a post
 .tag
     color: var(--secondary)
     transition: color var(--duration-fast) var(--ease), opacity var(--duration-fast) linear
@@ -85,10 +83,9 @@ code
         cursor: default
         opacity: 0
 
-// Loading media, with JS only: a feed slot (MediaRow.astro) or a viewer slide (viewer.ts) holds a
-// .dither and a --preview, and has data-loading until its picture or video arrives (feed.js, media.ts,
-// viewer.ts). Ordered dither: the greyed preview at half brightness (L / 2) plus the Bayer map at half
-// strength (T / 2), added with plus-lighter; a huge contrast() then makes each point white where L + T > 1
+// Loading, with JS only: a feed slot or viewer slide holds a .dither and a --preview, and has data-loading
+// until its media arrive. Ordered dither: the preview at half brightness (L / 2) plus the Bayer map at
+// half strength (T / 2), added; a huge contrast() turns each channel on where L + T > 1
 .dither
     display: none
 

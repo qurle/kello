@@ -1,6 +1,5 @@
 ---
-// Media viewer: a full-screen <dialog> with a post's row edge to edge, items uncropped. viewer.ts fills it
-// with copies of the post's media and meta, so the styles for those reach them with :global()
+// Full-screen media viewer. viewer.ts fills it with copies of a post's media and meta, styled with :global()
 import { strings, type Lang } from '../lib/i18n'
 
 interface Props {
@@ -33,10 +32,10 @@ const t = strings[Astro.props.lang]
     color: var(--primary)
     overflow-y: auto
     overscroll-behavior: contain
-    // Slides size against the dialog, which excludes its scrollbar, unlike 100vw
+    // Slides size against the dialog, which excludes its scrollbar
     container-type: inline-size
 
-    // Focused itself when opened by a pointer (viewer.ts); a ring round the whole window says nothing
+    // Focused itself when opened by a pointer (viewer.ts)
     &:focus-visible
         outline: none
 
@@ -89,7 +88,7 @@ const t = strings[Astro.props.lang]
     &::-webkit-scrollbar
         display: none
 
-    // Widths set in viewer.ts so the first and last slides can reach the middle
+    // Widths from viewer.ts, so the end slides can reach the middle
     &::before,
     &::after
         content: ""
@@ -101,22 +100,21 @@ const t = strings[Astro.props.lang]
     &::after
         width: calc(var(--pad-end, 0px) - var(--media-gap))
 
-    // Mid-drag (drag.ts): the hand closes over everything
+    // Mid-drag (drag.ts)
     &[data-dragging],
     &[data-dragging] *
         cursor: grabbing
 
-    // A slide, made by viewer.ts. Height follows from the item's own ratio. While its media load it
-    // shows the loading dither (base.sass)
+    // A slide (viewer.ts), at the item's own ratio. While loading, its background may be the feed's copy
     :global([data-slide])
         flex: none
         width: min(var(--viewer-media-height) * var(--ratio), var(--viewer-media-max), 100cqw - 2 * var(--gutter))
         aspect-ratio: var(--ratio)
         scroll-snap-align: center
-        background: var(--surface)
+        background: var(--surface) center / cover no-repeat
         cursor: pointer
 
-    // Slides drag with a mouse (drag.ts); a click on the current one's halves still steps
+    // Slides drag with a mouse (drag.ts)
     @media (hover: hover) and (pointer: fine)
         :global([data-slide])
             cursor: grab

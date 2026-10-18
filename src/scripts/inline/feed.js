@@ -1,6 +1,5 @@
-// Inlined after the feed (Home.astro) so it runs before first paint; plain JS because Astro defers <script> modules.
-// Marks loading images for the dither, and scatters the feed on wide screens. Posts from other pages
-// (pages.ts, `kello:posts`) get the same
+// Inlined after the feed (Home.astro) so it runs before the first paint. Clears the loading dither as
+// images arrive and scatters the feed on wide screens, for this page and for posts from others (`kello:posts`)
 ;(() => {
 	const root = document.documentElement
 	const feed = document.querySelector('[data-feed]')
@@ -8,8 +7,7 @@
 
 	const watch = (scope) => {
 		for (const img of scope.querySelectorAll('[data-loading] img')) {
-			const slot = img.closest('[data-loading]')
-			const done = () => slot.removeAttribute('data-loading')
+			const done = () => img.closest('[data-loading]').removeAttribute('data-loading')
 			if (img.complete) done()
 			else {
 				img.addEventListener('load', done, { once: true })
@@ -21,12 +19,13 @@
 
 	const wide = matchMedia('(min-width: 64rem)')
 
-	/** A custom property in px, whatever unit the token uses */
-	const length = (name) => {
+	/** Tokens in px, whatever their units, measured in one layout */
+	const lengths = (...names) => {
 		const probe = document.createElement('div')
-		probe.style.cssText = `position:absolute;visibility:hidden;width:var(${name})`
+		probe.style.cssText = 'position:absolute;visibility:hidden'
+		probe.innerHTML = names.map((name) => `<i style="display:block;width:var(${name})"></i>`).join('')
 		feed.append(probe)
-		const px = probe.offsetWidth
+		const px = [...probe.children].map((child) => child.offsetWidth)
 		probe.remove()
 		return px
 	}
@@ -47,15 +46,13 @@
 
 		const columns = number('--scatter-columns')
 		const span = number('--scatter-span')
-		const gap = length('--scatter-gap')
-		const rowGap = length('--scatter-row-gap')
-		const jitter = length('--scatter-jitter')
+		const [gap, rowGap, jitter] = lengths('--scatter-gap', '--scatter-row-gap', '--scatter-jitter')
 		const column = (feed.clientWidth - (columns - 1) * gap) / columns
 		const width = span * column + (span - 1) * gap
 		const visible = [...feed.querySelectorAll('[data-post]:not([hidden])')]
 
 		feed.setAttribute('data-scatter', '')
-		// All widths first, then all heights: two layouts instead of one per post
+		// All widths, then all heights: two layouts rather than one per post
 		for (const post of visible) post.style.width = `${width}px`
 		const heights = visible.map((post) => post.offsetHeight)
 
@@ -88,7 +85,7 @@
 		try {
 			layout()
 		} catch (err) {
-			// Show the single column rather than a hidden feed
+			// The single column, rather than a hidden feed
 			delete root.dataset.js
 			reset()
 			throw err
@@ -99,11 +96,11 @@
 	document.addEventListener('kello:filter', safe)
 	document.addEventListener('kello:posts', ({ detail }) => {
 		for (const post of detail) watch(post)
-		// After every listener, so the filter has hidden what it hides
+		// After the other listeners, so the filter has hidden what it hides
 		queueMicrotask(safe)
 	})
 	document.fonts.ready.then(safe)
-	// Only the width matters: the height is ours
+	// Only width changes matter: the height is ours
 	let lastWidth = feed.clientWidth
 	new ResizeObserver(([entry]) => {
 		if (entry.contentRect.width === lastWidth) return

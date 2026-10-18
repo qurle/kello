@@ -1,4 +1,5 @@
 ---
+// With JS, a picture that isn't eager waits in a <noscript> until media.ts reveals it; without, it's lazy
 import { imageSet } from '../lib/urls'
 
 interface Props {
@@ -9,16 +10,14 @@ interface Props {
 	height?: number
 	sizes: string
 	eager?: boolean
-	/** Held back in a <noscript> until media.ts reveals it. Without JS it is an ordinary lazy picture */
-	later?: boolean
 }
 
-const { file, width, height, sizes, eager = false, later = false } = Astro.props
+const { file, width, height, sizes, eager = false } = Astro.props
 const { formats, fallbackFormat, src } = imageSet(file, width)
-const Wrap = later ? 'noscript' : Fragment
+const Wrap = eager ? Fragment : 'noscript'
 ---
 
-<Wrap {...(later ? { 'data-later': '' } : {})}><picture>
+<Wrap {...(eager ? {} : { 'data-later': '' })}><picture>
 	{formats.filter(({ format }) => format !== fallbackFormat).map(({ format, srcset }) => (
 		<source type={`image/${format}`} srcset={srcset} sizes={sizes} />
 	))}

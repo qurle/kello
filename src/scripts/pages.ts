@@ -1,7 +1,6 @@
-// Paged feed: a page's HTML holds its own posts, and the others come from their pages' HTML. The next
-// page's HTML is fetched straight away, ahead of the images, and its posts go in as the "more" link nears
-// the window; every page loads when a filter or a shared link needs them (`loadAll`). New posts go in
-// page order and announce themselves with `kello:posts`
+// Paged feed: other pages' posts come from their HTML. The next page is fetched at once and its posts go in
+// as the "more" link nears; a filter or a shared link loads them all (`loadAll`). New posts go in page
+// order and announce themselves with `kello:posts`
 
 const feed = document.querySelector<HTMLElement>('[data-feed]')!
 const urls: string[] = JSON.parse(feed.dataset.pages ?? '[]')
@@ -10,11 +9,11 @@ const loaded = new Map<number, Promise<void>>([[Number(feed.dataset.page), Promi
 const fetched = new Map<number, Promise<HTMLElement[]>>()
 
 async function fetchPage(page: number) {
-	// High priority: a page is about 15 KB and shouldn't queue behind images
+	// About 15 KB: ahead of the images
 	const response = await fetch(urls[page - 1], { priority: 'high' })
 	if (!response.ok) throw new Error(`${urls[page - 1]}: ${response.status}`)
 	const html = new DOMParser().parseFromString(await response.text(), 'text/html')
-	// Parsed without scripting, a row's held-back pictures are elements. As text they wait like this page's
+	// Parsed without scripting, <noscript> holds elements; as text it waits like this page's (Picture.astro)
 	for (const later of html.querySelectorAll('noscript')) later.textContent = later.innerHTML
 	return [...html.querySelectorAll<HTMLElement>('[data-feed] > [data-post]')]
 }
@@ -29,7 +28,7 @@ function fetchPosts(page: number) {
 	return fetched.get(page)!
 }
 
-/** Fetches the next page's HTML now, so its posts are ready when the scroll gets there */
+/** Fetches the next page now, so its posts are ready when the scroll gets there */
 function prefetch() {
 	const page = nextPage()
 	if (page) fetchPosts(page).catch(() => {})
@@ -49,7 +48,7 @@ function load(page: number) {
 		const loading = fetchPosts(page).then(
 			(posts) => insert(page, posts),
 			(err) => {
-				// Try again next time; the "more" link still works as a link
+				// Tried again next time; the link still works
 				loaded.delete(page)
 				throw err
 			},
@@ -89,7 +88,7 @@ if (more) {
 		try {
 			await load(page)
 		} catch (err) {
-			// No retry loop: scrolling stops loading, and the link goes to the page
+			// No retry loop: the link goes to the page instead
 			observer.disconnect()
 			throw err
 		} finally {
@@ -97,13 +96,13 @@ if (more) {
 			updateMore()
 		}
 		prefetch()
-		// Observing again reports where the link is now, so a short page loads the next one too
+		// Observing again reports where the link is now, so a short page loads the next too
 		if (more.isConnected) {
 			observer.unobserve(more)
 			observer.observe(more)
 		}
 	}
-	// About two windows ahead, so posts are in place before the scroll gets there
+	// Two windows ahead
 	const observer = new IntersectionObserver((entries) => entries.some((entry) => entry.isIntersecting) && loadNext(), {
 		rootMargin: '0px 0px 200% 0px',
 	})
