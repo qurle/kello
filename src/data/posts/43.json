@@ -16,7 +16,8 @@
 			"messageId": 43,
 			"file": "43/1",
 			"width": 800,
-			"height": 600
+			"height": 600,
+			"full": true
 		}
 	]
 }

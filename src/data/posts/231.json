@@ -18,57 +18,65 @@
 			"type": "image",
 			"messageId": 231,
 			"file": "231/1",
-			"width": 800,
-			"height": 544
+			"width": 2530,
+			"height": 1722,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 232,
 			"file": "231/2",
-			"width": 800,
-			"height": 800
+			"width": 2000,
+			"height": 2000,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 233,
 			"file": "231/3",
-			"width": 800,
-			"height": 800
+			"width": 2000,
+			"height": 2000,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 234,
 			"file": "231/4",
-			"width": 800,
-			"height": 800
+			"width": 2000,
+			"height": 2000,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 235,
 			"file": "231/5",
-			"width": 800,
-			"height": 800
+			"width": 2000,
+			"height": 2000,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 236,
 			"file": "231/6",
-			"width": 800,
-			"height": 800
+			"width": 1280,
+			"height": 1280,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 237,
 			"file": "231/7",
-			"width": 800,
-			"height": 800
+			"width": 1280,
+			"height": 1280,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 238,
 			"file": "231/8",
-			"width": 800,
-			"height": 800
+			"width": 1280,
+			"height": 1280,
+			"full": true
 		}
 	]
 }

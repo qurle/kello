@@ -18,15 +18,17 @@
 			"type": "image",
 			"messageId": 300,
 			"file": "300/1",
-			"width": 800,
-			"height": 435
+			"width": 2560,
+			"height": 1392,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 301,
 			"file": "300/2",
-			"width": 800,
-			"height": 448
+			"width": 2560,
+			"height": 1434,
+			"full": true
 		}
 	]
 }

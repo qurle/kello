@@ -15,15 +15,17 @@
 			"type": "image",
 			"messageId": 263,
 			"file": "263/1",
-			"width": 800,
-			"height": 522
+			"width": 2560,
+			"height": 1673,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 264,
 			"file": "263/2",
-			"width": 800,
-			"height": 522
+			"width": 2560,
+			"height": 1673,
+			"full": true
 		}
 	]
 }

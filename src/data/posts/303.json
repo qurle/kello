@@ -23,8 +23,9 @@
 			"type": "image",
 			"messageId": 303,
 			"file": "303/1",
-			"width": 800,
-			"height": 447
+			"width": 2560,
+			"height": 1432,
+			"full": true
 		}
 	]
 }

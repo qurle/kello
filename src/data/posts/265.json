@@ -17,8 +17,9 @@
 			"type": "image",
 			"messageId": 265,
 			"file": "265/1",
-			"width": 800,
-			"height": 659
+			"width": 2560,
+			"height": 2111,
+			"full": true
 		},
 		{
 			"type": "video",
@@ -32,43 +33,49 @@
 			"type": "image",
 			"messageId": 267,
 			"file": "265/3",
-			"width": 800,
-			"height": 462
+			"width": 1200,
+			"height": 693,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 268,
 			"file": "265/4",
-			"width": 800,
-			"height": 442
+			"width": 2560,
+			"height": 1415,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 269,
 			"file": "265/5",
-			"width": 800,
-			"height": 520
+			"width": 2560,
+			"height": 1664,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 270,
 			"file": "265/6",
-			"width": 533,
-			"height": 800
+			"width": 800,
+			"height": 1200,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 271,
 			"file": "265/7",
-			"width": 800,
-			"height": 533
+			"width": 2048,
+			"height": 1365,
+			"full": true
 		},
 		{
 			"type": "image",
 			"messageId": 272,
 			"file": "265/8",
-			"width": 640,
-			"height": 800
+			"width": 1920,
+			"height": 2400,
+			"full": true
 		},
 		{
 			"type": "video",
