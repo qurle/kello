@@ -42,11 +42,17 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 	<head>
 		<meta charset="utf-8" />
 		<!-- Lets CSS hold the wide feed back until feed.js has placed it, and a shared ?tags= link
-		     hold it until filter.ts has loaded every page and filtered. -->
+		     hold it until filter.ts has loaded every page and filtered. Applies a stored theme before
+		     the first paint (theme.ts). -->
 		<script is:inline>
 			document.documentElement.dataset.js = ''
 			if (/[?&]tags=/.test(location.search))
 				document.documentElement.dataset.filtering = ''
+			try {
+				const theme = localStorage.getItem('theme')
+				if (theme === 'light' || theme === 'dark')
+					document.documentElement.dataset.theme = theme
+			} catch {}
 		</script>
 		<link
 			rel="preload"
@@ -114,16 +120,26 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 						)
 					}
 				</div>
-				<span>
+				<!-- Each switch names the current state; the theme shows the label for html[data-theme]. -->
+				<div class="switches">
+					<button
+						class="theme"
+						type="button"
+						title={t.themeLabel}
+						data-theme-switch
+					>
+						<span class="auto">{t.theme.auto}</span>
+						<span class="light">{t.theme.light}</span>
+						<span class="dark">{t.theme.dark}</span>
+					</button>
 					<a
 						class="lang"
 						href={pagePath(t.switchTo, page)}
 						hreflang={t.switchTo}
-						lang={t.switchTo}
 						aria-label={t.switchLabel}
-						data-lang-link>{t.switchTo}</a
+						data-lang-link>{lang}</a
 					>
-				</span>
+				</div>
 			</header>
 			<nav class="filter" aria-label={t.filter} data-filter>
 				<ul class="list">
@@ -175,6 +191,7 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 			import '../scripts/media'
 			import '../scripts/viewer'
 			import '../scripts/pages'
+			import '../scripts/theme'
 		</script>
 	</body>
 </html>
@@ -195,12 +212,13 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 
 .masthead
     display: flex
-    justify-content: space-between
+    flex-wrap: wrap
     align-items: end
     gap: var(--space-md)
 
+    // Takes the free space, so the switches sit at the right; they wrap below when it runs out.
     .heading
-        width: fit-content
+        flex: 1 1 auto
 
     .title
         margin-inline-start: var(--display-indent)
@@ -220,8 +238,29 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
             &:hover
                 color: var(--primary)
 
+    .switches
+        display: flex
+        gap: var(--space-xs)
+
+    .theme,
     .lang
         color: var(--secondary)
+
+        @media (hover: hover)
+            &:hover
+                color: var(--primary)
+
+    // Only the current theme's name shows. Without JS there's nothing to switch.
+    .theme span
+        display: none
+
+    :global(html:not([data-theme])) & .theme .auto,
+    :global(html[data-theme="light"]) & .theme .light,
+    :global(html[data-theme="dark"]) & .theme .dark
+        display: inline
+
+    :global(html:not([data-js])) & .theme
+        display: none
 
     .logo
         display: inline

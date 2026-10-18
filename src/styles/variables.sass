@@ -92,8 +92,10 @@
     --settle-distance: 40vh
     --settle-ease: cubic-bezier(0.3, 0.5, 0.5, 1)
 
+// Dark: the system's dark mode unless the theme switch (Home.astro) says light, or the switch says dark.
+// The two blocks hold the same tokens; keep them in step.
 @media (prefers-color-scheme: dark)
-    :root
+    :root:not([data-theme="light"])
         --background: #111111
         --surface: #1c1c1c
         --primary: #ececec
@@ -104,3 +106,19 @@
         // Lighten lifts every pixel to at least the tint, so black images stand off the dark background.
         --media-tint: #191919
         --media-tint-blend: lighten
+
+:root[data-theme="dark"]
+    color-scheme: dark
+    --background: #111111
+    --surface: #1c1c1c
+    --primary: #ececec
+    --secondary: #5a5a5a
+    --tertiary: #2e2e2e
+    --accent: #8582ff
+    --overlay: rgb(17 17 17 / 0.96)
+    // Lighten lifts every pixel to at least the tint, so black images stand off the dark background.
+    --media-tint: #191919
+    --media-tint-blend: lighten
+
+:root[data-theme="light"]
+    color-scheme: light

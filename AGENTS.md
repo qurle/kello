@@ -103,12 +103,14 @@ Setup, once:
 | `src/lib/preview.ts` | Build-time 16px previews for the loading dither. |
 | `src/lib/tags.ts` | Tag labels, order and the filter line's tags. |
 | `src/lib/urls.ts` | Media, `srcset` and Telegram URLs, and the source link domain. |
-| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, `pages.ts` for loading the other feed pages, and `url.ts` for the shared query string. `inline/feed.js` is the exception, inlined in Home.astro: scattered feed and loading state. |
+| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, `pages.ts` for loading the other feed pages, `theme.ts` for the theme switch, and `url.ts` for the shared query string. `inline/feed.js` is the exception, inlined in Home.astro: scattered feed and loading state. |
 | `public/media/` | Generated images (WebP, or AVIF too if `media.formats` lists it, at each stored width) and videos. |
 
 ## Design
 
-The page has three parts: the heading "kello" with its subtitle (`site.subtitle` in `kello.config.ts`), a line of tag filters, then posts. Nothing else goes in the header or footer, except the language link (`ru` on `/`, `en` on `/ru`, to the same page number) and the "more" link to the next page after the feed.
+The page has three parts: the heading "kello" with its subtitle (`site.subtitle` in `kello.config.ts`), a line of tag filters, then posts. Nothing else goes in the header or footer, except two switches at the right of the heading and the "more" link to the next page after the feed.
+  - The switches are the theme (`auto`, `light`, `dark`; Russian on `/ru`) and the language (`en` on `/`, `ru` on `/ru`, linking to the other language's same page number). Each shows its current state, not the one it switches to. They sit `--space-xs` apart.
+  - The heading takes the free space in the header row (`--space-md` gaps), and the switches wrap below it when there isn't room.
 
 - Swiss style: Inter for text, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings and link hover, and appears nowhere else. Selected tags turn `--primary`.
 - Fonts are self-hosted: Vite copies them into `/_astro/` at build time, and nothing loads from another host.
@@ -118,8 +120,11 @@ The page has three parts: the heading "kello" with its subtitle (`site.subtitle`
 - Tags, their labels, the heading and every UI string in `src/lib/i18n.ts` are lowercase; the config schema rejects uppercase labels.
 - One text size, `--text-base`, for everything except the heading. The page starts `--page-padding-top` (12rem) down.
 - Post text is typeset at build time (`src/lib/typography.ts`, applied in `getPosts()`). A hyphen or en dash between spaces becomes an em dash. Emoji from Telegram stay.
-- Secondary and tertiary greys are deliberately faint (`#b8b8b8` and `#e2e2e2` on light). That's below WCAG text contrast, which is accepted for the quiet parts: unselected tags, the Telegram link and the language link.
-- Colour scheme follows `prefers-color-scheme`. Every colour comes from a token, so dark mode only redefines the tokens.
+- Secondary and tertiary greys are deliberately faint (`#b8b8b8` and `#e2e2e2` on light). That's below WCAG text contrast, which is accepted for the quiet parts: unselected tags, the Telegram link and the switches.
+- Colour scheme follows `prefers-color-scheme`, unless the theme switch picks light or dark. Every colour comes from a token, so dark mode only redefines the tokens.
+  - The switch (`src/scripts/theme.ts`) cycles auto, light, dark. It sets `data-theme` on `<html>` (none for auto) and keeps it in `localStorage`; the inline script in `<head>` applies it before the first paint.
+  - `variables.sass` holds the dark tokens twice: under `prefers-color-scheme: dark` for `:root:not([data-theme="light"])`, and for `:root[data-theme="dark"]`. Keep the two in step.
+  - The button shows the label for the current `data-theme` through CSS, so it's right from the first paint. Without JS it's hidden.
 - From 64rem up, the page spans the window with at least 4rem (`--page-padding-wide`) of padding on each side, and the feed scatters (`src/scripts/inline/feed.js`). That script is plain JS inlined right after the feed, so it runs while the page parses. A `data-js` flag set in `<head>` keeps the wide feed hidden until the script has placed it, so the single column never flashes. If the script throws, it drops the flag and the column shows.
   - Posts become narrow columns, `--scatter-span` of `--scatter-columns` grid columns wide, with tags in a row and body-size text.
   - The tag line uses the same grid. It runs from the column after `--index-columns` to the right edge of the page, so it starts where posts can start.
