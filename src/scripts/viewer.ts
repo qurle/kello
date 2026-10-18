@@ -1,5 +1,6 @@
 // Media viewer: a post's whole row as a carousel in a <dialog>. The open post and item live in the URL (?post=&media=).
 
+import { reveal } from './media';
 import { loadAll } from './pages';
 import { getParam, setParams } from './url';
 
@@ -85,6 +86,7 @@ function nearest() {
 }
 
 function open(post: HTMLElement, index: number, from: HTMLElement | null) {
+	reveal(post);
 	const items = [...post.querySelectorAll<HTMLElement>('[data-open]')];
 	if (!items.length) return;
 	postId = post.dataset.post!;

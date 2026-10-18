@@ -9,13 +9,16 @@ interface Props {
 	height?: number;
 	sizes: string;
 	eager?: boolean;
+	/** Held back in a <noscript> until media.ts reveals it. Without JS it is an ordinary lazy picture. */
+	later?: boolean;
 }
 
-const { file, width, height, sizes, eager = false } = Astro.props;
+const { file, width, height, sizes, eager = false, later = false } = Astro.props;
 const { formats, fallbackFormat, src } = imageSet(file, width);
+const Wrap = later ? 'noscript' : Fragment;
 ---
 
-<picture>
+<Wrap {...(later ? { 'data-later': '' } : {})}><picture>
 	{formats.filter(({ format }) => format !== fallbackFormat).map(({ format, srcset }) => (
 		<source type={`image/${format}`} srcset={srcset} sizes={sizes} />
 	))}
@@ -30,4 +33,4 @@ const { formats, fallbackFormat, src } = imageSet(file, width);
 		fetchpriority={eager ? 'high' : 'auto'}
 		decoding="async"
 	/>
-</picture>
+</picture></Wrap>

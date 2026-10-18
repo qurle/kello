@@ -15,6 +15,8 @@ interface Props {
 const { media, telegramId, lang, eager = false } = Astro.props;
 const t = strings[lang];
 const single = media.length === 1;
+// Only the first two items load with the page; the rest wait until the row is scrolled (media.ts).
+const upfront = 2;
 
 // Previews shown dithered until the image or video poster arrives.
 const still = (item: Props['media'][number]) => (item.type === 'image' ? item.file : item.type === 'video' ? item.poster : undefined);
@@ -35,17 +37,17 @@ const sizes = single
 				{still(item) && <span class="dither" aria-hidden="true" />}
 				{item.type === 'unavailable' ? (
 					<a class="item unavailable" href={item.messageId ? telegramUrl(item.messageId, true) : telegramUrl(telegramId)}>
-						{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />}
+						{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} later={index >= upfront} />}
 						<span class="label">{t.unavailable} <span aria-hidden="true">↗</span></span>
 					</a>
 				) : (
 					<button class="item" type="button" data-open aria-label={`${t.open} ${index + 1}/${media.length}`}>
 						{item.type === 'image' ? (
-							<Picture file={item.file} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />
+							<Picture file={item.file} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} later={index >= upfront} />
 						) : (
 							<>
 								{/* The poster is a lazy picture under the video rather than its poster attribute, which loads eagerly and at one size. */}
-								{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} />}
+								{item.poster && <Picture file={item.poster} width={item.width} height={item.height} sizes={sizes} eager={eager && index === 0} later={index >= upfront} />}
 								<video
 									src={mediaUrl(item.file)}
 									width={item.width}

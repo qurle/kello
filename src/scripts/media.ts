@@ -1,15 +1,35 @@
-// Media rows: chevrons, and videos that play only while in view. Posts from other pages
-// (`kello:posts`) get the same.
-
-export {};
+// Media rows: chevrons, items past the first two, and videos that play only while in view. Posts from
+// other pages (`kello:posts`) get the same.
 
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+/** Puts in the pictures a row holds back in <noscript> (MediaRow.astro). They stay lazy. */
+export function reveal(scope: ParentNode) {
+	for (const later of scope.querySelectorAll('noscript[data-later]')) {
+		const template = document.createElement('template');
+		template.innerHTML = later.textContent ?? '';
+		// The dither stays until the picture arrives, as feed.js does for the rest.
+		const slot = later.closest('[data-loading]');
+		const img = template.content.querySelector('img');
+		if (slot && img) {
+			const done = () => slot.removeAttribute('data-loading');
+			img.addEventListener('load', done, { once: true });
+			img.addEventListener('error', done, { once: true });
+		}
+		later.replaceWith(template.content);
+	}
+}
 
 function setUpRow(row: HTMLElement) {
 	const track = row.querySelector<HTMLElement>('[data-media-track]')!;
 	const prev = row.querySelector<HTMLButtonElement>('[data-media-prev]');
 	const next = row.querySelector<HTMLButtonElement>('[data-media-next]');
 	if (!prev || !next) return;
+
+	// The rest of the row loads once it's scrolled, or the mouse reaches the next chevron.
+	const revealRow = () => reveal(row);
+	track.addEventListener('scroll', revealRow, { once: true, passive: true });
+	next.addEventListener('pointerenter', revealRow, { once: true });
 
 	const update = () => {
 		const end = track.scrollWidth - track.clientWidth;
