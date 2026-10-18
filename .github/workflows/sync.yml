@@ -39,6 +39,7 @@ jobs:
 
       - name: Sync
         env:
+          # Optional: Google Translate needs no key; Gemini only picks up what it misses when this is set.
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: npm run sync -- --message "$RUNNER_TEMP/commit-message.txt" ${{ inputs.full && '--full' || '' }}
 

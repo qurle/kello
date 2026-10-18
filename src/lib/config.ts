@@ -25,12 +25,18 @@ export const configSchema = z.object({
 		recentPages: z.number().int().positive(),
 	}),
 	translation: z.object({
-		provider: z.literal('gemini'),
-		model: z.string(),
-		/** Environment variable that holds the API key. */
-		apiKeyEnv: z.string(),
-		/** Extra instructions appended to the built-in prompt. */
-		instructions: z.string().optional(),
+		/**
+		 * Tried in order: posts one provider can't translate go to the next. `google` needs no key;
+		 * `gemini` is skipped when its key isn't set.
+		 */
+		providers: z.array(z.enum(['google', 'gemini'])).min(1),
+		gemini: z.object({
+			model: z.string(),
+			/** Environment variable that holds the API key. */
+			apiKeyEnv: z.string(),
+			/** Extra instructions appended to the built-in prompt. */
+			instructions: z.string().optional(),
+		}),
 	}),
 	media: z.object({
 		/** Output folder under `public/`. */

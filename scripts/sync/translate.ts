@@ -6,7 +6,7 @@ export interface TranslationItem {
 	html: string;
 }
 
-/** Anything that can turn Russian post HTML into English. Gemini is the only implementation today. */
+/** Anything that can turn Russian post HTML into English: Google Translate (google.ts) or Gemini (below). */
 export interface Translator {
 	/** Returns English HTML by id. Items that fail are left out of the result. */
 	translate(items: TranslationItem[]): Promise<Map<number, string>>;
@@ -78,6 +78,8 @@ export class GeminiTranslator implements Translator {
 					config: {
 						systemInstruction: system,
 						temperature: 0.2,
+						// Thinking tokens are billed and count toward the free quota; translation doesn't need them.
+						thinkingConfig: { thinkingBudget: 0 },
 						...(schema && { responseMimeType: 'application/json', responseJsonSchema: schema }),
 					},
 				});
@@ -153,5 +155,39 @@ export class GeminiTranslator implements Translator {
 			'You name tags for a design blog. Reply with one short English slug for this Russian hashtag: lowercase latin letters, digits and hyphens only, usually a single word. Reply with the slug only.',
 		);
 		return text.trim();
+	}
+}
+
+/** Tries providers in order: posts one provider couldn't translate go to the next. */
+export class ChainTranslator implements Translator {
+	constructor(
+		private chain: { name: string; translator: Translator }[],
+		private warn: (msg: string) => void,
+	) {}
+
+	async translate(items: TranslationItem[]): Promise<Map<number, string>> {
+		const out = new Map<number, string>();
+		let rest = items;
+		for (const [n, { name, translator }] of this.chain.entries()) {
+			if (!rest.length) break;
+			if (n > 0) this.warn(`${rest.length} post(s) passed to ${name}`);
+			const result = await translator.translate(rest);
+			for (const [id, html] of result) out.set(id, html);
+			rest = rest.filter((item) => !result.has(item.id));
+		}
+		return out;
+	}
+
+	async tagSlug(ru: string): Promise<string> {
+		let last: unknown;
+		for (const { name, translator } of this.chain) {
+			try {
+				return await translator.tagSlug(ru);
+			} catch (err) {
+				this.warn(`${name} could not name #${ru}: ${(err as Error).message}`);
+				last = err;
+			}
+		}
+		throw last;
 	}
 }

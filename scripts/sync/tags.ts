@@ -4,7 +4,7 @@ import type { Translator } from './translate';
 
 type Tag = KelloConfig['tags'][number];
 
-// Slugs Gemini suggested for hashtags missing from kello.config.ts, so a tag keeps the same slug between syncs.
+// Slugs the translator suggested for hashtags missing from kello.config.ts, so a tag keeps the same slug between syncs.
 // Generated; once a tag is added to the config, its line here is ignored and dropped on the next sync.
 export const suggestionsFile = 'src/data/tag-suggestions.json';
 

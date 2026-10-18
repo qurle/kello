@@ -2,7 +2,7 @@
 //
 //   --full            walk the whole channel instead of `channel.recentPages` pages, and delete
 //                     anything local that is no longer in it
-//   --no-translate    skip Gemini: English text is a copy of the Russian, left without `sourceHash`
+//   --no-translate    skip translation: English text is a copy of the Russian, left without `sourceHash`
 //                     so the next real sync translates it
 //   --message <file>  write a commit message summarising the run (used by .github/workflows/sync.yml)
 //   --allow-mass-delete  delete even if more posts vanished than looks plausible
@@ -14,7 +14,8 @@ import { removeMedia, syncMedia, type MediaOptions } from './media';
 import { scrape } from './scrape';
 import { readPosts, removePost, writePost } from './store';
 import { TagMapper } from './tags';
-import { GeminiTranslator, type Translator } from './translate';
+import { GoogleTranslator } from './google';
+import { ChainTranslator, GeminiTranslator, type Translator } from './translate';
 import type { PostFile, ScrapedPost } from './types';
 
 const args = process.argv.slice(2);
@@ -51,14 +52,18 @@ async function main() {
 
 	let translator: Translator | undefined;
 	if (!noTranslate) {
-		const apiKey = process.env[config.translation.apiKeyEnv];
-		if (!apiKey) throw new Error(`${config.translation.apiKeyEnv} is not set. Pass --no-translate to sync without it.`);
-		translator = new GeminiTranslator({
-			apiKey,
-			model: config.translation.model,
-			instructions: config.translation.instructions,
-			warn,
-		});
+		const chain: { name: string; translator: Translator }[] = [];
+		for (const provider of config.translation.providers) {
+			if (provider === 'google') chain.push({ name: 'Google Translate', translator: new GoogleTranslator(warn) });
+			if (provider === 'gemini') {
+				const { model, apiKeyEnv, instructions } = config.translation.gemini;
+				const apiKey = process.env[apiKeyEnv];
+				if (apiKey) chain.push({ name: 'Gemini', translator: new GeminiTranslator({ apiKey, model, instructions, warn }) });
+				else console.log(`${apiKeyEnv} is not set, skipping Gemini.`);
+			}
+		}
+		if (chain.length) translator = new ChainTranslator(chain, warn);
+		else warn('No translation provider available; English text stays a copy of the Russian.');
 	}
 
 	const existing = await readPosts();
