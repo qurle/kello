@@ -3,6 +3,7 @@ import path from 'node:path';
 import sharp, { type Sharp } from 'sharp';
 import { imageSources, storedWidths } from '../../src/lib/media';
 import type { TelegramBot } from './bot';
+import { fetchRetry } from './http';
 import { firstFrame, hasFfmpeg, mp4Size } from './mp4';
 import type { MediaEntry, ScrapedMedia, ScrapedPost } from './types';
 
@@ -42,27 +43,19 @@ async function writeAtomic(file: string, data: Buffer) {
 class TooLarge extends Error {}
 
 async function download(url: string, maxBytes = Infinity): Promise<Buffer> {
-	for (let attempt = 1; ; attempt++) {
-		try {
-			const res = await fetch(url);
-			if (!res.ok) throw new Error(`HTTP ${res.status}`);
-			if (Number(res.headers.get('content-length')) > maxBytes) {
-				await res.body?.cancel();
-				throw new TooLarge();
-			}
-			const chunks: Buffer[] = [];
-			let size = 0;
-			for await (const chunk of res.body as AsyncIterable<Uint8Array>) {
-				size += chunk.byteLength;
-				if (size > maxBytes) throw new TooLarge();
-				chunks.push(Buffer.from(chunk));
-			}
-			return Buffer.concat(chunks);
-		} catch (err) {
-			if (err instanceof TooLarge || attempt >= 3) throw err;
-			await new Promise((r) => setTimeout(r, 1500 * attempt));
-		}
+	const res = await fetchRetry(url, {}, { attempts: 3, delay: (n) => 1500 * n, timeoutMs: 60_000 });
+	if (Number(res.headers.get('content-length')) > maxBytes) {
+		await res.body?.cancel();
+		throw new TooLarge();
 	}
+	const chunks: Buffer[] = [];
+	let size = 0;
+	for await (const chunk of res.body as AsyncIterable<Uint8Array>) {
+		size += chunk.byteLength;
+		if (size > maxBytes) throw new TooLarge();
+		chunks.push(Buffer.from(chunk));
+	}
+	return Buffer.concat(chunks);
 }
 
 async function sizeOf(source: Buffer) {
@@ -147,7 +140,7 @@ async function syncItem(
 		// An unavailable video is retried once its source appears or fits under the limit, or via the bot.
 		if (!(prev.type === 'unavailable' && item.type === 'video')) return prev;
 		if (item.url) {
-			const length = await fetch(item.url, { method: 'HEAD' })
+			const length = await fetchRetry(item.url, { method: 'HEAD' }, { attempts: 1, delay: () => 0, timeoutMs: 15_000 })
 				.then((r) => Number(r.headers.get('content-length')))
 				.catch(() => 0);
 			if (!length || length > opts.maxVideoMB * 1024 * 1024) return prev;

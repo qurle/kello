@@ -194,6 +194,6 @@ document.addEventListener('kello:filter', () => {
 const shared = getParam('post');
 const sharedPost = shared ? document.querySelector<HTMLElement>(`[data-post="${CSS.escape(shared)}"]`) : null;
 if (sharedPost) {
-	if (sharedPost.querySelector('[data-open]')) open(sharedPost, Number(getParam('media') ?? 1) - 1, null);
+	if (sharedPost.querySelector('[data-open]')) open(sharedPost, (Number(getParam('media')) || 1) - 1, null);
 	else sharedPost.scrollIntoView();
 }
