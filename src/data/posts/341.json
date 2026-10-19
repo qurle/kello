@@ -1,0 +1,21 @@
+{
+	"telegramId": 341,
+	"date": "2026-10-19T16:31:37.000Z",
+	"tags": [],
+	"text": {
+		"ru": "Kello превратился <a href=\"https://kello.qurle.net/\">в сайт</a><br><br>Cообщения стали визуальным потоком, а хештеги — удобными фильтрами (особенно после телеги).<br><br>Зацените на <a href=\"http://kello.press/\">kello.press</a> или <a href=\"http://kello.qurle.net/\">kello.qurle.net</a>",
+		"en": "Kello turned <a href=\"https://kello.qurle.net/\">into a website</a><br><br>Messages have become a visual stream, and hashtags have become convenient filters (especially after the cart).<br><br>Check it out at <a href=\"http://kello.press/\">kello.press</a> or <a href=\"http://kello.qurle.net/\">kello.qurle.net</a>"
+	},
+	"sourceHash": "05c44da9cbe0691fe9404689c5aed439711cf042236b5b174be886bde58d67ca",
+	"link": "http://kello.qurle.net/",
+	"media": [
+		{
+			"type": "image",
+			"messageId": 341,
+			"file": "341/1",
+			"width": 2560,
+			"height": 1440,
+			"full": true
+		}
+	]
+}
