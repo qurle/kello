@@ -92,6 +92,7 @@ Setup, once:
 | `scripts/check-bot.ts` | `npm run check-bot`. |
 | `scripts/format.ts` | Part of `npm run format`: Prettier on the frontmatter of `.astro` files. |
 | `.github/workflows/sync.yml` | Scheduled sync: every 12 hours and on demand. |
+| `vercel.json` | Cache headers. `/media/*` and the files at the root of `public/` (logo, favicon, og) are fresh for a day, then served from cache while they revalidate, for 30 days, so a reload doesn't wait on a check per image. Not `immutable`, since sync can rewrite media under the same name. Pages keep Vercel's `max-age=0`, so new posts show at once; `/_astro/` is hashed and already `immutable`. |
 | `src/styles/variables.sass` | Design tokens as CSS custom properties. |
 | `src/styles/fonts.sass` | `@font-face` rule for the heading font. |
 | `src/assets/fonts/` | The Mustica Pro heading subset. |
