@@ -106,11 +106,17 @@ code
 
     img,
     video
-        transition: opacity var(--duration-base) steps(4, end)
+        transition: opacity var(--dither-fade) steps(4, end)
 
     // Above the dither, which stays under it while it steps in
     img
         position: relative
+
+// Media that arrived before the dither showed, with no dots to step in over, appear at once
+[data-quick]
+    img,
+    video
+        transition: none
 
 html[data-js] [data-dither] > .dither
     position: absolute
@@ -122,7 +128,7 @@ html[data-js] [data-dither] > .dither
     pointer-events: none
     // Hidden once the media have stepped in, not as they start
     visibility: hidden
-    transition: visibility 0s var(--duration-base)
+    transition: visibility 0s var(--dither-fade)
 
     &::before,
     &::after
@@ -151,9 +157,15 @@ html[data-js] [data-loading]
     > .dither
         visibility: visible
         transition: none
+        animation: dither-wait 0s var(--dither-wait) backwards
 
         &::after
             animation-play-state: running
+
+// Hidden through the delay, then visible
+@keyframes dither-wait
+    from
+        visibility: hidden
 
 @keyframes dither
     to

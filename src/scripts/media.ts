@@ -3,6 +3,13 @@
 import { draggable } from './drag'
 import { reducedMotion, scrollBehavior } from './motion'
 
+/** Ends a slot's or slide's loading state. Media that came before its dither showed (cached) appear at once */
+export function loaded(holder: Element) {
+	const dither = holder.querySelector(':scope > .dither')
+	if (dither && getComputedStyle(dither).visibility === 'hidden') holder.setAttribute('data-quick', '')
+	holder.removeAttribute('data-loading')
+}
+
 /** Calls `done` once the image has loaded and decoded, so it can paint at once, or failed */
 export function onLoad(img: HTMLImageElement, done: () => void) {
 	if (img.complete && img.naturalWidth) return done()
@@ -30,7 +37,7 @@ export function reveal(scope: ParentNode, priority?: 'high' | 'low') {
 				img.fetchPriority = priority
 			}
 			const slot = later.closest('[data-loading]')
-			if (slot) onLoad(img, () => slot.removeAttribute('data-loading'))
+			if (slot) onLoad(img, () => loaded(slot))
 		}
 		later.replaceWith(template.content)
 	}
