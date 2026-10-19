@@ -43,12 +43,24 @@ try {
 	// No long animation frames: taps only
 }
 
-// ?perf=still turns the settle tilt off, to see whether 3D animations on every post slow the GPU
-const still = new URLSearchParams(location.search).get('perf') === 'still'
-if (still) {
+// Switches, comma-separated (?perf=still,enabled): what differs between the reset and unticking the last tag
+const flags = new Set(new URLSearchParams(location.search).get('perf')?.split(','))
+const css: string[] = []
+// The settle tilt off, in case 3D animations on every post slow the GPU
+if (flags.has('still')) css.push('[data-post] { animation: none !important }')
+// No tap highlight, which Android draws on the tapped element and fades out
+if (flags.has('flat')) css.push('* { -webkit-tap-highlight-color: transparent }')
+// The reset stays enabled under the finger. The observer runs before the next frame, so it never shows disabled
+const reset = document.querySelector('[data-tag-reset]')
+if (flags.has('enabled') && reset)
+	new MutationObserver(() => reset.hasAttribute('disabled') && reset.removeAttribute('disabled')).observe(reset, {
+		attributes: true,
+		attributeFilter: ['disabled'],
+	})
+if (css.length) {
 	const style = document.createElement('style')
-	style.textContent = '[data-post] { animation: none !important }'
+	style.textContent = css.join('\n')
 	document.head.append(style)
 }
 
-log(`tap away; newest on top. settle ${still ? 'off' : 'on'}`)
+log(`newest on top. switches: ${[...flags].filter(Boolean).join(', ') || 'none'}`)
