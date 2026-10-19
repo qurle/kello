@@ -8,9 +8,18 @@
 	const watch = (scope) => {
 		for (const img of scope.querySelectorAll('[data-loading] img')) {
 			const done = () => img.closest('[data-loading]').removeAttribute('data-loading')
+			// Cached images go before the first paint; others once decoded, so they can paint as they fade in
 			if (img.complete) done()
 			else {
-				img.addEventListener('load', done, { once: true })
+				img.addEventListener(
+					'load',
+					() =>
+						img
+							.decode()
+							.catch(() => {})
+							.then(done),
+					{ once: true },
+				)
 				img.addEventListener('error', done, { once: true })
 			}
 		}
