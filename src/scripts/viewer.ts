@@ -3,6 +3,7 @@ import { draggable } from './drag'
 import { loaded, onLoad, reveal } from './media'
 import { reducedMotion, scrollBehavior } from './motion'
 import { loadAll } from './pages'
+import { click } from './sound'
 import { getParam, setParams } from './url'
 
 const dialog = document.querySelector<HTMLDialogElement>('[data-viewer]')!
@@ -104,6 +105,7 @@ function setCurrent(index: number) {
 
 function go(index: number) {
 	if (index < 0 || index >= slides.length) return
+	click('step')
 	setCurrent(index)
 	track.scrollTo({ left: centre(slides[index]), behavior: scrollBehavior() })
 }
@@ -151,6 +153,7 @@ document.addEventListener('click', (event) => {
 	if (!item) return
 	const post = item.closest<HTMLElement>('[data-post]')!
 	// Enter or Space make a click with no press count
+	click('open')
 	open(post, [...post.querySelectorAll('[data-open]')].indexOf(item), event.detail === 0 ? item : null)
 })
 
@@ -212,6 +215,7 @@ dialog.addEventListener('pointermove', (event) => {
 })
 
 dialog.addEventListener('close', () => {
+	click('close')
 	clearTimeout(settle)
 	closeButton.removeAttribute('data-hover')
 	dialog.removeAttribute('data-close-zone')
