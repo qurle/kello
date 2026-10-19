@@ -57,6 +57,26 @@ if (flags.has('enabled') && reset)
 		attributes: true,
 		attributeFilter: ['disabled'],
 	})
+// The code paths traded: a tap on reset unticks the selected tag through the tag's handler, and a tap on the
+// selected tag goes through the reset's. If the slowness stays with the reset button, it's the element
+if (flags.has('swap') && reset)
+	document.addEventListener(
+		'click',
+		(event) => {
+			if (!event.isTrusted) return
+			const target = event.target as Element
+			const pressed = document.querySelector<HTMLElement>('[data-filter] [data-tag][aria-pressed="true"]')
+			const stand = target.closest('[data-tag-reset]')
+				? pressed
+				: target.closest('[data-tag][aria-pressed="true"]')
+					? reset
+					: null
+			if (!stand) return
+			event.stopImmediatePropagation()
+			;(stand as HTMLElement).click()
+		},
+		true,
+	)
 if (css.length) {
 	const style = document.createElement('style')
 	style.textContent = css.join('\n')
