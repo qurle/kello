@@ -1,0 +1,13 @@
+---
+import Home from '../../../components/Home.astro'
+import { languages } from '../../../lib/i18n'
+import { getPosts } from '../../../lib/posts'
+import { laterPages } from '../../../lib/pages'
+
+export const getStaticPaths = async () => {
+	const pages = laterPages(await getPosts())
+	return languages.slice(1).flatMap((lang) => pages.map(({ params }) => ({ params: { lang, ...params } })))
+}
+---
+
+<Home lang={Astro.params.lang} page={Number(Astro.params.page)} />

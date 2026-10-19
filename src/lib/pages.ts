@@ -1,6 +1,6 @@
-// The feed in pages of `site.pageSize` posts: `/`, `/page/2/`… and `/ru`, `/ru/page/2/`…
+// The feed in pages of `site.pageSize` posts: `/`, `/page/2/`… and, with translation, `/<from>`, `/<from>/page/2/`…
 import config from '../../kello.config'
-import { strings, type Lang } from './i18n'
+import { main, type Lang } from './i18n'
 import type { Post } from './posts'
 
 export const pageCount = (posts: Post[]) => Math.max(1, Math.ceil(posts.length / config.site.pageSize))
@@ -10,8 +10,8 @@ export const pagePosts = (posts: Post[], page: number) =>
 
 /** Path of a page; the first is the language's home */
 export function pagePath(lang: Lang, page: number) {
-	const home = strings[lang].path
-	return page === 1 ? home : `${home.replace(/\/$/, '')}/page/${page}/`
+	const prefix = lang === main ? '' : `/${lang}`
+	return page === 1 ? prefix || '/' : `${prefix}/page/${page}/`
 }
 
 /** Static paths for pages 2 and on */

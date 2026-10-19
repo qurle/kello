@@ -6,7 +6,7 @@ import '../styles/variables.sass'
 import '../styles/base.sass'
 import config from '../../kello.config'
 import { getPosts } from '../lib/posts'
-import { strings, type Lang } from '../lib/i18n'
+import { languages, main, original, ui, type Lang } from '../lib/i18n'
 import { filterTags, tagLabel } from '../lib/tags'
 import { pageCount, pagePath, pagePosts } from '../lib/pages'
 import Post from './Post.astro'
@@ -23,7 +23,9 @@ interface Props {
 }
 
 const { lang, page = 1 } = Astro.props
-const t = strings[lang]
+const t = ui(lang)
+// The other language, for the switch; none without translation
+const other = languages.find((language) => language !== lang)
 const all = await getPosts()
 // Every tag, not just this page's: picking one loads the other pages
 const tags = filterTags(new Set(all.flatMap((post) => post.tags)))
@@ -32,7 +34,10 @@ const pages = Array.from({ length: pageCount(all) }, (_, i) => pagePath(lang, i 
 const next = pages[page]
 const url = (path: string) => new URL(path, config.site.url).href
 const { subtitle } = config.site
-const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
+const subtitleLine = subtitle && (subtitle.lines[lang] ?? subtitle.lines[main] ?? subtitle.lines[original])
+// Inter's Cyrillic file for languages written in it, its Latin file for the rest
+const cyrillic = ['ru', 'uk', 'be', 'bg', 'sr', 'mk', 'kk', 'ky', 'tg', 'mn']
+const locales: Record<Lang, string> = { en: 'en_US', ru: 'ru_RU' }
 ---
 
 <!doctype html>
@@ -51,14 +56,13 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 			} catch {}
 		</script>
 		<link rel="preload" href={mustica} as="font" type="font/woff2" crossorigin />
-		<link rel="preload" href={lang === 'ru' ? interCyrillic : interLatin} as="font" type="font/woff2" crossorigin />
+		<link rel="preload" href={cyrillic.includes(lang) ? interCyrillic : interLatin} as="font" type="font/woff2" crossorigin />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>{config.site.title}</title>
 		<meta name="description" content={t.description} />
 		<link rel="canonical" href={url(pagePath(lang, page))} />
-		<link rel="alternate" hreflang="en" href={url(pagePath('en', page))} />
-		<link rel="alternate" hreflang="ru" href={url(pagePath('ru', page))} />
-		<link rel="alternate" hreflang="x-default" href={url(pagePath('en', page))} />
+		{other && languages.map((language) => <link rel="alternate" hreflang={language} href={url(pagePath(language, page))} />)}
+		{other && <link rel="alternate" hreflang="x-default" href={url(pagePath(main, page))} />}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<!-- Link previews: public/og.png, 1200×630 -->
 		<meta property="og:type" content="website" />
@@ -66,7 +70,7 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 		<meta property="og:title" content={config.site.title} />
 		<meta property="og:description" content={t.description} />
 		<meta property="og:url" content={url(pagePath(lang, page))} />
-		<meta property="og:locale" content={lang === 'ru' ? 'ru_RU' : 'en_US'} />
+		<meta property="og:locale" content={locales[lang] ?? lang} />
 		<meta property="og:image" content={url('/og.png')} />
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
@@ -79,7 +83,7 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 			<header class="masthead">
 				<div class="heading">
 					<h1 class="title">
-						<a href={t.path}
+						<a href={pagePath(lang, 1)}
 							>{config.site.title}<sup><img class="logo" alt="kello logotype" src="/favicon.svg" /></sup
 							></a
 						>
@@ -101,14 +105,16 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 						<span class="auto">{t.theme.auto}</span>
 						<span class="light">{t.theme.light}</span>
 						<span class="dark">{t.theme.dark}</span>
-					</button> / 
-					<a
-						class="lang"
-						href={pagePath(t.switchTo, page)}
-						hreflang={t.switchTo}
-						aria-label={t.switchLabel}
-						data-lang-link>{lang}</a
-					>
+					</button>{other && (
+						<> / 
+						<a
+							class="lang"
+							href={pagePath(other, page)}
+							hreflang={other}
+							aria-label={ui(other).version}
+							data-lang-link>{lang}</a
+						></>
+					)}
 				</div>
 			</header>
 			<nav class="filter" aria-label={t.filter} data-filter>

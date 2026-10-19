@@ -36,11 +36,8 @@ const unavailable = z.object({
 	height: z.number().optional(),
 })
 
-const text = z.object({
-	/** HTML subset without hashtags and source link */
-	ru: z.string(),
-	en: z.string(),
-})
+/** HTML subset without hashtags and source link, by language code: the original, and the translation */
+const text = z.record(z.string(), z.string())
 
 // Written by `npm run sync`: src/data/posts/<telegramId>.json
 const posts = defineCollection({
@@ -52,7 +49,7 @@ const posts = defineCollection({
 		/** English slugs */
 		tags: z.array(z.string()),
 		text: text.optional(),
-		/** Hash of `text.ru` when translated; a mismatch re-translates */
+		/** Hash of the original text when translated; a mismatch re-translates */
 		sourceHash: z.string().optional(),
 		/** The post's source link */
 		link: z.string().url().optional(),

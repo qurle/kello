@@ -38,7 +38,8 @@ export interface PostFile {
 	telegramId: number
 	date: string
 	tags: string[]
-	text?: { ru: string; en: string }
+	/** By language code: the original (`translate.from`), and the translation (`translate.to`) when on */
+	text?: Record<string, string>
 	sourceHash?: string
 	link?: string
 	media: MediaEntry[]

@@ -12,10 +12,8 @@ export interface PostOverride {
 	hidden?: boolean
 	/** Replaces the tags (English slugs) */
 	tags?: string[]
-	text?: {
-		/** Replaces the English text */
-		en?: string
-	}
+	/** Replaces the text in a language, by code */
+	text?: Record<string, string>
 }
 
 export type Overrides = Record<number, PostOverride>

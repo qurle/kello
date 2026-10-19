@@ -1,9 +1,10 @@
 ---
 import Home from '../../components/Home.astro'
+import { main } from '../../lib/i18n'
 import { getPosts } from '../../lib/posts'
 import { laterPages } from '../../lib/pages'
 
 export const getStaticPaths = async () => laterPages(await getPosts())
 ---
 
-<Home lang="en" page={Number(Astro.params.page)} />
+<Home lang={main} page={Number(Astro.params.page)} />
