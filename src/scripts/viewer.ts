@@ -53,18 +53,21 @@ function placeholder(slide: HTMLElement, item: HTMLElement, media: HTMLElement) 
 	const shown = item.querySelector('img')
 	const loaded = shown?.complete && shown.naturalWidth > 0 ? shown.currentSrc : ''
 	const preview = item.closest<HTMLElement>('[data-slot]')?.style.getPropertyValue('--preview')
-	if (!loaded && !preview) return
+	// The feed's copy is the same picture, so the full one draws straight over it: nothing to hide or fade in,
+	// which over a blurry copy would flicker
+	if (loaded) {
+		slide.style.backgroundImage = `url("${loaded}")`
+		return
+	}
+	if (!preview) return
 	const done = () => slide.removeAttribute('data-loading')
 	slide.dataset.dither = ''
 	slide.dataset.loading = ''
-	if (loaded) slide.style.backgroundImage = `url("${loaded}")`
-	else {
-		slide.style.setProperty('--preview', preview!)
-		const mark = document.createElement('span')
-		mark.className = 'dither'
-		mark.ariaHidden = 'true'
-		slide.prepend(mark)
-	}
+	slide.style.setProperty('--preview', preview)
+	const mark = document.createElement('span')
+	mark.className = 'dither'
+	mark.ariaHidden = 'true'
+	slide.prepend(mark)
 
 	if (media instanceof HTMLVideoElement) {
 		media.addEventListener('loadeddata', done, { once: true })
