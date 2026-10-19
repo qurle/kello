@@ -1,28 +1,46 @@
-// Tiny click sounds, synthesized with Web Audio, no audio files: a mechanical press. A crisp snap of
-// band-passed noise over a short low thump, then a fainter release snap. The header switch mutes them, kept
-// in localStorage; Home.astro's head script sets data-muted before the first paint, so the switch shows the
-// right state
+// Tiny click sounds, synthesized with Web Audio, no audio files. Each is a short pattern of ticks, and a tick
+// is a soft snap of band-passed noise over a round sine body, so actions differ by contour (on rises, off
+// falls) as well as pitch. The header switch mutes them, kept in localStorage; Home.astro's head script sets
+// data-muted before the first paint, so the switch shows the right state
 const root = document.documentElement
 let context: AudioContext | undefined
 let noise: AudioBuffer | undefined
 
-/** Each kind's snap (band-pass centre, Hz: higher is brighter) and body (thump pitch, Hz: lower is fuller) */
+/** One tick: when it lands (s), its pitch (Hz) and its level (of the voice's full level) */
+type Tick = [at: number, pitch: number, level: number]
+
 const voices = {
-	tap: { snap: 4000, body: 220 },
-	on: { snap: 5000, body: 260 },
-	off: { snap: 3200, body: 190 },
-	step: { snap: 4500, body: 240 },
-	open: { snap: 3000, body: 160 },
-	close: { snap: 2600, body: 140 },
-}
+	// One soft mid tick and its quieter release
+	tap: [
+		[0, 392, 1],
+		[0.035, 392, 0.4],
+	],
+	// Light and high, a single tick
+	step: [[0, 659, 0.8]],
+	// On rises, off falls
+	on: [
+		[0, 440, 0.9],
+		[0.05, 659, 0.9],
+	],
+	off: [
+		[0, 659, 0.9],
+		[0.05, 440, 0.9],
+	],
+	// Opening rises from a low press, closing falls back to it
+	open: [
+		[0, 262, 1],
+		[0.06, 392, 0.7],
+	],
+	close: [
+		[0, 392, 0.8],
+		[0.06, 262, 1],
+	],
+} satisfies Record<string, Tick[]>
 export type Click = keyof typeof voices
 
-const volume = 0.4
-/** Snap length; the body rings a little longer */
-const snapLength = 0.012
-const bodyLength = 0.03
-/** The release snap: this long after the press, at this share of its level */
-const release = { delay: 0.03, level: 0.35 }
+const volume = 0.2
+const snapLength = 0.01
+const bodyLength = 0.045
 
 function makeNoise(audio: AudioContext) {
 	const buffer = audio.createBuffer(1, Math.ceil(audio.sampleRate * 0.03), audio.sampleRate)
@@ -31,33 +49,34 @@ function makeNoise(audio: AudioContext) {
 	return buffer
 }
 
-/** Noise through a band-pass, from full at once down to nothing: the crisp part */
-function snap(audio: AudioContext, out: AudioNode, at: number, frequency: number, level: number) {
+/** Rises in 1ms or 2ms (an instant edge is harsh), then fades out over `length` */
+function envelope(gain: GainNode, at: number, level: number, attack: number, length: number) {
+	gain.gain.setValueAtTime(0.0001, at)
+	gain.gain.exponentialRampToValueAtTime(level, at + attack)
+	gain.gain.exponentialRampToValueAtTime(0.0001, at + length)
+}
+
+function tick(audio: AudioContext, out: AudioNode, at: number, pitch: number, level: number) {
+	// The snap: noise around a few times the pitch, so higher ticks are brighter, kept low enough to stay soft
 	const source = audio.createBufferSource()
 	source.buffer = noise!
 	const filter = audio.createBiquadFilter()
 	filter.type = 'bandpass'
-	filter.frequency.value = frequency
-	filter.Q.value = 1.2
-	const gain = audio.createGain()
-	gain.gain.setValueAtTime(level, at)
-	gain.gain.exponentialRampToValueAtTime(0.001, at + snapLength)
-	source.connect(filter).connect(gain).connect(out)
+	filter.frequency.value = pitch * 4
+	filter.Q.value = 0.8
+	const snap = audio.createGain()
+	envelope(snap, at, level * 0.6, 0.001, snapLength)
+	source.connect(filter).connect(snap).connect(out)
 	source.start(at)
 	source.stop(at + snapLength + 0.005)
-}
 
-/** A short low thump that sags in pitch: the body of the switch */
-function body(audio: AudioContext, out: AudioNode, at: number, frequency: number, level: number) {
+	// The body: a sine at the pitch, sagging slightly, which carries the note
 	const tone = audio.createOscillator()
-	tone.type = 'triangle'
-	tone.frequency.setValueAtTime(frequency, at)
-	tone.frequency.exponentialRampToValueAtTime(frequency * 0.6, at + bodyLength)
-	const gain = audio.createGain()
-	gain.gain.setValueAtTime(0.0001, at)
-	gain.gain.exponentialRampToValueAtTime(level, at + 0.002)
-	gain.gain.exponentialRampToValueAtTime(0.0001, at + bodyLength)
-	tone.connect(gain).connect(out)
+	tone.frequency.setValueAtTime(pitch, at)
+	tone.frequency.exponentialRampToValueAtTime(pitch * 0.92, at + bodyLength)
+	const body = audio.createGain()
+	envelope(body, at, level, 0.002, bodyLength)
+	tone.connect(body).connect(out)
 	tone.start(at)
 	tone.stop(at + bodyLength + 0.005)
 }
@@ -68,14 +87,11 @@ export function click(kind: Click = 'tap') {
 		// Made on the first click, as browsers allow sound only after one
 		context ??= new AudioContext()
 		noise ??= makeNoise(context)
-		const { snap: brightness, body: pitch } = voices[kind]
 		const out = context.createGain()
 		out.gain.value = volume
 		out.connect(context.destination)
 		const now = context.currentTime
-		snap(context, out, now, brightness, 1)
-		body(context, out, now, pitch, 0.3)
-		snap(context, out, now + release.delay, brightness * 1.15, release.level)
+		for (const [at, pitch, level] of voices[kind]) tick(context, out, now + at, pitch, level)
 	} catch {
 		// No Web Audio: silence
 	}
