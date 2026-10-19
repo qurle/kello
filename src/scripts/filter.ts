@@ -41,12 +41,12 @@ async function update() {
 	document.dispatchEvent(new CustomEvent('kello:filter'))
 }
 
-reset?.addEventListener('click', () => {
-	// The button is disabled again, so a keyboard user's focus moves to the first tag
-	const focused = document.activeElement === reset
+reset?.addEventListener('click', (event) => {
 	selected.clear()
 	update()
-	if (focused) document.querySelector<HTMLElement>('[data-filter] [data-tag]')?.focus()
+	// The button is disabled again, so after Enter or Space (a click with no press count) focus moves to the
+	// first tag. A tap or a click leaves it be
+	if (event.detail === 0) document.querySelector<HTMLElement>('[data-filter] [data-tag]')?.focus()
 })
 
 document.addEventListener('click', (event) => {
