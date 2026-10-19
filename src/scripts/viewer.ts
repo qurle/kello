@@ -1,6 +1,6 @@
 // Media viewer: a post's row as a carousel in a <dialog>, its post and item in the URL (?post=&media=)
 import { draggable } from './drag'
-import { onLoad, reveal } from './media'
+import { loaded, onLoad, reveal } from './media'
 import { reducedMotion, scrollBehavior } from './motion'
 import { loadAll } from './pages'
 import { getParam, setParams } from './url'
@@ -51,13 +51,13 @@ function slideFor(item: HTMLElement, near: boolean) {
  */
 function placeholder(slide: HTMLElement, item: HTMLElement, media: HTMLElement) {
 	const shown = item.querySelector('img')
-	const loaded = shown?.complete && shown.naturalWidth > 0 ? shown.currentSrc : ''
+	const copy = shown?.complete && shown.naturalWidth > 0 ? shown.currentSrc : ''
 	const preview = item.closest<HTMLElement>('[data-slot]')?.style.getPropertyValue('--preview')
-	if (!loaded && !preview) return
-	const done = () => slide.removeAttribute('data-loading')
+	if (!copy && !preview) return
+	const done = () => loaded(slide)
 	slide.dataset.dither = ''
 	slide.dataset.loading = ''
-	if (loaded) slide.style.backgroundImage = `url("${loaded}")`
+	if (copy) slide.style.backgroundImage = `url("${copy}")`
 	else {
 		slide.style.setProperty('--preview', preview!)
 		const mark = document.createElement('span')

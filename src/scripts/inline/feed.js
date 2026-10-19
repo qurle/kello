@@ -7,7 +7,13 @@
 
 	const watch = (scope) => {
 		for (const img of scope.querySelectorAll('[data-loading] img')) {
-			const done = () => img.closest('[data-loading]').removeAttribute('data-loading')
+			// Like loaded() in media.ts: before the dither showed (--dither-wait), the image appears at once
+			const done = () => {
+				const slot = img.closest('[data-loading]')
+				const dither = slot.querySelector(':scope > .dither')
+				if (dither && getComputedStyle(dither).visibility === 'hidden') slot.dataset.quick = ''
+				slot.removeAttribute('data-loading')
+			}
 			// Cached images go before the first paint; others once decoded, so they can paint as they fade in
 			if (img.complete) done()
 			else {

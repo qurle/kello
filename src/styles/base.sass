@@ -112,6 +112,12 @@ code
     img
         position: relative
 
+// Media that arrived before the dither showed, with no dots to step in over, appear at once
+[data-quick]
+    img,
+    video
+        transition: none
+
 html[data-js] [data-dither] > .dither
     position: absolute
     inset: 0
@@ -151,9 +157,15 @@ html[data-js] [data-loading]
     > .dither
         visibility: visible
         transition: none
+        animation: dither-wait 0s var(--dither-wait) backwards
 
         &::after
             animation-play-state: running
+
+// Hidden through the delay, then visible
+@keyframes dither-wait
+    from
+        visibility: hidden
 
 @keyframes dither
     to
