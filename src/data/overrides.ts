@@ -195,5 +195,5 @@ export const overrides: Overrides = {
 	// The channel's pinned hashtag index
 	21: { hidden: true },
 	276: { hidden: true },
-	351: { hidden: true }
+	351: { hidden: true },
 }
