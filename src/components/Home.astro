@@ -128,8 +128,9 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 							</li>
 						))
 					}
-					<li hidden data-tag-reset>
-						<button class="tag reset" type="button">{t.reset}</button>
+					<!-- Disabled while no tag is selected, so it fades out like a tag that would leave no posts -->
+					<li>
+						<button class="tag" type="button" disabled data-tag-reset>{t.reset}</button>
 					</li>
 				</ul>
 			</nav>
@@ -266,14 +267,6 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 			display: flex
 			flex-wrap: wrap
 			gap: var(--space-2xs) var(--space-s)
-
-		// Shown while a tag is selected: primary, accent on hover
-		.reset
-			color: var(--primary)
-
-			@media (hover: hover)
-				&:hover
-					color: var(--accent)
 
 		@media (min-width: 48rem)
 			display: grid

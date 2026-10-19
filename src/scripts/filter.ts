@@ -4,7 +4,7 @@ import { loadAll } from './pages'
 import { getParam, setParams } from './url'
 
 const root = document.documentElement
-const reset = document.querySelector<HTMLElement>('[data-tag-reset]')
+const reset = document.querySelector<HTMLButtonElement>('[data-tag-reset]')
 const known = new Set(
 	[...document.querySelectorAll<HTMLElement>('[data-filter] [data-tag]')].map((button) => button.dataset.tag!),
 )
@@ -30,7 +30,7 @@ function apply() {
 			button.disabled = !on && selected.size > 0 && !visible.some((tags) => tags.has(tag))
 	}
 
-	if (reset) reset.hidden = !selected.size
+	if (reset) reset.disabled = !selected.size
 	setParams({ tags: selected.size ? [...selected].join(',') : null })
 }
 
@@ -42,8 +42,8 @@ async function update() {
 }
 
 reset?.addEventListener('click', () => {
-	// The button goes away, so a keyboard user's focus moves to the first tag
-	const focused = reset.contains(document.activeElement)
+	// The button is disabled again, so a keyboard user's focus moves to the first tag
+	const focused = document.activeElement === reset
 	selected.clear()
 	update()
 	if (focused) document.querySelector<HTMLElement>('[data-filter] [data-tag]')?.focus()
