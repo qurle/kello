@@ -1,5 +1,6 @@
-// Media rows: chevrons, mouse drag, pictures held back until they near the window, and videos that play
-// only in view. Posts from other pages (`kello:posts`) get the same
+// Media rows: chevrons, mouse drag, pictures held back until they near the window (and fetched in the
+// background once the page is quiet), and videos that play only in view. Posts from other pages
+// (`kello:posts`) get the same
 import { draggable } from './drag'
 import { reducedMotion, scrollBehavior } from './motion'
 
@@ -123,6 +124,48 @@ const playing = new IntersectionObserver(
 	{ threshold: 0.5 },
 )
 
+// Once the page has loaded and gone quiet, its other pictures load one at a time at low priority, each row's
+// first slide before the rest, so they're ready when the scroll gets there. Scrolling pauses it, and
+// Save-Data or a 2G connection turns it off
+const backfillStart = 1000
+const backfillGap = 200
+let backfilling = false
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+const idle = () =>
+	new Promise((resolve) =>
+		'requestIdleCallback' in window ? requestIdleCallback(resolve, { timeout: 1000 }) : setTimeout(resolve, 50),
+	)
+
+function nextHeld() {
+	const later =
+		document.querySelector('[data-feed] [data-slot]:first-child noscript[data-later]') ??
+		document.querySelector('[data-feed] noscript[data-later]')
+	return later?.closest('[data-slot]')
+}
+
+async function backfill() {
+	type Connection = { saveData?: boolean; effectiveType?: string }
+	const connection = (navigator as Navigator & { connection?: Connection }).connection
+	if (backfilling || connection?.saveData || connection?.effectiveType?.includes('2g')) return
+	backfilling = true
+	await pageLoaded
+	await sleep(backfillStart)
+	for (let slot = nextHeld(); slot; slot = nextHeld()) {
+		while (performance.now() - lastScroll < backfillStart) await sleep(dwell)
+		clearTimeout(waiting.get(slot))
+		waiting.delete(slot)
+		nearing.unobserve(slot)
+		reveal(slot, 'low')
+		const img = slot.querySelector('img')
+		// One at a time; a stalled image doesn't hold the rest up for long
+		if (img) await Promise.race([new Promise<void>((resolve) => onLoad(img, resolve)), sleep(10_000)])
+		await idle()
+		await sleep(backfillGap)
+	}
+	backfilling = false
+}
+
 function setUp(scope: ParentNode) {
 	scope.querySelectorAll<HTMLElement>('[data-media-row]').forEach(setUpRow)
 	for (const slot of scope.querySelectorAll('[data-slot]'))
@@ -137,5 +180,7 @@ reducedMotion.addEventListener('change', () => {
 })
 document.addEventListener('kello:posts', (event) => {
 	for (const post of (event as CustomEvent<HTMLElement[]>).detail) setUp(post)
+	backfill()
 })
 setUp(document)
+backfill()
