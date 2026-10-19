@@ -105,13 +105,13 @@ Setup, once:
 | `src/lib/preview.ts` | Build-time 16px previews for the loading dither. |
 | `src/lib/tags.ts` | Tag labels, order and the filter line's tags. |
 | `src/lib/urls.ts` | Media, `srcset` and Telegram URLs, and the source link domain. |
-| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, `drag.ts` for mouse drag in both, `motion.ts` for the reduced-motion check they share, `pages.ts` for loading the other feed pages, `theme.ts` for the theme switch, and `url.ts` for the shared query string. `inline/feed.js` is the exception, inlined in Home.astro: scattered feed and loading state. |
+| `src/scripts/` | Client scripts: tag filter, media row (chevrons, video autoplay), media viewer, `drag.ts` for mouse drag in both, `motion.ts` for the reduced-motion check they share, `pages.ts` for loading the other feed pages, `theme.ts` for the theme switch, `sound.ts` for click sounds and their switch, and `url.ts` for the shared query string. `inline/feed.js` is the exception, inlined in Home.astro: scattered feed and loading state. |
 | `public/media/` | Generated images (WebP, or AVIF too if `media.formats` lists it, at each stored width) and videos. |
 
 ## Design
 
-The page has three parts: the heading "kello" with its subtitle (`site.subtitle` in `kello.config.ts`), a line of tag filters, then posts. Nothing else goes in the header or footer, except two switches at the right of the heading and the "more" link to the next page after the feed.
-  - The switches are the theme (`auto`, `light`, `dark`; Russian on `/ru`) and the language (`en` on `/`, `ru` on `/ru`, linking to the other language's same page number). Each shows its current state, not the one it switches to. They sit `--space-xs` apart.
+The page has three parts: the heading "kello" with its subtitle (`site.subtitle` in `kello.config.ts`), a line of tag filters, then posts. Nothing else goes in the header or footer, except three switches at the right of the heading and the "more" link to the next page after the feed.
+  - The switches are the theme (`auto`, `light`, `dark`; Russian on `/ru`), click sounds (`sound`, `muted`) and the language (`en` on `/`, `ru` on `/ru`, linking to the other language's same page number). Each shows its current state, not the one it switches to. They sit `--space-xs` apart.
   - The heading takes the free space in the header row (`--space-m` gaps), and the switches wrap below it when there isn't room.
 
 - Swiss style: Inter for text, a flush-left asymmetric grid, generous whitespace and loose vertical rhythm between posts. The one accent colour is `#3733d2`, lightened to `#8582ff` in dark mode. It marks focus rings, link hover (the source link included) and text selection (accent background in both themes; `--background` text in light, the text's own colour in dark), and appears nowhere else. Focus rings show for keyboard navigation only: `:focus` has no outline, `:focus-visible` has the ring (`base.sass`). Selected tags turn `--primary`.
@@ -170,6 +170,7 @@ The page has three parts: the heading "kello" with its subtitle (`site.subtitle`
   - Only `transform` changes, so it composites and never touches the `inset` and `width` that `feed.js` sets. It works the same in the scattered feed and the single column.
   - With `prefers-reduced-motion`, nothing tilts.
 - Post meta: the source link is shown as its domain (`psiquantum.com ↗`) and is the primary link. The Telegram link is quieter. Both are styled as text links, not buttons. The source link grows to fill its line, so in the viewer the Telegram link sits at the right end. The Telegram link shows only in the viewer, and a feed post without a source then has no links line; media that opens in Telegram ("watch in telegram", posts 213 and 227) stands in for it. Posts without media (21 and 276) can't open the viewer, so they keep it in the feed. The "watch in telegram" label turns `--accent` while the media under it is hovered.
+- Click sounds (`src/scripts/sound.ts`): tiny pops synthesized with Web Audio, a sine that drops an octave over 50ms, so there are no audio files. Tag on and off, the theme switch, chevrons, and the viewer's open, close and steps (clicks and arrow keys) each have a pitch; drags and scrolling are silent. The `sound` / `muted` switch keeps its choice in `localStorage` (`sound: off`), and the head script sets `data-muted` before the first paint so the label is right. Without JS the switch and its separator are hidden.
 - No uppercase labels, eyebrows, counters, decorative dividers or rounded cards.
 - Grid: 12 columns from 48rem up. Post tags take the first `--index-columns`; the filter line and post text start after them. Below 48rem everything stacks.
 - Tags no post uses are left out of the filter line.

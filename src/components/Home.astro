@@ -40,14 +40,15 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 	<head>
 		<meta charset="utf-8" />
 		<!-- Lets CSS hold the wide feed back until feed.js has placed it, and a shared ?tags= link
-		     hold it until filter.ts has loaded every page and filtered. Applies a stored theme before
-		     the first paint (theme.ts) -->
+		     hold it until filter.ts has loaded every page and filtered. Applies a stored theme and
+		     muted sound before the first paint (theme.ts, sound.ts) -->
 		<script is:inline>
 			document.documentElement.dataset.js = ''
 			if (/[?&]tags=/.test(location.search)) document.documentElement.dataset.filtering = ''
 			try {
 				const theme = localStorage.getItem('theme')
 				if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme
+				if (localStorage.getItem('sound') === 'off') document.documentElement.dataset.muted = ''
 			} catch {}
 		</script>
 		<link rel="preload" href={mustica} as="font" type="font/woff2" crossorigin />
@@ -102,6 +103,11 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 						<span class="light">{t.theme.light}</span>
 						<span class="dark">{t.theme.dark}</span>
 					</button> / 
+					<span class="sound"
+						><button type="button" title={t.soundLabel} data-sound-switch
+							><span class="on">{t.sound.on}</span><span class="off">{t.sound.off}</span></button
+						> / </span
+					>
 					<a
 						class="lang"
 						href={pagePath(t.switchTo, page)}
@@ -147,6 +153,7 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 			import '../scripts/viewer'
 			import '../scripts/pages'
 			import '../scripts/theme'
+			import '../scripts/sound'
 		</script>
 	</body>
 </html>
@@ -197,6 +204,7 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 			color: var(--secondary)
 
 		.theme,
+		.sound button,
 		.lang
 			@media (hover: hover)
 				&:hover
@@ -212,6 +220,20 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 			display: inline
 
 		:global(html:not([data-js])) & .theme
+			display: none
+
+		// The sound switch with its separator, so neither shows without JS
+		.sound .off
+			display: none
+
+		:global(html[data-muted]) & .sound
+			.on
+				display: none
+
+			.off
+				display: inline
+
+		:global(html:not([data-js])) & .sound
 			display: none
 
 		.logo
