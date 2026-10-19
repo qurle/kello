@@ -73,7 +73,8 @@ if (flags.has('swap') && reset)
 					: null
 			if (!stand) return
 			event.stopImmediatePropagation()
-			;(stand as HTMLElement).click()
+			// A press count of 1, so the reset code takes it for a tap, not a key that moves focus
+			stand.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, detail: 1 }))
 		},
 		true,
 	)
