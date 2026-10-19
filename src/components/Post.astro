@@ -63,6 +63,21 @@ const tags = sortTags(post.tags)
 	.post + .post
 		margin-top: var(--post-gap)
 
+	// Single column: off-screen posts skip layout and paint, so bringing every post back (the tag reset)
+	// stays quick on phones. A post keeps its size once rendered; until then it's guessed at the median.
+	// Paint containment clips at the padding box, and Chrome ignores overflow-clip-margin there, so a
+	// padding as wide as a focus ring, taken back by the margin, keeps rings at the edges whole
+	:global(.feed:not([data-scatter])) > .post
+		--ring: calc(var(--focus-width) + var(--focus-offset))
+		content-visibility: auto
+		contain-intrinsic-block-size: auto 24rem
+		padding: var(--ring)
+		margin: calc(-1 * var(--ring))
+
+		// Collapses with the previous post's negative margin, so the gap stays --post-gap
+		& + .post
+			margin-top: calc(var(--post-gap) - var(--ring))
+
 	.meta
 		display: flex
 		flex-direction: column
