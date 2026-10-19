@@ -1,4 +1,4 @@
-// Temporary, with ?perf: shows how long each tap takes to show on screen, split into waiting, handlers
+// Temporary, with ?perf: shows how long each click or tap takes to show on screen, split into waiting, handlers
 // and rendering, plus long frames and the scripts in them
 const panel = document.createElement('pre')
 panel.style.cssText =
@@ -19,11 +19,12 @@ const label = (target: Node | null) =>
 
 new PerformanceObserver((list) => {
 	for (const entry of list.getEntries() as (PerformanceEventTiming & { interactionId: number })[]) {
-		if (!entry.interactionId || !['pointerdown', 'pointerup', 'click'].includes(entry.name)) continue
+		if (!entry.interactionId || entry.name !== 'click') continue
 		const end = entry.startTime + entry.duration
+		const shown = document.querySelectorAll('[data-feed] > [data-post]:not([hidden])').length
 		log(
-			`${entry.name} "${label(entry.target)}" ${ms(entry.duration)}: wait ${ms(entry.processingStart - entry.startTime)}, ` +
-				`js ${ms(entry.processingEnd - entry.processingStart)}, paint ${ms(end - entry.processingEnd)}`,
+			`"${label(entry.target)}" ${ms(entry.duration)}: wait ${ms(entry.processingStart - entry.startTime)}, ` +
+				`js ${ms(entry.processingEnd - entry.processingStart)}, paint ${ms(end - entry.processingEnd)}; ${shown} posts`,
 		)
 	}
 }).observe({ type: 'event', durationThreshold: 16 } as PerformanceObserverInit)
@@ -42,4 +43,12 @@ try {
 	// No long animation frames: taps only
 }
 
-log('tap away; newest on top')
+// ?perf=still turns the settle tilt off, to see whether 3D animations on every post slow the GPU
+const still = new URLSearchParams(location.search).get('perf') === 'still'
+if (still) {
+	const style = document.createElement('style')
+	style.textContent = '[data-post] { animation: none !important }'
+	document.head.append(style)
+}
+
+log(`tap away; newest on top. settle ${still ? 'off' : 'on'}`)
