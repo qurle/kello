@@ -128,6 +128,10 @@ const subtitleLine = subtitle && (subtitle[lang] ?? subtitle.en)
 							</li>
 						))
 					}
+					<!-- Disabled while no tag is selected, so it fades out like a tag that would leave no posts -->
+					<li>
+						<button class="tag" type="button" disabled data-tag-reset>[{t.reset}]</button>
+					</li>
 				</ul>
 			</nav>
 			<main class="feed" data-feed data-page={page} data-pages={JSON.stringify(pages)}>

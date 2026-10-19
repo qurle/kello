@@ -26,6 +26,12 @@ const voices = {
 		[0, 659, 0.9],
 		[0.05, 440, 0.9],
 	],
+	// Reset lets every tag go at once: off's fall, run on faster down to a firmer low tick
+	reset: [
+		[0, 659, 0.7],
+		[0.03, 494, 0.8],
+		[0.06, 330, 1],
+	],
 	// Opening rises from a low press, closing falls back to it
 	open: [
 		[0, 262, 1],
@@ -107,6 +113,7 @@ document.addEventListener(
 		const target = event.target as Element
 		const tag = target.closest('[data-tag]')
 		if (tag) click(tag.getAttribute('aria-pressed') === 'true' ? 'off' : 'on')
+		else if (target.closest('[data-tag-reset]')) click('reset')
 		else if (target.closest('[data-media-prev], [data-media-next]')) click('step')
 		else if (target.closest('[data-theme-switch]')) click()
 	},
