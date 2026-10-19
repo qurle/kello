@@ -3,10 +3,18 @@
 import { draggable } from './drag'
 import { reducedMotion, scrollBehavior } from './motion'
 
-/** Calls `done` once the image has loaded or failed */
+/** Calls `done` once the image has loaded and decoded, so it can paint at once, or failed */
 export function onLoad(img: HTMLImageElement, done: () => void) {
 	if (img.complete && img.naturalWidth) return done()
-	img.addEventListener('load', done, { once: true })
+	img.addEventListener(
+		'load',
+		() =>
+			img
+				.decode()
+				.catch(() => {})
+				.then(done),
+		{ once: true },
+	)
 	img.addEventListener('error', done, { once: true })
 }
 

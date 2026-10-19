@@ -108,38 +108,52 @@ code
     video
         transition: opacity var(--duration-base) steps(4, end)
 
+    // Above the dither, which stays under it while it steps in
+    img
+        position: relative
+
+html[data-js] [data-dither] > .dither
+    position: absolute
+    inset: 0
+    display: block
+    overflow: hidden
+    opacity: var(--dither-strength)
+    filter: contrast(64)
+    pointer-events: none
+    // Hidden once the media have stepped in, not as they start
+    visibility: hidden
+    transition: visibility 0s var(--duration-base)
+
+    &::before,
+    &::after
+        content: ""
+        position: absolute
+        inset: 0
+
+    &::before
+        // Past the edges, so the blur doesn't darken them
+        inset: -8px
+        background: var(--preview, none) center / cover no-repeat
+        filter: blur(4px) brightness(0.5)
+
+    &::after
+        background: var(--dither) 0 0 / var(--dither-size) repeat
+        opacity: 0.5
+        mix-blend-mode: plus-lighter
+        image-rendering: pixelated
+        animation: dither var(--dither-duration) steps(4) infinite paused
+
 html[data-js] [data-loading]
     img,
     video
         opacity: 0
 
     > .dither
-        position: absolute
-        inset: 0
-        display: block
-        overflow: hidden
-        opacity: var(--dither-strength)
-        filter: contrast(64)
-        pointer-events: none
-
-        &::before,
-        &::after
-            content: ""
-            position: absolute
-            inset: 0
-
-        &::before
-            // Past the edges, so the blur doesn't darken them
-            inset: -8px
-            background: var(--preview, none) center / cover no-repeat
-            filter: blur(4px) brightness(0.5)
+        visibility: visible
+        transition: none
 
         &::after
-            background: var(--dither) 0 0 / var(--dither-size) repeat
-            opacity: 0.5
-            mix-blend-mode: plus-lighter
-            image-rendering: pixelated
-            animation: dither var(--dither-duration) steps(4) infinite
+            animation-play-state: running
 
 @keyframes dither
     to
