@@ -54,7 +54,7 @@ export default defineConfig({
 		{ ru: 'ux', en: 'ux' }, // 9
 		{ ru: 'авторы', en: 'people' }, // 9
 		{ ru: 'текстуры', en: 'textures' }, // 7
-		{ ru: 'дизинж', en: 'design-engineering', label: 'design engineering' }, // 6
+		{ ru: 'дизинж', en: 'design-engineering', label: 'des-eng', aliases: ['design engineering'] }, // 6
 		{ ru: 'дизайнсистемы', en: 'design-systems', label: 'design systems' }, // 6
 		{ ru: 'мокапы', en: 'mockups' }, // 5
 		{ ru: 'текст', en: 'writing' }, // 5
