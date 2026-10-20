@@ -48,6 +48,8 @@ const flags = new Set(new URLSearchParams(location.search).get('perf')?.split(',
 const css: string[] = []
 // The settle tilt off, in case 3D animations on every post slow the GPU
 if (flags.has('still')) css.push('[data-post] { animation: none !important }')
+// The tilt without fill: posts off screen below aren't held at the starting angle, so they have no 3D transform
+if (flags.has('nofill')) css.push('[data-post] { animation-fill-mode: none !important }')
 // No tap highlight, which Android draws on the tapped element and fades out
 if (flags.has('flat')) css.push('* { -webkit-tap-highlight-color: transparent }')
 // The reset stays enabled under the finger. The observer runs before the next frame, so it never shows disabled
