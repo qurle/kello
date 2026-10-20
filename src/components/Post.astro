@@ -106,7 +106,10 @@ const tags = sortTags(post.tags)
 		:global(blockquote + br)
 			display: none
 
+		// Part of the sentence, so it selects with it
 		:global(a)
+			-webkit-user-select: text
+			user-select: text
 			text-decoration-line: underline
 			text-decoration-thickness: var(--underline-width)
 			text-decoration-color: var(--tertiary)
@@ -161,14 +164,27 @@ const tags = sortTags(post.tags)
 			margin-top: var(--space-xs)
 
 	// Settle: a post enters rolled back around its bottom edge and stands up over --settle-distance of
-	// scrolling. Only `transform`, so feed.js's layout is untouched
+	// scrolling. Not on phones, where it lagged and a 3D layer per post cost too much. Only `transform`, so
+	// feed.js's layout is untouched. No fill: a post far below the window holds no transform, so only posts
+	// near it have one
 	@supports (animation-timeline: view())
-		@media (prefers-reduced-motion: no-preference)
+		@media (prefers-reduced-motion: no-preference) and (width >= 48rem)
 			.post
 				transform-origin: 50% 100%
-				animation: settle var(--settle-ease) both
+				animation: settle var(--settle-ease)
 				animation-timeline: view()
 				animation-range: cover 0% cover var(--settle-distance)
+
+				// Within --settle-hold below the window a post already waits at the starting angle, so a quick
+				// scroll never brings one in flat. Behind its own check, as it needs a range offset below zero
+				@supports (animation-range: cover -1px cover 0%)
+					animation: hold, settle var(--settle-ease)
+					animation-timeline: view(), view()
+					animation-range: cover calc(-1 * var(--settle-hold)) cover 0%, cover 0% cover var(--settle-distance)
+
+	@keyframes hold
+		from, to
+			transform: perspective(var(--settle-perspective)) rotateX(var(--settle-angle))
 
 	@keyframes settle
 		from
