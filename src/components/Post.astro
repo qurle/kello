@@ -161,16 +161,25 @@ const tags = sortTags(post.tags)
 			margin-top: var(--space-xs)
 
 	// Settle: a post enters rolled back around its bottom edge and stands up over --settle-distance of
-	// scrolling. Only `transform`, so feed.js's layout is untouched
+	// scrolling; on phones it rises by --settle-rise instead, flat, as a 3D layer per post cost too much there.
+	// Only `transform`, so feed.js's layout is untouched. No fill: a post below the window, which can't be
+	// seen, holds no transform, so only posts coming in have one
 	@supports (animation-timeline: view())
 		@media (prefers-reduced-motion: no-preference)
 			.post
 				transform-origin: 50% 100%
-				animation: settle var(--settle-ease) both
+				animation: settle var(--settle-ease)
 				animation-timeline: view()
 				animation-range: cover 0% cover var(--settle-distance)
+
+				@media (width < 48rem)
+					animation-name: rise
 
 	@keyframes settle
 		from
 			transform: perspective(var(--settle-perspective)) rotateX(var(--settle-angle))
+
+	@keyframes rise
+		from
+			transform: translateY(var(--settle-rise))
 </style>

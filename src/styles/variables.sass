@@ -91,9 +91,11 @@
     --duration-fast: 120ms
     --duration-base: 220ms
     --ease-out: cubic-bezier(0.23, 1, 0.32, 1)
-    // A post entering at the bottom straightens from this tilt over this much scrolling (Post.astro)
+    // A post entering at the bottom straightens from this tilt over this much scrolling (Post.astro); on
+    // phones it rises from this far down instead
     --settle-angle: 30deg
     --settle-perspective: 30rem
+    --settle-rise: 3rem
     --settle-distance: 40vh
     --settle-ease: cubic-bezier(0.3, 0.5, 0.5, 1)
     // Mouse drag (drag.ts), read from the track, so a component can override them. Coast: ms of release
