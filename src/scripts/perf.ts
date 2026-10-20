@@ -78,6 +78,9 @@ if (flags.has('swap') && reset)
 		},
 		true,
 	)
+// Reset first in the tag line instead of last, to see whether its place under the finger matters
+const item = reset?.closest('li')
+if (flags.has('first') && item) item.parentElement!.prepend(item)
 if (css.length) {
 	const style = document.createElement('style')
 	style.textContent = css.join('\n')
