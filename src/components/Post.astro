@@ -106,7 +106,10 @@ const tags = sortTags(post.tags)
 		:global(blockquote + br)
 			display: none
 
+		// Part of the sentence, so it selects with it
 		:global(a)
+			-webkit-user-select: text
+			user-select: text
 			text-decoration-line: underline
 			text-decoration-thickness: var(--underline-width)
 			text-decoration-color: var(--tertiary)

@@ -35,6 +35,12 @@ img, video, svg
     display: block
     max-width: 100%
 
+// Controls don't select, so a long press or a double tap doesn't highlight their label. Links in post
+// text select with it (Post.astro)
+a, button
+    -webkit-user-select: none
+    user-select: none
+
 a
     color: inherit
     text-decoration: none
