@@ -81,9 +81,6 @@ if (flags.has('swap') && reset)
 // Reset first in the tag line instead of last, to see whether its place under the finger matters
 const item = reset?.closest('li')
 if (flags.has('first') && item) item.parentElement!.prepend(item)
-// A tap doesn't focus reset, so focus stays on the tag as it does when unticking. Android reports focus
-// changes to accessibility services, which may describe the whole page, now 180 posts long
-if (flags.has('nofocus') && reset) reset.addEventListener('mousedown', (event) => event.preventDefault())
 if (css.length) {
 	const style = document.createElement('style')
 	style.textContent = css.join('\n')

@@ -41,11 +41,17 @@ async function update() {
 	document.dispatchEvent(new CustomEvent('kello:filter'))
 }
 
+// A press doesn't focus a tag or the reset; Tab and Enter still do. On Android, focus moving to another button in
+// the frame that brought every post back doubled its time to paint
+document.addEventListener('mousedown', (event) => {
+	if ((event.target as Element).closest('[data-tag], [data-tag-reset]')) event.preventDefault()
+})
+
 reset?.addEventListener('click', (event) => {
 	selected.clear()
 	update()
 	// The button is disabled again, so after Enter or Space (a click with no press count) focus moves to the
-	// first tag. A tap or a click leaves it be
+	// first tag
 	if (event.detail === 0) document.querySelector<HTMLElement>('[data-filter] [data-tag]')?.focus()
 })
 
